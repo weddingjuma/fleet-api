@@ -16,13 +16,19 @@
 # <http://www.gnu.org/licenses/agpl.html>
 #
 require 'grape-swagger'
+require './app/api/api_v01'
+require './app/api/api_logger'
+require './app/api/api_cors'
 
-class ApiRootDef < Grape::API
-  mount ApiV01
-end
+module Api
+  class ApiRootDef < Grape::API
+    mount ApiV01
+    add_swagger_documentation
+  end
 
-ApiRoot = Rack::Builder.new do
-  use ApiLogger
-  use ApiCors
-  run ApiRootDef
+  ApiRoot = Rack::Builder.new do
+    use ApiLogger
+    use ApiCors
+    run ApiRootDef
+  end
 end

@@ -16,17 +16,8 @@
 # <http://www.gnu.org/licenses/agpl.html>
 #
 module Api
-  class ApiCors
-    def initialize(app)
-      @app = app
-    end
-
-    def call(env)
-      if env['REQUEST_METHOD'] != 'OPTIONS'
-        @app.call(env)
-      else
-        Rack::Response.new([nil], 204).finish
-      end
+  module V01
+    class User < Grape::Entity
     end
   end
 end

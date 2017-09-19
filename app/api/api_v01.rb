@@ -15,33 +15,36 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class ApiV01 < Grape::API
-  version '0.1', using: :path
+require './app/api/v01/api'
 
-  content_type :json, 'application/json; charset=UTF-8'
-  content_type :xml, 'application/xml'
+module Api
+  class ApiV01 < Grape::API
+    version '0.1', using: :path
 
-  default_format :json
+    content_type :json, 'application/json; charset=UTF-8'
+    content_type :xml, 'application/xml'
 
-  mount V01::Api
+    default_format :json
 
-  add_swagger_documentation(
-    base_path: '/api',
-    hide_documentation_path: true,
-    consumes: [
-      'application/json; charset=UTF-8',
-      'application/xml',
-    ],
-    produces: [
-      'application/json; charset=UTF-8',
-      'application/xml',
-    ],
-    info: {
-      title: 'API',
-      contact_email: MapotempoFleet::Application.config.api_contact_email,
-      contact_url: MapotempoFleet::Application.config.api_contact_url,
-      license: 'GNU Affero General Public License 3',
-      license_url: 'https://raw.githubusercontent.com/Mapotempo/mapotempo-web/master/LICENSE',
-      description: '
-'})
+    mount V01::Api
+
+    add_swagger_documentation(
+      hide_documentation_path: true,
+      consumes: [
+        'application/json; charset=UTF-8',
+        'application/xml',
+      ],
+      produces: [
+        'application/json; charset=UTF-8',
+        'application/xml',
+      ],
+      info: {
+        title: 'API',
+        contact_email: MapotempoFleet::Application.config.api_contact_email,
+        contact_url: MapotempoFleet::Application.config.api_contact_url,
+        license: 'GNU Affero General Public License 3',
+        license_url: 'https://raw.githubusercontent.com/Mapotempo/mapotempo-web/master/LICENSE',
+        description: '
+  '})
+  end
 end

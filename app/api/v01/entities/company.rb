@@ -16,17 +16,14 @@
 # <http://www.gnu.org/licenses/agpl.html>
 #
 module Api
-  class ApiCors
-    def initialize(app)
-      @app = app
-    end
-
-    def call(env)
-      if env['REQUEST_METHOD'] != 'OPTIONS'
-        @app.call(env)
-      else
-        Rack::Response.new([nil], 204).finish
+  module V01
+    class Company < Grape::Entity
+      def self.entity_name
+        'Company'
       end
+
+      expose :name, documentation: { is_string: true, desc: 'The company name.' }
+      expose :id, documentation: { is_string: true, desc: 'The company id.' }
     end
   end
 end

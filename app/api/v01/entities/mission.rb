@@ -15,7 +15,9 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class V01::Devices < Grape::API
-  resource :devices do
+module Api
+  module V01
+    class Mission < Grape::Entity
+    end
   end
 end

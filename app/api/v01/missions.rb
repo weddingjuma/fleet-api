@@ -16,16 +16,24 @@
 # <http://www.gnu.org/licenses/agpl.html>
 #
 module Api
-  class ApiCors
-    def initialize(app)
-      @app = app
-    end
+  module V01
+    class Missions < Grape::API
+      resource :missions do
+        get do
+          {test: 'test'}
+        end
 
-    def call(env)
-      if env['REQUEST_METHOD'] != 'OPTIONS'
-        @app.call(env)
-      else
-        Rack::Response.new([nil], 204).finish
+        post do
+          {test: 'test'}
+        end
+
+        put do
+          {test: 'test'}
+        end
+
+        patch do
+          {test: 'test'}
+        end
       end
     end
   end

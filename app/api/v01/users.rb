@@ -17,7 +17,24 @@
 #
 module Api
   module V01
-    class Device < Grape::Entity
+    class Users < Grape::API
+      resource :users do
+        get do
+          {test: 'test'}
+        end
+
+        post do
+          {test: 'test'}
+        end
+
+        put do
+          {test: 'test'}
+        end
+
+        patch do
+          {test: 'test'}
+        end
+      end
     end
   end
 end
