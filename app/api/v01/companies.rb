@@ -79,7 +79,7 @@ module Api
         end
         post do
           name = params[:company][:name]
-          company.name = DummyCompanies.instance.create(name)
+          company = DummyCompanies.instance.create(name)
           present company, with: Company
         end
 
@@ -130,7 +130,7 @@ module Api
             status 404
             error!({status: 'Not Found', detail: "Not found company with id='#{id}'"}, 404)
           else
-            company = params[:company][:name]
+            company.name = params[:company][:name]
             present company, with: Company
           end
         end
