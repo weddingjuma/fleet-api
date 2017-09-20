@@ -32,14 +32,7 @@ module Api
           detail: ''
         }
         get do
-          id = params[:id]
-          companies = DummyCompanies.instance.all()
-          if companies == nil
-            status 404
-            error!({status: 'Not Found', detail: "Not found company with id='#{id}'"}, 404)
-          else
-            present companies, with: Company
-          end
+          present DummyCompany.all, with: Company
         end
 
         desc 'Return company', {
@@ -54,14 +47,7 @@ module Api
           requires :id, type: String, desc: 'Company ID.'
         end
         get ':id' do
-          id = params[:id]
-          company = DummyCompanies.instance.find(id)
-          if company == nil
-            status 404
-            error!({status: 'Not Found', detail: "Not found company with id='#{id}'"}, 404)
-          else
-            present company, with: Company
-          end
+          present DummyCompany.find(params[:id]), with: Company
         end
 
         desc 'Create a new company and return it', {
@@ -78,8 +64,7 @@ module Api
           end
         end
         post do
-          name = params[:company][:name]
-          company = DummyCompanies.instance.create(name)
+          company = DummyCompany.create(name: params[:company][:name])
           present company, with: Company
         end
 
@@ -94,45 +79,16 @@ module Api
         params do
           requires :id, type: String, desc: 'Company ID.'
           requires(:company, type: Hash, documentation: {param_type: 'body'}) do
-            requires(:name, type: String)
-          end
-        end
-        put ':id' do
-          id = params[:id]
-          company = DummyCompanies.instance.find(id)
-          if company == nil
-            status 404
-            error!({status: 'Not Found', detail: "Not found company with id='#{id}'"}, 404)
-          else
-            company.name = params[:company][:name]
-            present company, with: Company
-          end
-        end
-
-        desc 'Update a company and return it', {
-          nickname: 'company',
-          success: Company,
-          failure: [
-            {code: 404, message: 'Not Found', model: ::Api::V01::Status}
-          ],
-          detail: ''
-        }
-        params do
-          requires :id, type: String, desc: 'Company ID.'
-          requires(:company, type: Hash, documentation: {param_type: 'body'}) do
-            requires(:name, type: String)
+            optional(:name, type: String)
+            optional(:address_1, type: String)
+            optional(:address_2, type: String)
+            optional(:address_3, type: String)
+            optional(:email, type: String)
           end
         end
         patch ':id' do
-          id = params[:id]
-          company = DummyCompanies.instance.find(id)
-          if company == nil
-            status 404
-            error!({status: 'Not Found', detail: "Not found company with id='#{id}'"}, 404)
-          else
-            company.name = params[:company][:name]
-            present company, with: Company
-          end
+          company = DummyCompany.find(params[:id]).update(params[:company])
+          present company, with: Company
         end
 
         desc 'Delete a company', {
@@ -147,60 +103,41 @@ module Api
           requires :id, type: String, desc: 'Company ID.'
         end
         delete ':id' do
-          id = params[:id]
-          company = DummyCompanies.instance.find(id)
-          if company == nil
-            status 404
-            error!({status: 'Not Found', detail: "Not found company with id='#{id}'"}, 404)
-          else
-            DummyCompanies.instance.delete(id)
-            status 204
-          end
+          DummyCompany.find(params[:id]).destroy()
         end
       end
     end
   end
 end
 
-#############################################
-# DUMMY ACTIVE RECORD MODEL COMPANY MANAGER #
-#############################################
-class DummyCompany
-  attr_accessor :name, :id
-end
+#######################
+# DUMMY COMPANY MODEL #
+#######################
 
-class DummyCompanies < Hash
-  include Singleton
+class DummyCompany < ActiveHash::Base
+  fields :name, :address_1, :address_2, :address_3, :email
 
-  attr_accessor :counter_id
-
-  def initialize
-    @counter_id = 0
+  def update hash
+    if hash[:name]
+      self.name = hash[:name]
+    end
+    if hash[:address_1]
+      self.address_1 = hash[:address_1]
+    end
+    if hash[:address_2]
+      self.address_2 = hash[:address_2]
+    end
+    if hash[:address_3]
+      self.address_3 = hash[:address_3]
+    end
+    if hash[:email]
+      self.email = hash[:email]
+    end
+    self.save
+    return self
   end
 
-  def create(company_name)
-    c = DummyCompany.new
-    c.name = company_name
-    c.id = counter_id.to_s
-    self[counter_id] = c
-    @counter_id = @counter_id + 1
-    return c
-  end
-
-  def find(id)
-    self[id.to_i]
-  end
-
-  def delete(id)
-    super(id.to_i)
-  end
-
-  def all()
-    self.values
+  def destroy
+    ''
   end
 end
-
-a = DummyCompanies.instance
-a.create("company_1")
-a.create("company_2")
-a.create("company_3")
