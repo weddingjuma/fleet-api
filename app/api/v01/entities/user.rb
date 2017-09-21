@@ -18,6 +18,13 @@
 module Api
   module V01
     class User < Grape::Entity
+      def self.entity_name
+        'User'
+      end
+      expose :id, documentation: { is_string: true, desc: 'The user id.' }
+      expose :company_id, documentation: { is_string: true, desc: 'The user company.' }
+      expose :user, documentation: { is_string: true, desc: 'The user name.' }
+      expose :roles, documentation: { is_array: true, desc: 'The user roles.' }
     end
   end
 end

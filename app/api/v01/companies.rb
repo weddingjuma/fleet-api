@@ -21,6 +21,13 @@ require './app/api/v01/entities/company'
 module Api
   module V01
     class Companies < Grape::API
+      helpers do
+        # Never trust parameters from the scary internet, only allow the white list through.
+        def user_params
+          p = ActionController::Parameters.new(params)
+          p.permit(:name, :address_1, :address_2, :address_3, :email).to_h
+        end
+      end
 
       resource :companies do
         desc 'Return company', {
@@ -44,7 +51,7 @@ module Api
           detail: ''
         }
         params do
-          requires :id, type: String, desc: 'Company ID.'
+          requires :id, documentation: { type: Integer }
         end
         get ':id' do
           present DummyCompany.find(params[:id]), with: Company
@@ -56,15 +63,18 @@ module Api
           failure: [
             {code: 404, message: 'Not Found', model: ::Api::V01::Status}
           ],
-          detail: ''
+          detail: '',
+          params: Company.documentation.except(:id)
         }
         params do
-          requires(:company, type: Hash, documentation: {param_type: 'body'}) do
-            requires(:name, type: String)
-          end
+          requires :name, documentation: { type: String }
+          optional :address_1, documentation: { type: String }
+          optional :address_2, documentation: { type: String }
+          optional :address_3, documentation: { type: String }
+          optional :email, documentation: { type: String }
         end
         post do
-          company = DummyCompany.create(name: params[:company][:name])
+          company = DummyCompany.create(params)
           present company, with: Company
         end
 
@@ -74,20 +84,19 @@ module Api
           failure: [
             {code: 404, message: 'Not Found', model: ::Api::V01::Status}
           ],
-          detail: ''
+          detail: '',
+          params: Company.documentation.except(:id)
         }
         params do
-          requires :id, type: String, desc: 'Company ID.'
-          requires(:company, type: Hash, documentation: {param_type: 'body'}) do
-            optional(:name, type: String)
-            optional(:address_1, type: String)
-            optional(:address_2, type: String)
-            optional(:address_3, type: String)
-            optional(:email, type: String)
-          end
+          requires :id, documentation: { type: Integer }
+          optional :name, documentation: { type: String }
+          optional :address_1, documentation: { type: String }
+          optional :address_2, documentation: { type: String }
+          optional :address_3, documentation: { type: String }
+          optional :email, documentation: { type: String }
         end
         patch ':id' do
-          company = DummyCompany.find(params[:id]).update(params[:company])
+          company = DummyCompany.find(params[:id]).update(params)
           present company, with: Company
         end
 
@@ -100,7 +109,7 @@ module Api
           detail: ''
         }
         params do
-          requires :id, type: String, desc: 'Company ID.'
+          requires :id, documentation: { type: Integer }
         end
         delete ':id' do
           DummyCompany.find(params[:id]).destroy()
@@ -118,6 +127,7 @@ class DummyCompany < ActiveHash::Base
   fields :name, :address_1, :address_2, :address_3, :email
 
   def update hash
+    hash.symbolize_keys!
     if hash[:name]
       self.name = hash[:name]
     end
@@ -138,6 +148,6 @@ class DummyCompany < ActiveHash::Base
   end
 
   def destroy
-    ''
+    p "Destroy wasn't implement in the #{self.to_s} model"
   end
 end
