@@ -23,10 +23,11 @@ module Api
       end
       expose :id, documentation: { is_string: true, desc: 'The company id.' }
       expose :name, documentation: { is_string: true, desc: 'The company name.' }
-      expose :address_1, documentation: { is_string: true, desc: 'The company address_1.' }
-      expose :address_2, documentation: { is_string: true, desc: 'The company address_2.' }
-      expose :address_3, documentation: { is_string: true, desc: 'The company address_3.' }
-      expose :email, documentation: { is_string: true, desc: 'The company email.' }
+      expose :country, documentation: { is_string: true, desc: 'The company email.' }
+      expose :postalcode, documentation: { is_string: true, desc: 'The company address_2.' }
+      expose :state, documentation: { is_string: true, desc: 'The company address_3.' }
+      expose :street, documentation: { is_string: true, desc: 'The company email.' }
+      expose :detail, documentation: { is_string: true, desc: 'The company address_1.' }
     end
   end
 end

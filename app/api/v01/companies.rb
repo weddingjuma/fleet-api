@@ -17,6 +17,7 @@
 #
 require './app/api/v01/entities/status'
 require './app/api/v01/entities/company'
+require './app/models/company'
 
 module Api
   module V01
@@ -25,7 +26,7 @@ module Api
         # Never trust parameters from the scary internet, only allow the white list through.
         def user_params
           p = ActionController::Parameters.new(params)
-          p.permit(:name, :address_1, :address_2, :address_3, :email).to_h
+          p.permit(:name, :country, :detail, :postalcode, :state, :street, :city)
         end
       end
 
@@ -39,7 +40,7 @@ module Api
           detail: ''
         }
         get do
-          present DummyCompany.all, with: Company
+          present Model::Company.all, with: Company
         end
 
         desc 'Return company', {
@@ -54,7 +55,7 @@ module Api
           requires :id, documentation: { type: Integer }
         end
         get ':id' do
-          present DummyCompany.find(params[:id]), with: Company
+          present Model::Company.find(params[:id]), with: Company
         end
 
         desc 'Create a new company and return it', {
@@ -68,13 +69,16 @@ module Api
         }
         params do
           requires :name, documentation: { type: String }
-          optional :address_1, documentation: { type: String }
-          optional :address_2, documentation: { type: String }
-          optional :address_3, documentation: { type: String }
+          optional :country, documentation: { type: String }
+          optional :detail, documentation: { type: String }
+          optional :postalcode, documentation: { type: String }
+          optional :state, documentation: { type: String }
+          optional :street, documentation: { type: String }
+          optional :city, documentation: { type: String }
           optional :email, documentation: { type: String }
         end
         post do
-          company = DummyCompany.create(params)
+          company = Model::Company.create(user_params)
           present company, with: Company
         end
 
@@ -90,19 +94,23 @@ module Api
         params do
           requires :id, documentation: { type: Integer }
           optional :name, documentation: { type: String }
-          optional :address_1, documentation: { type: String }
-          optional :address_2, documentation: { type: String }
-          optional :address_3, documentation: { type: String }
+          optional :country, documentation: { type: String }
+          optional :detail, documentation: { type: String }
+          optional :postalcode, documentation: { type: String }
+          optional :state, documentation: { type: String }
+          optional :street, documentation: { type: String }
+          optional :city, documentation: { type: String }
           optional :email, documentation: { type: String }
         end
         patch ':id' do
-          company = DummyCompany.find(params[:id]).update(params)
+          p user_params
+          company = Model::Company.find(params[:id])
+          company.update! user_params
           present company, with: Company
         end
 
         desc 'Delete a company', {
           nickname: 'company',
-          success: Company,
           failure: [
             {code: 404, message: 'Not Found', model: ::Api::V01::Status}
           ],
@@ -112,42 +120,10 @@ module Api
           requires :id, documentation: { type: Integer }
         end
         delete ':id' do
-          DummyCompany.find(params[:id]).destroy()
+          Model::Company.find(params[:id]).delete
+          status 204
         end
       end
     end
-  end
-end
-
-#######################
-# DUMMY COMPANY MODEL #
-#######################
-
-class DummyCompany < ActiveHash::Base
-  fields :name, :address_1, :address_2, :address_3, :email
-
-  def update hash
-    hash.symbolize_keys!
-    if hash[:name]
-      self.name = hash[:name]
-    end
-    if hash[:address_1]
-      self.address_1 = hash[:address_1]
-    end
-    if hash[:address_2]
-      self.address_2 = hash[:address_2]
-    end
-    if hash[:address_3]
-      self.address_3 = hash[:address_3]
-    end
-    if hash[:email]
-      self.email = hash[:email]
-    end
-    self.save
-    return self
-  end
-
-  def destroy
-    p "Destroy wasn't implement in the #{self.to_s} model"
   end
 end
