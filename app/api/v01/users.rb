@@ -17,6 +17,7 @@
 #
 require './app/api/v01/entities/status'
 require './app/api/v01/entities/user'
+require './app/models/user'
 
 module Api
   module V01
@@ -44,7 +45,7 @@ module Api
           detail: ''
         }
         get do
-          present DummyUser.all(), with: User
+          present Model::User.all, with: User
         end
 
         desc 'Return user', {
@@ -59,7 +60,7 @@ module Api
           requires :id, documentation: { type: Integer }
         end
         get ':id' do
-          present DummyUser.find(params[:id]), with: User
+          present Model::User.find(params[:id]), with: User
         end
 
         desc 'Create a new user and return it', {
@@ -76,8 +77,8 @@ module Api
           requires :roles, documentation: { type: Array[String] }
         end
         post do
-          DummyCompany.find(params[:company_id])
-          user = DummyUser.create(user_params)
+          Model::Company.find(params[:company_id])
+          user = Model::User.create(user_params)
           present user, with: User
         end
 
@@ -92,10 +93,11 @@ module Api
         params do
           requires :id, documentation: { type: Integer }
           optional :user, documentation: { type: String }
-          optional :roles, documentation: { type: Array[String] }
+          optional :roles, documentation: { type: Array[String]}
         end
         patch ':id' do
-          user = DummyUser.find(params[:id]).update(user_params_patch)
+          user = Model::User.find(params[:id])
+          user.update! user_params
           present user, with: User
         end
 
@@ -114,36 +116,10 @@ module Api
           requires :id, documentation: { type: Integer }
         end
         delete ':id' do
-          DummyUser.find(params[:id]).destroy()
+          Model::User.find(params[:id]).delete
+          status 204
         end
       end
     end
-  end
-end
-
-####################
-# DUMMY USER MODEL #
-####################
-
-class DummyUser < ActiveHash::Base
-  fields :company_id, :user, :roles
-
-  def update hash
-    hash.symbolize_keys!
-    if hash[:company_id]
-      self.company_id = hash[:company_id]
-    end
-    if hash[:user]
-      self.user = hash[:user]
-    end
-    if hash[:roles]
-      self.roles = hash[:roles]
-    end
-    self.save
-    return self
-  end
-
-  def destroy
-    p "Destroy wasn't implement in the #{self.to_s} model"
   end
 end
