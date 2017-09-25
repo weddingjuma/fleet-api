@@ -17,14 +17,6 @@
 #
 module Api
   module V01
-    class Location < Grape::Entity
-      def self.entity_name
-        'location'
-      end
-      expose :lon, documentation: { is_string: true, desc: 'The longitude location.' }
-      expose :lat, documentation: { is_string: true, desc: 'The lattitude location.' }
-    end
-
     class Mission < Grape::Entity
       def self.entity_name
         'mission'
@@ -35,7 +27,8 @@ module Api
       expose :name, documentation: { is_string: true, desc: 'The mission name.' }
       expose :phone, documentation: { is_string: true, desc: 'The mission phone.' }
       expose :owners, documentation: { is_array: true, desc: 'The mission owners.' }
-      expose :location, using: Location, documentation: { type: Location, desc: 'The mission location' }
+      expose :lat, documentation: { is_float: true, desc: 'The mission location lattitude' }
+      expose :lon, documentation: { is_float: true, desc: 'The mission location longitude' }
     end
   end
 end

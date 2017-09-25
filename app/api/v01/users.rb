@@ -103,7 +103,6 @@ module Api
 
         desc 'Delete a user', {
           nickname: 'user',
-          success: User,
           failure: [
             {code: 404, message: 'Not Found', model: ::Api::V01::Status}
           ],
@@ -111,9 +110,6 @@ module Api
         }
         params do
           optional :id, documentation: { type: Integer }
-        end
-        params do
-          requires :id, documentation: { type: Integer }
         end
         delete ':id' do
           Model::User.find(params[:id]).delete
