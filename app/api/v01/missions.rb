@@ -26,12 +26,12 @@ module Api
         # Never trust parameters from the scary internet, only allow the white list through.
         def mission_params
           p = ActionController::Parameters.new(params)
-          p.permit(:company_id, :delivery_date, :name, :phone, :lat, :lon, owners:[])
+          p.permit(:company_id, :date, :name, :phone, :lat, :lon, owners:[])
         end
 
         def mission_params_patch
           p = ActionController::Parameters.new(params)
-          p.permit(:delivery_date, :name, :phone, :lat, :lon, owners:[])
+          p.permit(:date, :name, :phone, :lat, :lon, owners:[])
         end
       end
 
@@ -73,7 +73,7 @@ module Api
         }
         params do
           requires :company_id, documentation: { type: String, desc: 'The mission company.' }
-          optional :delivery_date, documentation: { type: String, desc: 'The mission delivery_date.' }
+          optional :date, documentation: { type: String, desc: 'The mission date.' }
           optional :name, documentation: { type: String, desc: 'The mission name.' }
           optional :phone, documentation: { type: String, desc: 'The mission phone.' }
           optional :owners, documentation: { type: Array[String], desc: 'The mission phone' }
@@ -96,7 +96,7 @@ module Api
         }
         params do
           requires :id, documentation: { type: String, desc: 'The mission company.' }
-          optional :delivery_date, documentation: { type: String, desc: 'The mission delivery_date.'}
+          optional :date, documentation: { type: String, desc: 'The mission date.'}
           optional :name, documentation: { type: String, desc: 'The mission name.'}
           optional :phone, documentation: { type: String, desc: 'The mission phone.'}
           optional :owners, documentation: { type: Array[String], desc: 'The mission phone'}

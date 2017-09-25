@@ -4,7 +4,7 @@ class CreateMissions < ActiveRecord::Migration
 
       t.timestamps null: false
       t.string :company_id, null: false
-      t.string :delivery_date
+      t.string :date
       t.string :name
       t.string :phone
       t.string :owners

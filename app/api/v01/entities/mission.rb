@@ -23,7 +23,7 @@ module Api
       end
       expose :id, documentation: { is_string: true, desc: 'The mission id.' }
       expose :company_id, documentation: { is_string: true, desc: 'The mission company.' }
-      expose :delivery_date, documentation: { is_string: true, desc: 'The mission delivery_date.' }
+      expose :date, documentation: { is_string: true, desc: 'The mission date.' }
       expose :name, documentation: { is_string: true, desc: 'The mission name.' }
       expose :phone, documentation: { is_string: true, desc: 'The mission phone.' }
       expose :owners, documentation: { is_array: true, desc: 'The mission owners.' }

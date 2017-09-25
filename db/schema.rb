@@ -29,10 +29,10 @@ ActiveRecord::Schema.define(version: 20170922154327) do
   end
 
   create_table "missions", force: :cascade do |t|
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
-    t.string   "company_id",    null: false
-    t.string   "delivery_date"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string   "company_id", null: false
+    t.string   "date"
     t.string   "name"
     t.string   "phone"
     t.string   "owners"
