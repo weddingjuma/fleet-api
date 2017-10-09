@@ -1,0 +1,33 @@
+# Ignore bundler config
+/.bundle
+
+# Ignore all logfiles, tempfiles, assets and upload files
+/log/*.log
+/tmp
+
+# Ignore application documentation
+/doc
+
+# Ignore SQL dump
+/db/*.sql
+/db/dump
+
+# Ignore OS specific files
+/.directory
+
+# Ignore node modules files
+/node_modules
+/vendor/components
+/npm-debug.log
+
+# Ignore IDE files
+/.idea/*
+
+# Ignore local configuration file
+config/initializers/dev.rb
+
+# Ignore Ruby configuration file
+.ruby-gemset
+.ruby-version
+.rake_tasks~
+.byebug_history
