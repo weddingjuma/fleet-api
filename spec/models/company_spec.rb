@@ -25,6 +25,11 @@ RSpec.describe Company, type: :model do
 
     it { expect(@company.name).to eq('mapotempo') }
     it { is_expected.to validate_presence_of(:name) }
+
+    it 'serializes model' do
+      serialized = ActiveModelSerializers::SerializableResource.new(@company, serializer: CompanySerializer).as_json
+      expect(serialized[:id]).to eq(@company.id)
+    end
   end
 
   context 'Views' do

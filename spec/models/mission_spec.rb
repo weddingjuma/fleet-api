@@ -32,6 +32,11 @@ RSpec.describe Mission, type: :model do
     it { expect(@mission.company.name).to eq('mapo-mission') }
     it { expect(@mission.location['lat']).to eq(-0.5680988) }
     it { expect(@mission.location['lon']).to eq(44.8547927) }
+
+    it 'serializes model' do
+      serialized = ActiveModelSerializers::SerializableResource.new(@mission, serializer: MissionSerializer).as_json
+      expect(serialized[:id]).to eq(@mission.id)
+    end
   end
 
   context 'Views' do

@@ -38,5 +38,7 @@ module MapotempoFleet
         resource '/api/0.1/*', headers: :any, methods: [:get, :post, :options, :put, :delete, :patch]
       end
     end
+
+    config.paths.add 'app/serializers', eager_load: true
   end
 end

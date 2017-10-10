@@ -16,6 +16,10 @@ gem 'rack-cors'
 # Database interface
 gem 'couchbase-orm'
 
+# Serializer
+gem 'active_model_serializers'
+
+
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console'
