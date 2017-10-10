@@ -20,6 +20,6 @@ RSpec.configure do |config|
         end
       end
     }
-    sleep 3 # Wait for asynchronous flushing
+    sleep 5 # Wait for asynchronous flushing
   end
 end

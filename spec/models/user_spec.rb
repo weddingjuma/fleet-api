@@ -47,5 +47,11 @@ RSpec.describe User, type: :model do
     it 'returns the parent company' do
       expect(@user.company).to eq(@company)
     end
+
+    it 'cannot update company id' do
+      @user.update(company_id: 'other_company_id')
+      expect(@user.errors.first[0]).to eq(:company_id)
+      expect(@user.errors.first[1]).to eq(I18n.t('couchbase.errors.models.user.company_id_immutable'))
+    end
   end
 end

@@ -19,11 +19,11 @@
 # To learn more, please read the Rails Internationalization guide
 # available at http://guides.rubyonrails.org/i18n.html.
 
-en:
+fr:
   couchbase:
     errors:
       models:
         user:
-          company_id_immutable: "Company id cannot be updated"
+          company_id_immutable: "L'identifiant de la company ne peut pas changé"
         mission:
-          company_id_immutable: "Company id cannot be updated"
+          company_id_immutable: "L'identifiant de la company ne peut pas changé"

@@ -13,7 +13,11 @@ RSpec.describe Mission, type: :model do
 
     @mission = Mission.create(
       company: @company,
-      name: 'mission name'
+      name: 'mission name',
+      location: {
+        lat: -0.5680988,
+        lon: 44.8547927
+      }
     )
 
     @missions = create_list(:mission, 5, company: @company)
@@ -26,6 +30,8 @@ RSpec.describe Mission, type: :model do
 
     it { expect(@mission.name).to eq('mission name') }
     it { expect(@mission.company.name).to eq('mapo-mission') }
+    it { expect(@mission.location['lat']).to eq(-0.5680988) }
+    it { expect(@mission.location['lon']).to eq(44.8547927) }
   end
 
   context 'Views' do
@@ -41,6 +47,12 @@ RSpec.describe Mission, type: :model do
   context 'Relationships' do
     it 'returns the parent company' do
       expect(@mission.company).to eq(@company)
+    end
+
+    it 'cannot update company id' do
+      @mission.update(company_id: 'other_company_id')
+      expect(@mission.errors.first[0]).to eq(:company_id)
+      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.user.company_id_immutable'))
     end
   end
 end

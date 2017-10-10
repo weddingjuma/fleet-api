@@ -49,6 +49,16 @@ class Mission < ApplicationRecord
 
   belongs_to :company
 
+  validate :company_id_immutable, on: :update
+
   view :all
   view :by_company, emit_key: :company_id
+
+  private
+
+  def company_id_immutable
+    if company_id_changed?
+      errors.add(:company_id, I18n.t('couchbase.errors.models.user.company_id_immutable'))
+    end
+  end
 end
