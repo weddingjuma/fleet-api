@@ -1,14 +1,14 @@
 require_relative 'boot'
 
-require "rails"
+require 'rails'
 # Pick the frameworks you want:
-require "active_model/railtie"
-require "active_job/railtie"
+require 'active_model/railtie'
+require 'active_job/railtie'
 # require "active_record/railtie"
-require "action_controller/railtie"
-require "action_mailer/railtie"
-require "action_view/railtie"
-require "action_cable/engine"
+require 'action_controller/railtie'
+require 'action_mailer/railtie'
+require 'action_view/railtie'
+require 'action_cable/engine'
 # require "sprockets/railtie"
 # require "rails/test_unit/railtie"
 
@@ -34,8 +34,7 @@ module MapotempoFleet
     config.middleware.insert_before 0, Rack::Cors do
       allow do
         origins '*'
-        resource '/api-web/0.1/*', headers: :any, methods: [:get, :post, :options, :put, :delete, :patch]
-        resource '/api/0.1/*', headers: :any, methods: [:get, :post, :options, :put, :delete, :patch]
+        resource '*', headers: :any, methods: [:get, :post, :options, :put, :delete, :patch]
       end
     end
 
