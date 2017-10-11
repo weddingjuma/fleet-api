@@ -41,7 +41,5 @@ Rails.application.configure do
   # config.action_view.raise_on_missing_translations = true
 
   # Application config
-  config.swagger_docs_base_path = 'http://localhost:3000/'
-  config.api_contact_email = 'tech@mapotempo.com'
-  config.api_contact_url = 'https://github.com/Mapotempo/mapotempo-fleet'
+  config.x.sync_gateway_url = 'http://localhost:4985/db/'
 end

@@ -3,17 +3,15 @@ require 'rails_helper'
 RSpec.describe User, type: :model do
 
   before(:all) do
-    Company.ensure_design_document!
-    User.ensure_design_document!
-    Mission.ensure_design_document!
-
     @company = create(:company,
                       id: 'company_with_users',
                       name: 'mapo-user')
 
     @user = User.create(
       company: @company,
-      user: 'mapotempo-user'
+      user: 'mapotempo-user',
+      email: 'test@mapotempo.com',
+      password: 'password'
     )
 
     @users = create_list(:user, 5, company: @company)
@@ -25,12 +23,17 @@ RSpec.describe User, type: :model do
     it { is_expected.to be_valid }
 
     it { expect(@user.user).to eq('mapotempo-user') }
-    it { expect(@user.company.name).to eq('mapo-user') }
-    it { is_expected.to validate_presence_of(:user) }
+    # it { is_expected.to validate_presence_of(:user) }
+
+    # it { is_expected.to validate_presence_of(:email) }
+
+    it 'generate api key on creation' do
+      expect(@user.api_key).not_to be_nil
+    end
 
     it 'serializes model' do
       serialized = ActiveModelSerializers::SerializableResource.new(@user, serializer: UserSerializer).as_json
-      expect(serialized[:id]).to eq(@user.id)
+      expect(serialized[:user][:id]).to eq(@user.id)
     end
   end
 
@@ -51,10 +54,12 @@ RSpec.describe User, type: :model do
   context 'Relationships' do
     it 'returns the parent company' do
       expect(@user.company).to eq(@company)
+      expect(@user.company.name).to eq('mapo-user')
     end
 
     it 'cannot update company id' do
       @user.update(company_id: 'other_company_id')
+
       expect(@user.errors.first[0]).to eq(:company_id)
       expect(@user.errors.first[1]).to eq(I18n.t('couchbase.errors.models.user.company_id_immutable'))
     end

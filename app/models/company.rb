@@ -8,14 +8,28 @@
 #
 
 class Company < ApplicationRecord
+
+  # == Attributes ===========================================================
   attribute :name, type: String
 
-  validates_presence_of :name
+  # == Extensions ===========================================================
 
+  # == Relationships ========================================================
   has_many :users, dependent: :destroy
 
   has_many :missions, dependent: :destroy
 
+  # == Validations ==========================================================
+  validates_presence_of :name
+
+  # == Views ===============================================================
   view :all
   view :by_name, emit_key: :name
+
+  # == Callbacks ============================================================
+
+  # == Class Methods ========================================================
+
+  # == Instance Methods =====================================================
+
 end

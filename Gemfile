@@ -19,6 +19,11 @@ gem 'couchbase-orm'
 # Serializer
 gem 'active_model_serializers'
 
+# HTTP requests
+gem 'http'
+
+# Encrypt password
+gem 'bcrypt'
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
@@ -57,4 +62,5 @@ group :test do
 
   # Use Factory Girl for generating random test data
   gem 'factory_girl_rails'
+  gem 'faker'
 end

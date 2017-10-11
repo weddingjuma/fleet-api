@@ -37,22 +37,36 @@
 #
 
 class Mission < ApplicationRecord
-  attribute :address
-  attribute :comment
-  attribute :date
-  attribute :location
-  attribute :name
-  attribute :owners
-  attribute :reference
-  attribute :duration
-  attribute :time_windows
 
+  # == Attributes ===========================================================
+  attribute :address, type: Hash
+  attribute :comment, type: String
+  attribute :date
+  attribute :location, type: Hash
+  attribute :name, type: String
+  attribute :owners, type: Array
+  attribute :phone, type: String
+  attribute :reference, type: String
+  attribute :duration, type: Integer
+  attribute :time_windows, type: Array
+
+  # == Extensions ===========================================================
+
+  # == Relationships ========================================================
   belongs_to :company
 
+  # == Validations ==========================================================
   validate :company_id_immutable, on: :update
 
+  # == Views ===============================================================
   view :all
   view :by_company, emit_key: :company_id
+
+  # == Callbacks ============================================================
+
+  # == Class Methods ========================================================
+
+  # == Instance Methods =====================================================
 
   private
 

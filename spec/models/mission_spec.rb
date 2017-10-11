@@ -3,10 +3,6 @@ require 'rails_helper'
 RSpec.describe Mission, type: :model do
 
   before(:all) do
-    Company.ensure_design_document!
-    User.ensure_design_document!
-    Mission.ensure_design_document!
-
     @company = create(:company,
                       id: 'company_with_missions',
                       name: 'mapo-mission')
@@ -35,7 +31,7 @@ RSpec.describe Mission, type: :model do
 
     it 'serializes model' do
       serialized = ActiveModelSerializers::SerializableResource.new(@mission, serializer: MissionSerializer).as_json
-      expect(serialized[:id]).to eq(@mission.id)
+      expect(serialized[:mission][:id]).to eq(@mission.id)
     end
   end
 
