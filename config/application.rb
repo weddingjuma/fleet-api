@@ -42,5 +42,10 @@ module MapotempoFleet
     config.paths.add 'app/serializers', eager_load: true
     ActiveModel::Serializer.config.adapter = :json
     ActiveModel::Serializer.config.default_includes = '**'
+
+    # Swagger configuration
+    config.x.swagger_docs_base_path = 'http://localhost:3000/'
+    config.x.api_contact_email = 'tech@mapotempo.com'
+    config.x.api_contact_url = 'https://github.com/Mapotempo/mapotempo-web'
   end
 end

@@ -1,61 +1,96 @@
 module Api::V1
   class MissionsController < ApiController
+    after_action :verify_authorized
 
-    # TODO
     # get_missions
     def index
-      render json: Mission.all.to_a,
-             each_serializer: MissionSerializer
+      missions = if params[:user_id]
+                   user = User.find(params[:user_id])
+                   authorize user, :show?
+                   user.missions.to_a
+                 else
+                   Mission.all.to_a
+                 end
+
+      if missions
+        render json: missions,
+               each_serializer: MissionSerializer
+      else
+        render body: nil, status: :not_found
+      end
     end
 
-    # TODO
     # set_mission
     def create
-      # vehicle_id
-      # mission_params
+      user = User.find(params[:user_id])
+      mission = Mission.new
+      mission.assign_attributes(mission_params)
+      mission.user = user
+      mission.company = user.company
+      authorize mission
 
-      render json: Mission.all.to_a,
-             each_serializer: MissionSerializer
+      if mission.save
+        render json: mission,
+               serializer: MissionSerializer
+      else
+        render json: mission.errors, status: :unprocessable_entity
+      end
     end
 
-    # TODO
+    def update
+      mission = Mission.find(params[:id])
+      mission.assign_attributes(mission_params)
+      authorize mission
+
+      if mission.save
+        render json: mission,
+               serializer: MissionSerializer
+      else
+        render json: mission.errors, status: :unprocessable_entity
+      end
+    end
+
     # delete_mission
     def destroy
-      # mission_id
+      mission = Mission.find(params[:id])
+      authorize mission
 
-      render json: Mission.all.to_a,
-             each_serializer: MissionSerializer
+      if mission.destroy
+        render json: mission,
+               serializer: MissionSerializer
+      else
+        render json: mission.errors, status: :unprocessable_entity
+      end
     end
 
-  end
+    private
 
-  private
+    def mission_params
+      params.permit(
+        :name,
+        :date,
+        :comment,
+        :phone,
+        :reference,
+        :duration,
+        location: [
+          :lat,
+          :lon
+        ],
+        address: [
+          :city,
+          :country,
+          :detail,
+          :postalcode,
+          :state,
+          :street
+        ],
+        time_windows: [
+          :start,
+          :end
+        ]
+      )
+    end
 
-  def mission_params
-    params.require(:mission).permit(
-      :comment,
-      :date,
-      :name,
-      :phone,
-      :reference,
-      :duration,
-      owners: [],
-      location: [
-        :lat,
-        :lon
-      ],
-      address: [
-        :city,
-        :country,
-        :detail,
-        :postalcode,
-        :state,
-        :street
-      ],
-      time_windows: [
-        :start,
-        :end
-      ]
-    )
   end
 end

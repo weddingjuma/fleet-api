@@ -16,14 +16,20 @@ gem 'rack-cors'
 # Database interface
 gem 'couchbase-orm'
 
+# Encrypt password
+gem 'bcrypt'
+
 # Serializer
 gem 'active_model_serializers'
 
 # HTTP requests
 gem 'http'
 
-# Encrypt password
-gem 'bcrypt'
+# Permission
+gem 'pundit'
+
+# Swagger integration
+gem 'rswag'
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views

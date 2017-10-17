@@ -9,7 +9,7 @@ RSpec.describe User, type: :model do
 
     @user = User.create(
       company: @company,
-      user: 'mapotempo-user',
+      sync_user: 'mapotempo-user',
       email: 'test@mapotempo.com',
       password: 'password'
     )
@@ -22,8 +22,8 @@ RSpec.describe User, type: :model do
   context 'Object' do
     it { is_expected.to be_valid }
 
-    it { expect(@user.user).to eq('mapotempo-user') }
-    # it { is_expected.to validate_presence_of(:user) }
+    it { expect(@user.sync_user).to eq('mapotempo-user') }
+    # it { is_expected.to validate_presence_of(:sync_user) }
 
     # it { is_expected.to validate_presence_of(:email) }
 
@@ -43,11 +43,15 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns a user by its name' do
-      expect(User.by_user(key: 'mapotempo-user').to_a.size).to eq(1)
+      expect(User.by_sync_user(key: 'mapotempo-user').to_a.size).to eq(1)
     end
 
-    it 'returns all users having ths company id' do
+    it 'returns all users having the company id' do
       expect(User.by_company(key: 'company_with_users').to_a.size).to eq(6)
+    end
+
+    it 'returns a user by its token' do
+      expect(User.by_token(key: @user.api_key).to_a.size).to eq(1)
     end
   end
 

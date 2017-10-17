@@ -19,6 +19,10 @@ class Company < ApplicationRecord
 
   has_many :missions, dependent: :destroy
 
+  has_many :mission_status_types, dependent: :destroy
+
+  has_many :mission_status_actions, dependent: :destroy
+
   # == Validations ==========================================================
   validates_presence_of :name
 

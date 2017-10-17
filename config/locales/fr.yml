@@ -1,6 +1,9 @@
 fr:
   authentication:
     bad_credentials: "Vous n'êtes pas autorisé(e) à réaliser cette action"
+  error:
+    not_found: "Cette ressource n'existe pas"
+    internal_error: "Une erreur interne s'est produite. Le problème a été signalé."
   couchbase:
     errors:
       models:
@@ -9,4 +12,6 @@ fr:
           sync_user: "impossible de créer l'utilsiateur sync"
           company_id_immutable: "L'identifiant de la company ne peut pas changé"
         mission:
+          company_id_immutable: "L'identifiant de la company ne peut pas changé"
+        mission_status_type:
           company_id_immutable: "L'identifiant de la company ne peut pas changé"

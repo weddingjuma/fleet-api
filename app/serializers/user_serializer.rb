@@ -1,6 +1,7 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
-             :user,
+             :sync_user,
+             :email,
              :roles
 end

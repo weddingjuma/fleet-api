@@ -1,6 +1,9 @@
 en:
   authentication:
     bad_credentials: "Your are not authorized to perform this action"
+  error:
+    not_found: "Resource not found"
+    internal_error: "An internal error occurred. The problem was reported."
   couchbase:
     errors:
       models:
@@ -9,4 +12,6 @@ en:
           sync_user: "Cannot create sync user"
           company_id_immutable: "Company id cannot be updated"
         mission:
+          company_id_immutable: "Company id cannot be updated"
+        mission_status_type:
           company_id_immutable: "Company id cannot be updated"

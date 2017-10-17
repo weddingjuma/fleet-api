@@ -1,14 +1,20 @@
 RSpec.configure do |config|
   config.before(:suite) do
+    Admin.ensure_design_document!
     Company.ensure_design_document!
     User.ensure_design_document!
     Mission.ensure_design_document!
+    MissionStatusType.ensure_design_document!
+    MissionStatusAction.ensure_design_document!
   end
 
   config.after(:all) do
+    Admin.all.stream { |ob| ob.delete }
     Company.all.stream { |ob| ob.delete }
     User.all.stream { |ob| ob.delete }
     Mission.all.stream { |ob| ob.delete }
+    MissionStatusType.all.stream { |ob| ob.delete }
+    MissionStatusAction.all.stream { |ob| ob.delete }
   end
 
   # config.after(:all) do

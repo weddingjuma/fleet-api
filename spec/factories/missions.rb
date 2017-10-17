@@ -2,8 +2,17 @@ FactoryGirl.define do
 
   factory :mission do
     # company_id (required)
+    # user_id (required)
+    # sync_user (required)
 
     sequence(:name) { |n| "mission name #{n + 1}" }
+    date { Faker::Time.backward(30).iso8601 }
+    location {
+      {
+        lat: Random.rand(43.0..50.0),
+        lon: Random.rand(-2.0..6.0)
+      }
+    }
     address {
       {
         city: Faker::Address.city,
@@ -15,13 +24,6 @@ FactoryGirl.define do
       }
     }
     comment { Faker::Lorem.sentence(3) }
-    date { Faker::Time.backward(30).iso8601 }
-    location {
-      {
-        lat: Random.rand(43.0..50.0),
-        lon: Random.rand(-2.0..6.0)
-      }
-    }
     phone '0600000000'
     duration { Random.rand(1..300) }
   end

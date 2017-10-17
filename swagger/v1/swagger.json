@@ -1,0 +1,976 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "API V1",
+    "version": "v1",
+    "contact_email": "tech@mapotempo.com",
+    "contact_url": "https://github.com/Mapotempo/mapotempo-web",
+    "license": "GNU Affero General Public License 3",
+    "license_url": "https://raw.githubusercontent.com/Mapotempo/mapotempo-web/master/LICENSE",
+    "description": ""
+  },
+  "definitions": {
+    "location": {
+      "type": "object",
+      "properties": {
+        "lat": {
+          "type": "string"
+        },
+        "lon": {
+          "type": "string"
+        }
+      }
+    },
+    "address": {
+      "type": "object",
+      "properties": {
+        "city": {
+          "type": "string"
+        },
+        "country": {
+          "type": "string"
+        },
+        "detail": {
+          "type": "string"
+        },
+        "postalcode": {
+          "type": "string"
+        },
+        "state": {
+          "type": "string"
+        },
+        "street": {
+          "type": "string"
+        }
+      }
+    },
+    "time_windows": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "start": {
+            "type": "string"
+          },
+          "end": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/companies": {
+      "get": {
+        "summary": "Get all companies",
+        "tags": [
+          "Companies"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "all companies"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "summary": "Get all users",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "all users"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sync_user": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "roles": {
+                  "type": "array"
+                }
+              },
+              "required": [
+                "sync_user",
+                "email",
+                "password"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "summary": "Retrieves a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user found"
+          },
+          "404": {
+            "description": "user not found"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "put": {
+        "summary": "Updates a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "user",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "sync_user": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                },
+                "roles": {
+                  "type": "array"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user updated"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user deleted"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/company": {
+      "get": {
+        "summary": "Retrieves a company of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user company found"
+          },
+          "404": {
+            "description": "user not found"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/missions": {
+      "get": {
+        "summary": "Retrieves all missions of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user missions found"
+          },
+          "404": {
+            "description": "user not found"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a mission for a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "location": {
+                  "$ref": "#/definitions/location"
+                },
+                "comment": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "reference": {
+                  "type": "string"
+                },
+                "duration": {
+                  "type": "number"
+                },
+                "address": {
+                  "$ref": "#/definitions/address"
+                },
+                "time_windows": {
+                  "$ref": "#/definitions/time_windows"
+                }
+              },
+              "required": [
+                "name",
+                "date",
+                "location"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/missions/{id}": {
+      "put": {
+        "summary": "Updates a mission of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "date": {
+                  "type": "string"
+                },
+                "location": {
+                  "$ref": "#/definitions/location"
+                },
+                "comment": {
+                  "type": "string"
+                },
+                "phone": {
+                  "type": "string"
+                },
+                "reference": {
+                  "type": "string"
+                },
+                "duration": {
+                  "type": "number"
+                },
+                "address": {
+                  "$ref": "#/definitions/address"
+                },
+                "time_windows": {
+                  "$ref": "#/definitions/time_windows"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission updated"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a mission of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission deleted"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/mission_status_types": {
+      "get": {
+        "summary": "Retrieves all mission status types for a user company",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status types found"
+          },
+          "404": {
+            "description": "user not found"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a mission status type for a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission_status_type",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "label"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status type created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/mission_status_types/{id}": {
+      "put": {
+        "summary": "Updates a mission status type of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission_status_type",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "color": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status type updated"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a mission status type of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status type deleted"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/mission_status_actions": {
+      "get": {
+        "summary": "Retrieves all mission status actions for a user company",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status actions found"
+          },
+          "404": {
+            "description": "user not found"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a mission status action for a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission_status_action",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "group": {
+                  "type": "string"
+                },
+                "previous_mission_status_type_id": {
+                  "type": "string"
+                },
+                "next_mission_status_type_id": {
+                  "type": "string"
+                }
+              },
+              "required": [
+                "label",
+                "previous_mission_status_type_id",
+                "next_mission_status_type_id"
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status action created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{user_id}/mission_status_actions/{id}": {
+      "put": {
+        "summary": "Updates a mission status action of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission_status_action",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "label": {
+                  "type": "string"
+                },
+                "group": {
+                  "type": "string"
+                },
+                "previous_mission_status_type_id": {
+                  "type": "string"
+                },
+                "next_mission_status_type_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status action updated"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a mission status type of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission status type deleted"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    }
+  },
+  "basePath": "/v1",
+  "securityDefinitions": {
+    "apiKey": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  }
+}
