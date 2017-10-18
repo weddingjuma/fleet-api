@@ -1,0 +1,44 @@
+version: '3.3'
+services:
+  wrapper:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+#    image: mapotempo/geocoder-wrapper:${MAPOTEMPO_VERSION:-55.1.0}
+    ports:
+      - "8084:80" # HOST:CONTAINER, edit only HOST part
+#    volumes:
+#        - ./production.rb:/srv/app/config/environments/production.rb
+#        - ./production.rb:/srv/app/config/environments/development.rb
+    restart: always
+    links:
+      - redis-cache
+    environment:
+      APP_ENV: production # Swith to "development" for more traces
+      COUCHBASE_PASSWORD: 123456
+      SECRET_KEY_BASE: wieTipuij4RoaRei1AaGhohmutoh9ahGeeheith3cuquajah0oi2uux6Bie4uqu6leiwo9Ooquu7hiec6Coh1eemahng4ainap9seew8queid8sashoixigahsee1zie
+
+  redis-cache:
+    image: redis:${REDIS_VERSION:-3.2-alpine}
+    command: redis-server --save ""
+
+  couchbaseserver:
+    image: couchbase/server:5.0.0-beta2
+    ports:
+      - "127.0.0.1:8091:8091" # Admin Web & API, internal access
+#      - "8092:8092" # , internal access
+#      - "11210:11210" # DB connextion, internal access
+    volumes:
+      - ./couchbase-db:/opt/couchbase/var
+
+  sync-gateway:
+    build:
+      context: sync-gateway
+      dockerfile: Dockerfile
+    image: sync-gateway:1.5.0
+    ports:
+      - "4984:4984" # API Rest for Users, open to Web
+      - "127.0.0.1:4985:4985" # API Rest Admin, internal access : http://127.0.0.1:4985/_admin/db
+    volumes:
+      - ./sync-gateway-config.json:/etc/sync_gateway/config.json
+    command: -adminInterface :4985 /etc/sync_gateway/config.json
