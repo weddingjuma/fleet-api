@@ -29,6 +29,7 @@ gem 'http'
 gem 'pundit'
 
 # Swagger integration
+gem 'rspec-rails'
 gem 'rswag'
 
 group :development do
@@ -44,6 +45,10 @@ end
 group :development, :test do
   # Use Puma as the app server
   gem 'puma', '~> 3.7'
+
+  # Use Factory Girl for generating random test data
+  gem 'factory_girl_rails'
+  gem 'faker'
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
@@ -62,11 +67,6 @@ end
 
 group :test do
   # Use RSpec for specs
-  gem 'rspec-rails'
   gem 'shoulda-matchers'
   gem 'fuubar'
-
-  # Use Factory Girl for generating random test data
-  gem 'factory_girl_rails'
-  gem 'faker'
 end
