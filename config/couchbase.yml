@@ -4,15 +4,16 @@ common: &common
 
 development:
   <<: *common
-  bucket: default
+  bucket: fleet-dev
+  password: '123456'
 
 test:
   <<: *common
-  bucket: test
+  bucket: fleet-test
   password: '123456'
 
 # set these environment variables on your production server
 production:
-  hosts: <%= ENV['COUCHBASE_HOST'] || ENV['COUCHBASE_HOSTS'] %>
-  bucket: <%= ENV['COUCHBASE_BUCKET'] %>
-  password: <%= ENV['COUCHBASE_PASSWORD'] %>
+  hosts: <%= ENV['COUCHBASE_HOST'] || ENV['COUCHBASE_HOSTS'] || 'couchbaseserver' %>
+  bucket: <%= ENV['COUCHBASE_BUCKET'] || 'fleet-prod' %>
+  password: <%= ENV['COUCHBASE_PASSWORD'] || '123456' %>
