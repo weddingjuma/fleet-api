@@ -4,7 +4,7 @@ module Api::V1
 
     def index
       mission_status_actions = if params[:user_id]
-                               user = User.find(params[:user_id])
+                               user = User.find_by(params[:user_id])
                                authorize user, :show?
                                user.company.mission_status_actions.to_a
                              end
@@ -18,7 +18,7 @@ module Api::V1
     end
 
     def create
-      user = User.find(params[:user_id])
+      user = User.find_by(params[:user_id])
       mission_status_action = MissionStatusAction.new
       mission_status_action.assign_attributes(mission_status_action_params)
       mission_status_action.company = user.company

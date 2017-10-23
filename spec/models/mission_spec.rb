@@ -10,9 +10,10 @@ RSpec.describe Mission, type: :model do
                    company: @company,
                    sync_user: 'mapo-user')
 
-    @date = 2.days.ago.iso8601
+    @date = 2.days.ago.strftime('%FT%T.%L%:z')
     @mission = Mission.create(
       company: @company,
+      external_ref: 'uniq_ref_by_company',
       user: @user,
       name: 'mission name',
       date: @date,
@@ -42,6 +43,23 @@ RSpec.describe Mission, type: :model do
     it 'serializes model' do
       serialized = ActiveModelSerializers::SerializableResource.new(@mission, serializer: MissionSerializer).as_json
       expect(serialized[:mission][:id]).to eq(@mission.id)
+    end
+
+    it 'cannot update external ref' do
+      @mission.update(external_ref: 'other_external_ref')
+      expect(@mission.errors.first[0]).to eq(:external_ref)
+      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.mission.external_ref_immutable'))
+      @mission.update(external_ref: 'uniq_ref_by_company')
+    end
+
+    it 'cannot have another mission with the same external ref for the same company' do
+      same_external_ref = build(:mission, company: @company, user: @user, external_ref: @mission.external_ref)
+      expect(same_external_ref.save).to be false
+    end
+
+    it 'returns mission by external_ref or id' do
+      expect(Mission.find_by(@mission.external_ref, @company.id).id).to eq(@mission.id)
+      expect(Mission.find_by(@mission.id).id).to eq(@mission.id)
     end
   end
 
@@ -74,7 +92,7 @@ RSpec.describe Mission, type: :model do
       expect(@mission.mission_status_type).to be_nil
       mission_status_type = create(:mission_status_type, company: @company)
       @mission.mission_status_type = mission_status_type
-      @mission.save!
+      @mission.save
       expect(@mission.mission_status_type).to eq(mission_status_type)
     end
 
@@ -82,6 +100,7 @@ RSpec.describe Mission, type: :model do
       @mission.update(company_id: 'other_company_id')
       expect(@mission.errors.first[0]).to eq(:company_id)
       expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.user.company_id_immutable'))
+      @mission.update(company_id: @company.id)
     end
   end
 end

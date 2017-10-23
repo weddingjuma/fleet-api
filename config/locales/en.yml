@@ -11,7 +11,9 @@ en:
           no_special_characters: "User can contain only ASCII characters without space"
           sync_user: "Cannot create sync user"
           company_id_immutable: "Company id cannot be updated"
+          role_format: "A role must contain a separator of type point"
         mission:
           company_id_immutable: "Company id cannot be updated"
+          external_ref_immutable: "External reference cannot be updated"
         mission_status_type:
           company_id_immutable: "Company id cannot be updated"

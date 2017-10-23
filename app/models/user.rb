@@ -5,13 +5,14 @@
 #   "_id" : "user_XXXXX_XXXXX_XXXX_XXXXX"
 #   "company_id" : "company_XXXXX_XXXXX_XXXX_XXXXX",
 #   "sync_user" : "chauffeur_1",
+#   "vehicle" : true,
 #   "email" : "chauffeur_1@mapotempo.com",
 #   "password_hash" : "mqsfqsdjbfhvafuysdfqfaze",
 #   "api_key" : "G7mZpybb9yu4EhH744bAIgtt",
 #   "roles" : [
-#     "mission-creating",
-#     "mission-updating",
-#     "mission-deleting"
+#     "mission.creating",
+#     "mission.updating",
+#     "mission.deleting"
 #   ]
 # }
 #
@@ -21,7 +22,7 @@ class User < ApplicationRecord
   # == Attributes ===========================================================
   attribute :sync_user, type: String
   attribute :roles, type: Array
-
+  attribute :vehicle, type: Boolean
   attribute :email, type: String
   attribute :password_hash, type: String
   attribute :api_key, type: String
@@ -48,6 +49,8 @@ class User < ApplicationRecord
   validate :no_special_characters
   validate :company_id_immutable, on: :update
 
+  validate :role_format
+
   # == Views ===============================================================
   view :all
   view :by_sync_user, emit_key: :sync_user
@@ -55,9 +58,12 @@ class User < ApplicationRecord
   view :by_token, emit_key: :api_key
 
   # == Callbacks ============================================================
-  before_create :generate_api_key, :generate_sync_user
+  before_create :generate_api_key, :generate_sync_user, :ensure_vehicle
 
   # == Class Methods ========================================================
+  def self.find_by(id_or_sync)
+    User.by_sync_user(key: id_or_sync).to_a.first || User.find(id_or_sync)
+  end
 
   # == Instance Methods =====================================================
   def password
@@ -96,11 +102,23 @@ class User < ApplicationRecord
   def generate_sync_user
     return if Rails.env.test?
 
-    response = HTTP.post("#{Rails.configuration.x.sync_gateway_url}_user/", :json => { 'name': self.sync_user, 'password': @raw_password, 'email': self.email, 'disabled': true })
+    response = HTTP.post("#{Rails.configuration.x.sync_gateway_url}_user/", json: { 'name': self.sync_user, 'password': @raw_password, 'email': self.email, 'disabled': false })
 
     if response.code != 201
       errors.add(:base, I18n.t('couchbase.errors.models.user.sync_user'))
       throw :abort
     end
+  end
+
+  def ensure_vehicle
+    self.vehicle = true if self.vehicle.nil?
+  end
+
+  def role_format
+    self.roles.each do |role|
+      if role !~ /^\w+\.\w+$/
+        errors.add(:roles, I18n.t('couchbase.errors.models.user.role_format'))
+      end
+    end if self.roles
   end
 end

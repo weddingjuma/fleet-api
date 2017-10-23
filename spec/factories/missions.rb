@@ -3,10 +3,11 @@ FactoryGirl.define do
   factory :mission do
     # company_id (required)
     # user_id (required)
-    # sync_user (required)
+    # sync_user (required - automatic)
 
     sequence(:name) { |n| "mission name #{n + 1}" }
-    date { Faker::Time.backward(30).iso8601 }
+    sequence(:external_ref) { |n| "ref_#{n + 1}" }
+    date { Faker::Time.forward(1).strftime('%FT%T.%L%:z') }
     location {
       {
         lat: Random.rand(43.0..50.0),

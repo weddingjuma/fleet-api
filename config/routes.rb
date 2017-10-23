@@ -2,12 +2,17 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine => '/api-docs'
   mount Rswag::Api::Engine => '/api-docs'
 
-  scope module: 'api' do
+  namespace :api do
     namespace :v1 do
       resources :users, only: [:index, :show, :create, :update, :destroy] do
         resource :company
 
-        resources :missions, only: [:index, :create, :update, :destroy]
+        resources :missions, only: [:index, :create, :update, :destroy] do
+          collection do
+            post 'create_multiples'
+            delete 'destroy_multiples'
+          end
+        end
 
         resources :mission_status_types, only: [:index, :create, :update, :destroy]
 

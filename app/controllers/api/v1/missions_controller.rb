@@ -5,7 +5,7 @@ module Api::V1
     # get_missions
     def index
       missions = if params[:user_id]
-                   user = User.find(params[:user_id])
+                   user = User.find_by(params[:user_id])
                    authorize user, :show?
                    user.missions.to_a
                  else
@@ -22,7 +22,7 @@ module Api::V1
 
     # set_mission
     def create
-      user = User.find(params[:user_id])
+      user = User.find_by(params[:user_id])
       mission = Mission.new
       mission.assign_attributes(mission_params)
       mission.user = user
@@ -37,8 +37,28 @@ module Api::V1
       end
     end
 
+    def create_multiples
+      user = User.find_by(params[:user_id])
+
+      missions = missions_params.map do |mission_params|
+        mission = Mission.new
+        mission.assign_attributes(mission_params)
+        mission.user = user
+        mission.company = user.company
+        authorize mission, :create?
+        mission.save ? mission : nil
+      end.compact
+
+      if missions.present?
+        render json: missions,
+               each_serializer: MissionSerializer
+      else
+        render json: [], status: :unprocessable_entity
+      end
+    end
+
     def update
-      mission = Mission.find(params[:id])
+      mission = Mission.find_by(params[:id], @current_user&.company_id)
       mission.assign_attributes(mission_params)
       authorize mission
 
@@ -52,7 +72,7 @@ module Api::V1
 
     # delete_mission
     def destroy
-      mission = Mission.find(params[:id])
+      mission = Mission.find_by(params[:id], @current_user&.company_id)
       authorize mission
 
       if mission.destroy
@@ -63,10 +83,24 @@ module Api::V1
       end
     end
 
+    def destroy_multiples
+      ids = ActiveSupport::JSON.decode(params['ids']) rescue params['ids'].split(',')
+      ids.map do |id|
+        mission = Mission.find_by(id, @current_user&.company_id) rescue nil
+        if mission
+          authorize mission, :destroy?
+          mission.destroy
+        end
+      end
+
+      head :no_content
+    end
+
     private
 
     def mission_params
       params.permit(
+        :external_ref,
         :name,
         :date,
         :comment,
@@ -90,6 +124,41 @@ module Api::V1
           :end
         ]
       )
+    end
+
+    def missions_params
+      params.permit(_json: [
+        mission_attributes
+      ]
+      )[:_json]
+    end
+
+    def mission_attributes
+      [
+        :external_ref,
+        :name,
+        :date,
+        :comment,
+        :phone,
+        :reference,
+        :duration,
+        location: [
+          :lat,
+          :lon
+        ],
+        address: [
+          :city,
+          :country,
+          :detail,
+          :postalcode,
+          :state,
+          :street
+        ],
+        time_windows: [
+          :start,
+          :end
+        ]
+      ]
     end
 
   end

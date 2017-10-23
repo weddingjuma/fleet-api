@@ -4,6 +4,7 @@
 #   "type" : "mission",
 #   "_id" : "mission_XXXXX_XXXXX_XXXX_XXXXX"
 #   "company_id" : "company_XXXXX_XXXXX_XXXX_XXXXX",
+#   "external_ref" : "XXXXX_XXXXX_XXXX_XXXXX",
 #   "user_id" : "user_XXXX_XXXX",
 #   "sync_user" : "chauffeur_1",
 #   "name" : "Mission-48",
@@ -41,6 +42,7 @@ class Mission < ApplicationRecord
 
   # == Attributes ===========================================================
   # This value is automatically set by set_sync_user callback
+  attribute :external_ref, type: String
   attribute :sync_user, type: String
   attribute :name, type: String
   attribute :date
@@ -65,6 +67,10 @@ class Mission < ApplicationRecord
   validates_presence_of :company_id
   validate :company_id_immutable, on: :update
 
+  validates_presence_of :external_ref
+  validate :external_ref_immutable, on: :update
+  ensure_unique [:external_ref, :company_id]
+
   validates_presence_of :user_id
   validates_presence_of :sync_user
 
@@ -76,11 +82,15 @@ class Mission < ApplicationRecord
   view :all
   view :by_company, emit_key: :company_id
   view :by_user, emit_key: :user_id
+  view :by_external_ref, emit_key: [:company_id, :external_ref]
 
   # == Callbacks ============================================================
   before_validation :set_sync_user
 
   # == Class Methods ========================================================
+  def self.find_by(id_or_external_ref, company_id = nil)
+    Mission.by_external_ref(key: [company_id, id_or_external_ref]).to_a.first || Mission.find(id_or_external_ref)
+  end
 
   # == Instance Methods =====================================================
 
@@ -92,7 +102,13 @@ class Mission < ApplicationRecord
 
   def company_id_immutable
     if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.user.company_id_immutable'))
+      errors.add(:company_id, I18n.t('couchbase.errors.models.mission.company_id_immutable'))
+    end
+  end
+
+  def external_ref_immutable
+    if external_ref_changed?
+      errors.add(:external_ref, I18n.t('couchbase.errors.models.mission.external_ref_immutable'))
     end
   end
 end

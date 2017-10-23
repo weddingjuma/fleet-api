@@ -23,6 +23,9 @@
 # Ignore IDE files
 /.idea/*
 
+# Ignore coverage files
+/coverage
+
 # Ignore local configuration file
 config/initializers/dev.rb
 

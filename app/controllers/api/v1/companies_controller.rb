@@ -15,7 +15,7 @@ module Api::V1
     def show
       company = nil
       if params[:user_id]
-        user = User.find(params[:user_id])
+        user = User.find_by(params[:user_id])
         authorize user
         company = user&.company
       elsif params[:id]
@@ -29,6 +29,14 @@ module Api::V1
       else
         render body: nil, status: :not_found
       end
+    end
+
+    private
+
+    def company_params
+      params.permit(
+        :name
+      )
     end
 
   end

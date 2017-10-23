@@ -69,4 +69,6 @@ group :test do
   # Use RSpec for specs
   gem 'shoulda-matchers'
   gem 'fuubar'
+
+  gem 'simplecov'
 end

@@ -8,7 +8,8 @@ describe 'Users API', type: :request do
       company: @company,
       sync_user: 'mapotempo-user',
       email: 'test@mapotempo.com',
-      password: 'password'
+      password: 'password',
+      vehicle: false
     )
     @users = create_list(:user, 5, company: @company)
     @missions = create_list(:mission, 5, company: @company, user: @user)
@@ -30,13 +31,25 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
+      parameter name: :with_vehicle, in: :query, type: :boolean, required: false
 
       response '200', 'all users' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['users']).not_to be_empty
-          expect(json['users'].size).to eq(6)
+
+        describe 'all users' do
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['users']).not_to be_empty
+            expect(json['users'].size).to eq(6)
+          end
+        end
+
+        describe 'all users associated to a vehicle' do
+          let(:with_vehicle) { true }
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['users'].size).to eq(5)
+          end
         end
       end
 
@@ -51,19 +64,12 @@ describe 'Users API', type: :request do
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :user, in: :body, schema: {
-        type: :object,
-        properties: {
-          sync_user: { type: :string },
-          email: { type: :string },
-          password: { type: :string },
-          roles: { type: :array },
-        },
-        required: %w(sync_user email password)
+        '$ref': '#/definitions/user_required'
       }
 
-      response '200', 'user mission created' do
+      response '200', 'user created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user) { { sync_user: 'user_name', password: 'password', email: 'user@mapotempo.com', roles: ['mission-creating', 'mission-updating', 'mission-deleting'] } }
+        let(:user) {  { sync_user: 'user_name', password: 'password', email: 'user@mapotempo.com', roles: %w(mission.creating mission.updating mission.deleting) } }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['user']['sync_user']).not_to be_empty
@@ -72,53 +78,64 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user) { build(:user, sync_user: nil, password: nil).attributes }
+        let(:user) { { sync_user: 'user_name', password: nil, email: 'user@mapotempo.com', roles: %w(creating) } }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user) { @user.attributes }
+        let(:user) { { sync_user: 'user_name', password: 'password', email: 'user@mapotempo.com' } }
         run_test!
       end
     end
   end
 
-  path '/users/{id}' do
+  path '/users/{sync_user}' do
     get 'Retrieves a user' do
       tags 'Users'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
-      parameter name: :id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user found' do
-
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:id) { @user.id }
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['user']).not_to be_empty
-          expect(json['user']['sync_user']).to eq(@user.sync_user)
+
+        describe 'get user with sync_user' do
+          let(:sync_user) { @user.sync_user }
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['user']).not_to be_empty
+            expect(json['user']['sync_user']).to eq(@user.sync_user)
+          end
+        end
+
+        describe 'get user with id' do
+          let(:sync_user) { @user.id }
+          run_test! do |response|
+            json = JSON.parse(response.body)
+            expect(json['user']).not_to be_empty
+            expect(json['user']['sync_user']).to eq(@user.sync_user)
+          end
         end
       end
 
       response '404', 'user not found' do
         describe 'invalid user' do
           let(:Authorization) { "Token token=#{@user.api_key}" }
-          let(:id) { 'invalid' }
+          let(:sync_user) { 'invalid' }
           run_test!
         end
 
         describe 'token from other user' do
           let(:Authorization) { "Token token=#{@other_user.api_key}" }
-          let(:id) { @user.id }
+          let(:sync_user) { @user.sync_user }
           run_test!
         end
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test!
       end
     end
@@ -127,20 +144,14 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :user, in: :body, schema: {
-        type: :object,
-        properties: {
-          sync_user: { type: :string },
-          email: { type: :string },
-          password: { type: :string },
-          roles: { type: :array }
-        }
+        '$ref': '#/definitions/user_required'
       }
 
       response '200', 'user updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:id) { @users.first.id }
+        let(:sync_user) { @users.second.sync_user }
         let(:user) { { sync_user: 'test' } }
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -151,15 +162,15 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:id) { @users.first.id }
-        let(:user) { @user.attributes.merge(sync_user: nil) }
+        let(:sync_user) { @users.third.sync_user }
+        let(:user) { { sync_user: nil } }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:id) { @users.first.id }
-        let(:user) { @user.attributes }
+        let(:sync_user) { @users.third.sync_user }
+        let(:user) { { sync_user: 'test' } }
         run_test!
       end
     end
@@ -168,33 +179,33 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user deleted' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:id) { @users.last.id }
+        let(:sync_user) { @users.last.sync_user }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:id) { @users.last.id }
+        let(:sync_user) { @users.last.sync_user }
         run_test!
       end
     end
   end
 
-  path '/users/{user_id}/company' do
+  path '/users/{sync_user}/company' do
     get 'Retrieves a company of a user' do
       tags 'Users'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user company found' do
 
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['company']).not_to be_empty
@@ -205,36 +216,36 @@ describe 'Users API', type: :request do
       response '404', 'user not found' do
         describe 'invalid user' do
           let(:Authorization) { "Token token=#{@user.api_key}" }
-          let(:user_id) { 'invalid' }
+          let(:sync_user) { 'invalid' }
           run_test!
         end
 
         describe 'token from other user' do
           let(:Authorization) { "Token token=#{@other_user.api_key}" }
-          let(:user_id) { @user.id }
+          let(:sync_user) { @user.sync_user }
           run_test!
         end
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test!
       end
     end
   end
 
-  path '/users/{user_id}/missions' do
+  path '/users/{sync_user}/missions' do
     get 'Retrieves all missions of a user' do
       tags 'Users'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user missions found' do
 
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['missions']).not_to be_empty
@@ -245,20 +256,20 @@ describe 'Users API', type: :request do
       response '404', 'user not found' do
         describe 'invalid user' do
           let(:Authorization) { "Token token=#{@user.api_key}" }
-          let(:user_id) { 'invalid' }
+          let(:sync_user) { 'invalid' }
           run_test!
         end
 
         describe 'token from other user' do
           let(:Authorization) { "Token token=#{@other_user.api_key}" }
-          let(:user_id) { @user.id }
+          let(:sync_user) { @user.sync_user }
           run_test!
         end
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test!
       end
     end
@@ -267,27 +278,15 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :mission, in: :body, schema: {
-        type: :object,
-        properties: {
-          name: { type: :string },
-          date: { type: :string },
-          location: { '$ref': '#/definitions/location' },
-          comment: { type: :string },
-          phone: { type: :string },
-          reference: { type: :string },
-          duration: { type: :number },
-          address: { '$ref': '#/definitions/address' },
-          time_windows: { '$ref': '#/definitions/time_windows' }
-        },
-        required: %w(name date location)
+        '$ref': '#/definitions/mission_required'
       }
 
       response '200', 'user mission created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
-        let(:mission) { @missions.first.attributes }
+        let(:sync_user) { @user.sync_user }
+        let(:mission) { build(:mission, external_ref: 'other_ref').attributes }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['mission']).not_to be_empty
@@ -296,45 +295,98 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:mission) { build(:mission, name: nil).attributes }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
-        let(:mission) { @missions.first.attributes }
+        let(:sync_user) { @user.sync_user }
+        let(:mission) { build(:mission).attributes }
         run_test!
       end
     end
   end
 
-  path '/users/{user_id}/missions/{id}' do
+  path '/users/{sync_user}/missions/create_multiples' do
+    post 'Creates a list of missions for a user' do
+      tags 'Users'
+      security [apiKey: []]
+      consumes 'application/json', 'application/xml'
+      parameter name: :sync_user, in: :path, type: :string
+      parameter name: :mission, in: :body, schema: {
+        type: :array,
+        items: {
+          '$ref': '#/definitions/mission_required'
+        }
+      }
+
+      response '200', 'user mission created' do
+        let(:Authorization) { "Token token=#{@user.api_key}" }
+        let(:sync_user) { @user.sync_user }
+        let(:mission) { build_list(:mission, 3, company: @company, user: @user) }
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['missions']).not_to be_empty
+          expect(json['missions'].size).to eq(3)
+        end
+      end
+
+      response '422', 'invalid request' do
+        let(:Authorization) { "Token token=#{@user.api_key}" }
+        let(:sync_user) { @user.sync_user }
+        let(:mission) { build_list(:mission, 3, company: @company, user: @user, name: nil) }
+        run_test!
+      end
+
+      response '401', 'bad token' do
+        let(:Authorization) { "Token token='bad token'" }
+        let(:sync_user) { @user.sync_user }
+        let(:mission) { build_list(:mission, 3, company: @company, user: @user) }
+        run_test!
+      end
+    end
+  end
+
+  path '/users/{sync_user}/missions/destroy_multiples' do
+    delete 'Deletes a list of missions for a user' do
+      tags 'Users'
+      security [apiKey: []]
+      consumes 'application/json', 'application/xml'
+      parameter name: :sync_user, in: :path, type: :string
+      parameter name: :ids, in: :query, type: :array, items: { type: :string }, required: true
+
+      response '204', 'user missions deleted' do
+        let(:Authorization) { "Token token=#{@user.api_key}" }
+        let(:sync_user) { @user.sync_user }
+        let(:ids) { @missions.last(2).map(&:id) }
+        run_test!
+      end
+
+      response '401', 'bad token' do
+        let(:Authorization) { "Token token='bad token'" }
+        let(:sync_user) { @user.sync_user }
+        let(:ids) { @missions.last(2).map(&:id) }
+        run_test!
+      end
+    end
+  end
+
+  path '/users/{sync_user}/missions/{id}' do
     put 'Updates a mission of a user' do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
       parameter name: :mission, in: :body, schema: {
-        type: :object,
-        properties: {
-          name: { type: :string },
-          date: { type: :string },
-          location: { '$ref': '#/definitions/location' },
-          comment: { type: :string },
-          phone: { type: :string },
-          reference: { type: :string },
-          duration: { type: :number },
-          address: { '$ref': '#/definitions/address' },
-          time_windows: { '$ref': '#/definitions/time_windows' }
-        }
+        '$ref': '#/definitions/mission'
       }
 
       response '200', 'user mission updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @missions.first.id }
         let(:mission) { { name: 'test' } }
         run_test! do |response|
@@ -346,7 +398,7 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @missions.first.id }
         let(:mission) { build(:mission, name: nil).attributes }
         run_test!
@@ -354,7 +406,7 @@ describe 'Users API', type: :request do
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @missions.first.id }
         let(:mission) { @missions.first.attributes }
         run_test!
@@ -365,36 +417,44 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
 
       response '200', 'user mission deleted' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
-        let(:id) { @missions.last.id }
-        run_test!
+        let(:sync_user) { @user.sync_user }
+
+        describe 'delete mission with external_ref' do
+          let(:id) { @missions.third.external_ref }
+          run_test!
+        end
+
+        describe 'delete mission with id' do
+          let(:id) { @missions.second.external_ref }
+          run_test!
+        end
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
-        let(:id) { @missions.last.id }
+        let(:sync_user) { @user.sync_user }
+        let(:id) { @missions.first.id }
         run_test!
       end
     end
   end
 
-  path '/users/{user_id}/mission_status_types' do
+  path '/users/{sync_user}/mission_status_types' do
     get 'Retrieves all mission status types for a user company' do
       tags 'Users'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user mission status types found' do
 
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['mission_status_types']).not_to be_empty
@@ -405,20 +465,20 @@ describe 'Users API', type: :request do
       response '404', 'user not found' do
         describe 'invalid user' do
           let(:Authorization) { "Token token=#{@user.api_key}" }
-          let(:user_id) { 'invalid' }
+          let(:sync_user) { 'invalid' }
           run_test!
         end
 
         describe 'token from other user' do
           let(:Authorization) { "Token token=#{@other_user.api_key}" }
-          let(:user_id) { @user.id }
+          let(:sync_user) { @user.sync_user }
           run_test!
         end
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test!
       end
     end
@@ -427,7 +487,7 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :mission_status_type, in: :body, schema: {
         type: :object,
         properties: {
@@ -439,7 +499,7 @@ describe 'Users API', type: :request do
 
       response '200', 'user mission status type created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:mission_status_type) { { label: 'complete', color: '#123456' } }
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -449,26 +509,26 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:mission_status_type) { { label: nil } }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:mission_status_type) { { label: 'complete', color: '#123456' } }
         run_test!
       end
     end
   end
 
-  path '/users/{user_id}/mission_status_types/{id}' do
+  path '/users/{sync_user}/mission_status_types/{id}' do
     put 'Updates a mission status type of a user' do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
       parameter name: :mission_status_type, in: :body, schema: {
         type: :object,
@@ -480,7 +540,7 @@ describe 'Users API', type: :request do
 
       response '200', 'user mission status type updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_type.id }
         let(:mission_status_type) { { label: 'new label' } }
         run_test! do |response|
@@ -492,7 +552,7 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_type.id }
         let(:mission_status_type) { { label: nil } }
         run_test!
@@ -500,7 +560,7 @@ describe 'Users API', type: :request do
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_type.id }
         let(:mission_status_type) { @missions.first.attributes }
         run_test!
@@ -511,36 +571,36 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
 
       response '200', 'user mission status type deleted' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_type.id }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_type.id }
         run_test!
       end
     end
   end
 
-  path '/users/{user_id}/mission_status_actions' do
+  path '/users/{sync_user}/mission_status_actions' do
     get 'Retrieves all mission status actions for a user company' do
       tags 'Users'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user mission status actions found' do
 
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['mission_status_actions']).not_to be_empty
@@ -551,20 +611,20 @@ describe 'Users API', type: :request do
       response '404', 'user not found' do
         describe 'invalid user' do
           let(:Authorization) { "Token token=#{@user.api_key}" }
-          let(:user_id) { 'invalid' }
+          let(:sync_user) { 'invalid' }
           run_test!
         end
 
         describe 'token from other user' do
           let(:Authorization) { "Token token=#{@other_user.api_key}" }
-          let(:user_id) { @user.id }
+          let(:sync_user) { @user.sync_user }
           run_test!
         end
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         run_test!
       end
     end
@@ -573,7 +633,7 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :mission_status_action, in: :body, schema: {
         type: :object,
         properties: {
@@ -587,7 +647,7 @@ describe 'Users API', type: :request do
 
       response '200', 'user mission status action created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:mission_status_action) { { label: 'complete', group: 'default', previous_mission_status_type_id: @mission_status_type.id, next_mission_status_type_id: @related_status_type.id } }
         run_test! do |response|
           json = JSON.parse(response.body)
@@ -599,26 +659,26 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:mission_status_action) { { label: nil } }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:mission_status_action) { { label: 'complete', color: '#123456' } }
         run_test!
       end
     end
   end
 
-  path '/users/{user_id}/mission_status_actions/{id}' do
+  path '/users/{sync_user}/mission_status_actions/{id}' do
     put 'Updates a mission status action of a user' do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
       parameter name: :mission_status_action, in: :body, schema: {
         type: :object,
@@ -632,7 +692,7 @@ describe 'Users API', type: :request do
 
       response '200', 'user mission status action updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_action.id }
         let(:mission_status_action) { { label: 'new label' } }
         run_test! do |response|
@@ -644,7 +704,7 @@ describe 'Users API', type: :request do
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_action.id }
         let(:mission_status_action) { { label: nil } }
         run_test!
@@ -652,7 +712,7 @@ describe 'Users API', type: :request do
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_action.id }
         let(:mission_status_action) { @missions.first.attributes }
         run_test!
@@ -663,19 +723,19 @@ describe 'Users API', type: :request do
       tags 'Users'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :path, type: :string
+      parameter name: :sync_user, in: :path, type: :string
       parameter name: :id, in: :path, type: :string
 
       response '200', 'user mission status type deleted' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_action.id }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.id }
+        let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_action.id }
         run_test!
       end

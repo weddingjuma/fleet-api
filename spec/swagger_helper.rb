@@ -53,9 +53,57 @@ RSpec.configure do |config|
             }
           }
         },
+        user_required: {
+          type: 'object',
+          properties: {
+            sync_user: { type: :string },
+            email: { type: :string },
+            password: { type: :string },
+            roles: { type: :array, items: { type: :string } }
+          },
+          required: %w(sync_user email password)
+        },
+        user: {
+          type: 'object',
+          properties: {
+            sync_user: { type: :string },
+            email: { type: :string },
+            password: { type: :string },
+            roles: { type: :array, items: { type: :string } }
+          }
+        },
+        mission_required: {
+          type: :object,
+          properties: {
+            name: { type: :string },
+            date: { type: :string },
+            location: { '$ref': '#/definitions/location' },
+            comment: { type: :string },
+            phone: { type: :string },
+            reference: { type: :string },
+            duration: { type: :number },
+            address: { '$ref': '#/definitions/address' },
+            time_windows: { '$ref': '#/definitions/time_windows' }
+          },
+          required: %w(name date location)
+        },
+        mission: {
+          type: :object,
+          properties: {
+            name: { type: :string },
+            date: { type: :string },
+            location: { '$ref': '#/definitions/location' },
+            comment: { type: :string },
+            phone: { type: :string },
+            reference: { type: :string },
+            duration: { type: :number },
+            address: { '$ref': '#/definitions/address' },
+            time_windows: { '$ref': '#/definitions/time_windows' }
+          }
+        }
       },
       paths: {},
-      basePath: '/v1',
+      basePath: '/api/v1',
       securityDefinitions: {
         apiKey: {
           type: :apiKey,

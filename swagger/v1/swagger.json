@@ -57,6 +57,120 @@
           }
         }
       }
+    },
+    "user_required": {
+      "type": "object",
+      "properties": {
+        "sync_user": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "required": [
+        "sync_user",
+        "email",
+        "password"
+      ]
+    },
+    "user": {
+      "type": "object",
+      "properties": {
+        "sync_user": {
+          "type": "string"
+        },
+        "email": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        },
+        "roles": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "mission_required": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "time_windows": {
+          "$ref": "#/definitions/time_windows"
+        }
+      },
+      "required": [
+        "name",
+        "date",
+        "location"
+      ]
+    },
+    "mission": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "time_windows": {
+          "$ref": "#/definitions/time_windows"
+        }
+      }
     }
   },
   "paths": {
@@ -104,6 +218,14 @@
           "application/json",
           "application/xml"
         ],
+        "parameters": [
+          {
+            "name": "with_vehicle",
+            "in": "query",
+            "type": "boolean",
+            "required": false
+          }
+        ],
         "responses": {
           "200": {
             "description": "all users"
@@ -134,32 +256,13 @@
             "name": "user",
             "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "sync_user": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                },
-                "roles": {
-                  "type": "array"
-                }
-              },
-              "required": [
-                "sync_user",
-                "email",
-                "password"
-              ]
+              "$ref": "#/definitions/user_required"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "user mission created"
+            "description": "user created"
           },
           "422": {
             "description": "invalid request"
@@ -170,7 +273,7 @@
         }
       }
     },
-    "/users/{id}": {
+    "/users/{sync_user}": {
       "get": {
         "summary": "Retrieves a user",
         "tags": [
@@ -189,7 +292,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -225,7 +328,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -234,21 +337,7 @@
             "name": "user",
             "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "sync_user": {
-                  "type": "string"
-                },
-                "email": {
-                  "type": "string"
-                },
-                "password": {
-                  "type": "string"
-                },
-                "roles": {
-                  "type": "array"
-                }
-              }
+              "$ref": "#/definitions/user_required"
             }
           }
         ],
@@ -282,7 +371,7 @@
         ],
         "parameters": [
           {
-            "name": "id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -298,7 +387,7 @@
         }
       }
     },
-    "/users/{user_id}/company": {
+    "/users/{sync_user}/company": {
       "get": {
         "summary": "Retrieves a company of a user",
         "tags": [
@@ -317,7 +406,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -336,7 +425,7 @@
         }
       }
     },
-    "/users/{user_id}/missions": {
+    "/users/{sync_user}/missions": {
       "get": {
         "summary": "Retrieves all missions of a user",
         "tags": [
@@ -355,7 +444,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -391,7 +480,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -400,41 +489,7 @@
             "name": "mission",
             "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "date": {
-                  "type": "string"
-                },
-                "location": {
-                  "$ref": "#/definitions/location"
-                },
-                "comment": {
-                  "type": "string"
-                },
-                "phone": {
-                  "type": "string"
-                },
-                "reference": {
-                  "type": "string"
-                },
-                "duration": {
-                  "type": "number"
-                },
-                "address": {
-                  "$ref": "#/definitions/address"
-                },
-                "time_windows": {
-                  "$ref": "#/definitions/time_windows"
-                }
-              },
-              "required": [
-                "name",
-                "date",
-                "location"
-              ]
+              "$ref": "#/definitions/mission_required"
             }
           }
         ],
@@ -451,7 +506,99 @@
         }
       }
     },
-    "/users/{user_id}/missions/{id}": {
+    "/users/{sync_user}/missions/create_multiples": {
+      "post": {
+        "summary": "Creates a list of missions for a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "sync_user",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/mission_required"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{sync_user}/missions/destroy_multiples": {
+      "delete": {
+        "summary": "Deletes a list of missions for a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "sync_user",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "user missions deleted"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{sync_user}/missions/{id}": {
       "put": {
         "summary": "Updates a mission of a user",
         "tags": [
@@ -470,7 +617,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -485,36 +632,7 @@
             "name": "mission",
             "in": "body",
             "schema": {
-              "type": "object",
-              "properties": {
-                "name": {
-                  "type": "string"
-                },
-                "date": {
-                  "type": "string"
-                },
-                "location": {
-                  "$ref": "#/definitions/location"
-                },
-                "comment": {
-                  "type": "string"
-                },
-                "phone": {
-                  "type": "string"
-                },
-                "reference": {
-                  "type": "string"
-                },
-                "duration": {
-                  "type": "number"
-                },
-                "address": {
-                  "$ref": "#/definitions/address"
-                },
-                "time_windows": {
-                  "$ref": "#/definitions/time_windows"
-                }
-              }
+              "$ref": "#/definitions/mission"
             }
           }
         ],
@@ -548,7 +666,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -570,7 +688,7 @@
         }
       }
     },
-    "/users/{user_id}/mission_status_types": {
+    "/users/{sync_user}/mission_status_types": {
       "get": {
         "summary": "Retrieves all mission status types for a user company",
         "tags": [
@@ -589,7 +707,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -625,7 +743,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -662,7 +780,7 @@
         }
       }
     },
-    "/users/{user_id}/mission_status_types/{id}": {
+    "/users/{sync_user}/mission_status_types/{id}": {
       "put": {
         "summary": "Updates a mission status type of a user",
         "tags": [
@@ -681,7 +799,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -738,7 +856,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -760,7 +878,7 @@
         }
       }
     },
-    "/users/{user_id}/mission_status_actions": {
+    "/users/{sync_user}/mission_status_actions": {
       "get": {
         "summary": "Retrieves all mission status actions for a user company",
         "tags": [
@@ -779,7 +897,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -815,7 +933,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -860,7 +978,7 @@
         }
       }
     },
-    "/users/{user_id}/mission_status_actions/{id}": {
+    "/users/{sync_user}/mission_status_actions/{id}": {
       "put": {
         "summary": "Updates a mission status action of a user",
         "tags": [
@@ -879,7 +997,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -942,7 +1060,7 @@
         ],
         "parameters": [
           {
-            "name": "user_id",
+            "name": "sync_user",
             "in": "path",
             "type": "string",
             "required": true
@@ -965,7 +1083,7 @@
       }
     }
   },
-  "basePath": "/v1",
+  "basePath": "/api/v1",
   "securityDefinitions": {
     "apiKey": {
       "type": "apiKey",

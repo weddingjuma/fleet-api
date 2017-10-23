@@ -31,9 +31,18 @@ RSpec.describe User, type: :model do
       expect(@user.api_key).not_to be_nil
     end
 
+    it 'ensure vehicle value' do
+      expect(@user.vehicle).to be true
+    end
+
     it 'serializes model' do
       serialized = ActiveModelSerializers::SerializableResource.new(@user, serializer: UserSerializer).as_json
       expect(serialized[:user][:id]).to eq(@user.id)
+    end
+
+    it 'returns user by sync_user or id' do
+      expect(User.find_by(@user.sync_user).id).to eq(@user.id)
+      expect(User.find_by(@user.id).id).to eq(@user.id)
     end
   end
 

@@ -4,13 +4,17 @@ module Api::V1
 
     # get_vehicles / get_vehicles_pos
     def index
-      render json: User.by_company(key: @current_user.company.id).to_a,
+      users = User.by_company(key: @current_user.company.id).to_a
+
+      users = users.select(&:vehicle) if params[:with_vehicle]
+
+      render json: users,
              each_serializer: UserSerializer
     end
 
     # check_auth
     def show
-      user = User.find(params[:id])
+      user = User.find_by(params[:id])
       authorize user
 
       if user
@@ -36,7 +40,7 @@ module Api::V1
     end
 
     def update
-      user = User.find(params[:id])
+      user = User.find_by(params[:id])
       user.assign_attributes(user_params)
       authorize user
 
@@ -49,7 +53,7 @@ module Api::V1
     end
 
     def destroy
-      user = User.find(params[:id])
+      user = User.find_by(params[:id])
       authorize user
 
       if user.destroy
@@ -63,10 +67,11 @@ module Api::V1
     private
 
     def user_params
-      params.require(:user).permit(
+      params.permit(
         :sync_user,
         :email,
         :password,
+        :vehicle,
         roles: []
       )
     end
