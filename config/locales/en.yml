@@ -17,3 +17,7 @@ en:
           external_ref_immutable: "External reference cannot be updated"
         mission_status_type:
           company_id_immutable: "Company id cannot be updated"
+        current_location:
+          company_id_immutable: "Company id cannot be updated"
+        track:
+          company_id_immutable: "Company id cannot be updated"

@@ -9,8 +9,8 @@ require 'action_controller/railtie'
 require 'action_mailer/railtie'
 require 'action_view/railtie'
 require 'action_cable/engine'
-# require "sprockets/railtie"
-# require "rails/test_unit/railtie"
+# require 'sprockets/railtie'
+# require 'rails/test_unit/railtie'
 
 # Require the gems listed in Gemfile, including any gems
 # you've limited to :test, :development, or :production.
@@ -42,6 +42,10 @@ module MapotempoFleet
     config.paths.add 'app/serializers', eager_load: true
     ActiveModel::Serializer.config.adapter = :json
     ActiveModel::Serializer.config.default_includes = '**'
+
+    # Load lib directory
+    config.enable_dependency_loading = true
+    config.autoload_paths += Dir["#{Rails.root.join('lib')}/**/"]
 
     # Swagger configuration
     config.x.swagger_docs_base_path = 'http://localhost:3000/'

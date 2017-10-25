@@ -10,6 +10,9 @@ RSpec.describe Mission, type: :model do
                    company: @company,
                    sync_user: 'mapo-user')
 
+    @todo_status_type = create(:mission_status_type, company: @company, label: 'To do', color: '#ff0000')
+    @company.update_attribute(:default_mission_status_type_id, @todo_status_type.id)
+
     @date = 2.days.ago.strftime('%FT%T.%L%:z')
     @mission = Mission.create(
       company: @company,
@@ -38,6 +41,10 @@ RSpec.describe Mission, type: :model do
 
     it 'set sync_user value automatically' do
       expect(@mission.sync_user).to eq(@user.sync_user)
+    end
+
+    it 'set a default status type from the company' do
+      expect(@mission.mission_status_type_id).to eq(@todo_status_type.id)
     end
 
     it 'serializes model' do
@@ -89,7 +96,6 @@ RSpec.describe Mission, type: :model do
     end
 
     it 'has an optional mission status type' do
-      expect(@mission.mission_status_type).to be_nil
       mission_status_type = create(:mission_status_type, company: @company)
       @mission.mission_status_type = mission_status_type
       @mission.save
@@ -99,7 +105,7 @@ RSpec.describe Mission, type: :model do
     it 'cannot update company id' do
       @mission.update(company_id: 'other_company_id')
       expect(@mission.errors.first[0]).to eq(:company_id)
-      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.user.company_id_immutable'))
+      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.current_location.company_id_immutable'))
       @mission.update(company_id: @company.id)
     end
   end

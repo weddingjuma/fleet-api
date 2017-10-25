@@ -201,6 +201,33 @@
         }
       }
     },
+    "/current_locations": {
+      "get": {
+        "summary": "Get all current locations",
+        "tags": [
+          "Current Locations"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "all current locations"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
     "/users": {
       "get": {
         "summary": "Get all users",
@@ -418,6 +445,44 @@
           },
           "404": {
             "description": "user not found"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/users/{sync_user}/current_location": {
+      "get": {
+        "summary": "Retrieves the current location of a user",
+        "tags": [
+          "Users"
+        ],
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "sync_user",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user current location found"
+          },
+          "404": {
+            "description": "user current location not found"
           },
           "401": {
             "description": "bad token"

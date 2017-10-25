@@ -5,8 +5,9 @@ FactoryGirl.define do
 
     sequence(:sync_user) { |n| "user_#{n + 1}" }
     sequence(:email) { |n| "user#{n + 1}@email.com" }
-    password 'password'
+    password '123456'
     vehicle true
+    color { Faker::Color.hex_color }
   end
 
 end

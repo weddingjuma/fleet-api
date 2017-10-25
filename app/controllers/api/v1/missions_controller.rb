@@ -1,6 +1,6 @@
 module Api::V1
   class MissionsController < ApiController
-    after_action :verify_authorized
+    after_action :verify_authorized, except: [:index]
 
     # get_missions
     def index
@@ -9,7 +9,7 @@ module Api::V1
                    authorize user, :show?
                    user.missions.to_a
                  else
-                   Mission.all.to_a
+                   Mission.by_company(key: @current_user.company.id).to_a
                  end
 
       if missions

@@ -8,7 +8,7 @@ describe 'Companies API', type: :request do
     @company = create(:company, name: 'mapo-company')
 
     @other_company = create(:company, name: 'other')
-    @user = create(:user, company: @company)
+    @other_user = create(:user, company: @other_company)
   end
 
   path '/companies' do
@@ -33,7 +33,7 @@ describe 'Companies API', type: :request do
         end
 
         describe 'token from a user' do
-          let(:Authorization) { "Token token=#{@user.api_key}" }
+          let(:Authorization) { "Token token=#{@other_user.api_key}" }
           run_test!
         end
       end

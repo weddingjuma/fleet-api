@@ -11,8 +11,12 @@ describe 'Users API', type: :request do
       password: 'password',
       vehicle: false
     )
-    @users = create_list(:user, 5, company: @company)
+
+    @users = create_list(:user, 5, company: @company, vehicle: true)
     @missions = create_list(:mission, 5, company: @company, user: @user)
+
+    @todo_status_type = create(:mission_status_type, company: @company, label: 'To do', color: '#ff0000')
+    @company.update_attribute(:default_mission_status_type_id, @todo_status_type.id)
 
     @mission_status_type = create(:mission_status_type, company: @company)
     @related_status_type = create(:mission_status_type, company: @company)
@@ -35,7 +39,6 @@ describe 'Users API', type: :request do
 
       response '200', 'all users' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-
         describe 'all users' do
           run_test! do |response|
             json = JSON.parse(response.body)
@@ -99,7 +102,6 @@ describe 'Users API', type: :request do
 
       response '200', 'user found' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-
         describe 'get user with sync_user' do
           let(:sync_user) { @user.sync_user }
           run_test! do |response|
@@ -203,7 +205,6 @@ describe 'Users API', type: :request do
       parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user company found' do
-
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
         run_test! do |response|
@@ -235,6 +236,51 @@ describe 'Users API', type: :request do
     end
   end
 
+  path '/users/{sync_user}/current_location' do
+    get 'Retrieves the current location of a user' do
+      tags 'Users'
+      security [apiKey: []]
+      produces 'application/json', 'application/xml'
+      parameter name: :sync_user, in: :path, type: :string
+
+      response '200', 'user current location found' do
+        let(:Authorization) { "Token token=#{@user.api_key}" }
+        let(:sync_user) { @users.first.sync_user }
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['current_location']).not_to be_empty
+          expect(json['current_location']['locationDetail']['lat']).to be nil
+        end
+      end
+
+      response '404', 'user current location not found' do
+        describe 'user is not a vehicle' do
+          let(:Authorization) { "Token token=#{@user.api_key}" }
+          let(:sync_user) { @user.sync_user }
+          run_test!
+        end
+
+        describe 'invalid user' do
+          let(:Authorization) { "Token token=#{@user.api_key}" }
+          let(:sync_user) { 'invalid' }
+          run_test!
+        end
+
+        describe 'token from other user' do
+          let(:Authorization) { "Token token=#{@other_user.api_key}" }
+          let(:sync_user) { @user.sync_user }
+          run_test!
+        end
+      end
+
+      response '401', 'bad token' do
+        let(:Authorization) { "Token token='bad token'" }
+        let(:sync_user) { @user.sync_user }
+        run_test!
+      end
+    end
+  end
+
   path '/users/{sync_user}/missions' do
     get 'Retrieves all missions of a user' do
       tags 'Users'
@@ -243,7 +289,6 @@ describe 'Users API', type: :request do
       parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user missions found' do
-
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
         run_test! do |response|
@@ -290,6 +335,7 @@ describe 'Users API', type: :request do
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['mission']).not_to be_empty
+          expect(json['mission']['mission_status_type_id']).to eq(@todo_status_type.id)
         end
       end
 
@@ -452,13 +498,12 @@ describe 'Users API', type: :request do
       parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user mission status types found' do
-
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['mission_status_types']).not_to be_empty
-          expect(json['mission_status_types'].size).to eq(2)
+          expect(json['mission_status_types'].size).to eq(3)
         end
       end
 
@@ -598,7 +643,6 @@ describe 'Users API', type: :request do
       parameter name: :sync_user, in: :path, type: :string
 
       response '200', 'user mission status actions found' do
-
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
         run_test! do |response|

@@ -5,14 +5,19 @@
 #   "_id" : "user_XXXXX_XXXXX_XXXX_XXXXX"
 #   "company_id" : "company_XXXXX_XXXXX_XXXX_XXXXX",
 #   "sync_user" : "chauffeur_1",
-#   "vehicle" : true,
 #   "email" : "chauffeur_1@mapotempo.com",
+#   "vehicle" : true,
+#   "color": "#228b22"
 #   "password_hash" : "mqsfqsdjbfhvafuysdfqfaze",
 #   "api_key" : "G7mZpybb9yu4EhH744bAIgtt",
 #   "roles" : [
 #     "mission.creating",
 #     "mission.updating",
-#     "mission.deleting"
+#     "mission.deleting",
+#     "current_location.creatinge",
+#     "current_location.updating",
+#     "track.updating"
+#     "track.updating"
 #   ]
 # }
 #
@@ -21,9 +26,10 @@ class User < ApplicationRecord
 
   # == Attributes ===========================================================
   attribute :sync_user, type: String
-  attribute :roles, type: Array
-  attribute :vehicle, type: Boolean
   attribute :email, type: String
+  attribute :vehicle, type: Boolean
+  attribute :color, type: String
+  attribute :roles, type: Array
   attribute :password_hash, type: String
   attribute :api_key, type: String
 
@@ -59,10 +65,15 @@ class User < ApplicationRecord
 
   # == Callbacks ============================================================
   before_create :generate_api_key, :generate_sync_user, :ensure_vehicle
+  after_create :add_location_for_vehicle
 
   # == Class Methods ========================================================
   def self.find_by(id_or_sync)
     User.by_sync_user(key: id_or_sync).to_a.first || User.find(id_or_sync)
+  end
+
+  def self.first
+    User.all.to_a.first
   end
 
   # == Instance Methods =====================================================
@@ -74,6 +85,10 @@ class User < ApplicationRecord
     @raw_password = new_password
     @password = Password.create(new_password)
     self.password_hash = @password
+  end
+
+  def current_location
+    CurrentLocation.by_user(key: self.id).to_a.first if self.vehicle
   end
 
   private
@@ -120,5 +135,15 @@ class User < ApplicationRecord
         errors.add(:roles, I18n.t('couchbase.errors.models.user.role_format'))
       end
     end if self.roles
+  end
+
+  def add_location_for_vehicle
+    if self.vehicle
+      CurrentLocation.create(user: self, company: self.company, date: Time.zone.now.strftime('%FT%T.%L%:z'), locationDetail: {
+        lat: nil,
+        lon: nil,
+        date: Time.zone.now.strftime('%FT%T.%L%:z')
+      })
+    end
   end
 end

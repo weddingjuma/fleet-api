@@ -11,10 +11,11 @@ RSpec.describe User, type: :model do
       company: @company,
       sync_user: 'mapotempo-user',
       email: 'test@mapotempo.com',
-      password: 'password'
+      password: 'password',
+      vehicle: false
     )
 
-    @users = create_list(:user, 5, company: @company)
+    @users = create_list(:user, 5, company: @company, vehicle: true)
   end
 
   subject { @user }
@@ -23,16 +24,14 @@ RSpec.describe User, type: :model do
     it { is_expected.to be_valid }
 
     it { expect(@user.sync_user).to eq('mapotempo-user') }
-    # it { is_expected.to validate_presence_of(:sync_user) }
-
-    # it { is_expected.to validate_presence_of(:email) }
 
     it 'generate api key on creation' do
       expect(@user.api_key).not_to be_nil
     end
 
     it 'ensure vehicle value' do
-      expect(@user.vehicle).to be true
+      expect(@user.vehicle).to be false
+      expect(@users.first.vehicle).to be true
     end
 
     it 'serializes model' do
@@ -43,6 +42,10 @@ RSpec.describe User, type: :model do
     it 'returns user by sync_user or id' do
       expect(User.find_by(@user.sync_user).id).to eq(@user.id)
       expect(User.find_by(@user.id).id).to eq(@user.id)
+    end
+
+    it 'returns the first user' do
+      expect(User.first).to be_a(User)
     end
   end
 
@@ -68,6 +71,13 @@ RSpec.describe User, type: :model do
     it 'returns the parent company' do
       expect(@user.company).to eq(@company)
       expect(@user.company.name).to eq('mapo-user')
+    end
+
+    it 'returns its current location if user is a vehicle' do
+      expect(@user.current_location).to be nil
+
+      expect(@users.first.current_location).not_to be nil
+      expect(@users.first.current_location.locationDetail['lat']).to be nil
     end
 
     it 'cannot update company id' do

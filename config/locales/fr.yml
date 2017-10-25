@@ -17,3 +17,7 @@ fr:
           external_ref_immutable: "La référence externe d'une mission ne peut pas changer"
         mission_status_type:
           company_id_immutable: "L'identifiant de la company ne peut pas changer"
+        current_location:
+          company_id_immutable: "L'identifiant de la company ne peut pas changer"
+        track:
+          company_id_immutable: "L'identifiant de la company ne peut pas changer"

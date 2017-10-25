@@ -3,6 +3,7 @@ class UserSerializer < ActiveModel::Serializer
              :company_id,
              :sync_user,
              :email,
-             :roles,
-             :vehicle
+             :vehicle,
+             :color,
+             :roles
 end

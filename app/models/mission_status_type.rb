@@ -9,7 +9,6 @@
 # }
 #
 
-
 class MissionStatusType < ApplicationRecord
 
   # == Attributes ===========================================================

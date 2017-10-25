@@ -6,6 +6,8 @@ RSpec.configure do |config|
     Mission.ensure_design_document!
     MissionStatusType.ensure_design_document!
     MissionStatusAction.ensure_design_document!
+    CurrentLocation.ensure_design_document!
+    Track.ensure_design_document!
   end
 
   config.after(:all) do
@@ -15,6 +17,8 @@ RSpec.configure do |config|
     Mission.all.stream { |ob| ob.delete }
     MissionStatusType.all.stream { |ob| ob.delete }
     MissionStatusAction.all.stream { |ob| ob.delete }
+    CurrentLocation.all.stream { |ob| ob.delete }
+    Track.all.stream { |ob| ob.delete }
   end
 
   # config.after(:all) do

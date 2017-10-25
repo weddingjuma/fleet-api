@@ -20,11 +20,14 @@ RSpec.describe Company, type: :model do
     it { is_expected.to be_valid }
 
     it { expect(@company.name).to eq('mapotempo') }
-    # it { is_expected.to validate_presence_of(:name) }
 
     it 'serializes model' do
       serialized = ActiveModelSerializers::SerializableResource.new(@company, serializer: CompanySerializer).as_json
       expect(serialized[:company][:id]).to eq(@company.id)
+    end
+
+    it 'returns the first user' do
+      expect(Company.first).to be_a(Company)
     end
   end
 

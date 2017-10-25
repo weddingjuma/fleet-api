@@ -2,7 +2,7 @@ module Api::V1
   class UsersController < ApiController
     after_action :verify_authorized, except: [:index]
 
-    # get_vehicles / get_vehicles_pos
+    # get_vehicles
     def index
       users = User.by_company(key: @current_user.company.id).to_a
 

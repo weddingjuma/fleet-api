@@ -11,7 +11,6 @@
 # }
 #
 
-
 class MissionStatusAction < ApplicationRecord
 
   # == Attributes ===========================================================

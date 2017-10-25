@@ -7,13 +7,13 @@
 #   "external_ref" : "XXXXX_XXXXX_XXXX_XXXXX",
 #   "user_id" : "user_XXXX_XXXX",
 #   "sync_user" : "chauffeur_1",
+#   "mission_status_type_id" : "mission_status_type_id",
 #   "name" : "Mission-48",
 #   "date" : "2017-08-23T18:43:56.150Z",
 #   "location" : {
 #     "lat" : "-0.5680988",
 #     "lon" : " 44.8547927"
 #   },
-#   "mission_status_type_id" : "mission_status_type_id",
 #   "address" : {
 #     "city" : "Bordeaux",
 #     "country" : "France",
@@ -41,8 +41,8 @@
 class Mission < ApplicationRecord
 
   # == Attributes ===========================================================
-  # This value is automatically set by set_sync_user callback
   attribute :external_ref, type: String
+  # This value is automatically set by set_sync_user callback
   attribute :sync_user, type: String
   attribute :name, type: String
   attribute :date
@@ -85,7 +85,7 @@ class Mission < ApplicationRecord
   view :by_external_ref, emit_key: [:company_id, :external_ref]
 
   # == Callbacks ============================================================
-  before_validation :set_sync_user
+  before_validation :set_sync_user, :add_default_status_type
 
   # == Class Methods ========================================================
   def self.find_by(id_or_external_ref, company_id = nil)
@@ -98,6 +98,10 @@ class Mission < ApplicationRecord
 
   def set_sync_user
     self.sync_user = self.user&.sync_user
+  end
+
+  def add_default_status_type
+    self.mission_status_type_id = self.company.default_mission_status_type_id unless self.mission_status_type_id
   end
 
   def company_id_immutable
