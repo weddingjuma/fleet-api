@@ -2,6 +2,7 @@ class MissionSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
              :user_id,
+             :mission_status_type_id,
              :sync_user,
              :external_ref,
              :name,
@@ -17,10 +18,10 @@ class MissionSerializer < ActiveModel::Serializer
              :status_type_color
 
   def status_type_label
-    object.mission_status_type.label if object.mission_status_type
+    object.mission_status_type.label if !instance_options[:destroy] && object.mission_status_type
   end
 
   def status_type_color
-    object.mission_status_type.color if object.mission_status_type
+    object.mission_status_type.color if !instance_options[:destroy] && object.mission_status_type
   end
 end

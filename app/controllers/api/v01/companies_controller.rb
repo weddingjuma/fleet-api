@@ -1,4 +1,4 @@
-module Api::V1
+module Api::V01
   class CompaniesController < ApiController
     before_action :authenticate_admin, only: [:index]
     skip_before_action :authenticate, only: [:index]

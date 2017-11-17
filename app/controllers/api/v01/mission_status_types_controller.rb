@@ -1,10 +1,10 @@
-module Api::V1
+module Api::V01
   class MissionStatusTypesController < ApiController
     after_action :verify_authorized
 
     def index
-      mission_status_types = if params[:user_id]
-                               user = User.find_by(params[:user_id])
+      mission_status_types = if params[:sync_user]
+                               user = User.find_by(params[:sync_user])
                                authorize user, :show?
                                user.company.mission_status_types.to_a
                              end
@@ -18,7 +18,7 @@ module Api::V1
     end
 
     def create
-      user = User.find_by(params[:user_id])
+      user = User.find_by(params[:sync_user])
       mission_status_type = MissionStatusType.new
       mission_status_type.assign_attributes(mission_status_type_params)
       mission_status_type.company = user.company

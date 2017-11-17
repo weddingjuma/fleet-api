@@ -13,11 +13,11 @@ RSpec.configure do |config|
   # document below. You can override this behavior by adding a swagger_doc tag to the
   # the root example_group in your specs, e.g. describe '...', swagger_doc: 'v2/swagger.json'
   config.swagger_docs = {
-    'v1/swagger.json' => {
+    '0.1/swagger.json' => {
       swagger: '2.0',
       info: {
-        title: 'API V1',
-        version: 'v1',
+        title: 'API v0.1',
+        version: 'v0.1',
         contact_email: MapotempoFleet::Application.config.x.api_contact_email,
         contact_url: MapotempoFleet::Application.config.x.api_contact_url,
         license: 'GNU Affero General Public License 3',
@@ -103,7 +103,7 @@ RSpec.configure do |config|
         }
       },
       paths: {},
-      basePath: '/api/v1',
+      basePath: '/api/0.1',
       securityDefinitions: {
         apiKey: {
           type: :apiKey,

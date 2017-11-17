@@ -23,6 +23,7 @@ describe 'Current locations API', type: :request do
   path '/current_locations' do
     get 'Get all current locations' do
       tags 'Current Locations'
+      operationId 'getCurrentLocations'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
 

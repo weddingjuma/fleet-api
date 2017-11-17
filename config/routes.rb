@@ -3,7 +3,7 @@ Rails.application.routes.draw do
   mount Rswag::Api::Engine => '/api-docs'
 
   namespace :api do
-    namespace :v1 do
+    namespace :v01, path: '0.1' do
       resources :users, only: [:index, :show, :create, :update, :destroy] do
         resource :company, only: [:show]
 
@@ -14,16 +14,16 @@ Rails.application.routes.draw do
           end
         end
 
-        resources :mission_status_types, only: [:index, :create, :update, :destroy]
-
-        resources :mission_status_actions, only: [:index, :create, :update, :destroy]
-
         resource :current_location, only: [:show]
       end
 
       resources :companies, only: [:index]
 
       resources :missions, only: [:index]
+
+      resources :mission_status_types, only: [:index, :create, :update, :destroy]
+
+      resources :mission_status_actions, only: [:index, :create, :update, :destroy]
 
       resources :current_locations, only: [:index]
     end

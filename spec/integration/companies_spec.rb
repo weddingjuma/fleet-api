@@ -14,6 +14,7 @@ describe 'Companies API', type: :request do
   path '/companies' do
     get 'Get all companies' do
       tags 'Companies'
+      operationId 'getCompanies'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
 

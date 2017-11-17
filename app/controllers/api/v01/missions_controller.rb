@@ -1,4 +1,4 @@
-module Api::V1
+module Api::V01
   class MissionsController < ApiController
     after_action :verify_authorized, except: [:index]
 
@@ -53,7 +53,8 @@ module Api::V1
         render json: missions,
                each_serializer: MissionSerializer
       else
-        render json: [], status: :unprocessable_entity
+        render json: [], status: :unprocessable_entity,
+               root: 'missions'
       end
     end
 
@@ -77,7 +78,8 @@ module Api::V1
 
       if mission.destroy
         render json: mission,
-               serializer: MissionSerializer
+               serializer: MissionSerializer,
+               destroy: true
       else
         render json: mission.errors, status: :unprocessable_entity
       end

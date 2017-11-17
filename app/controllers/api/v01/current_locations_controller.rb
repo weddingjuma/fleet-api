@@ -1,4 +1,4 @@
-module Api::V1
+module Api::V01
   class CurrentLocationsController < ApiController
     after_action :verify_authorized, except: [:index]
 

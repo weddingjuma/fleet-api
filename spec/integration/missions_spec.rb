@@ -16,6 +16,7 @@ describe 'Missions API', type: :request do
   path '/missions' do
     get 'Get all missions' do
       tags 'Missions'
+      operationId 'getMissions'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
 

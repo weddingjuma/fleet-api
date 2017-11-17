@@ -5,7 +5,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-ruby '2.3.3'
+ruby '2.3.5'
 
 # Rails 5 API
 gem 'rails', '~> 5.1.4'
@@ -47,7 +47,7 @@ group :development, :test do
   gem 'puma', '~> 3.7'
 
   # Use Factory Girl for generating random test data
-  gem 'factory_girl_rails'
+  gem 'factory_bot_rails'
   gem 'faker'
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

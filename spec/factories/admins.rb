@@ -1,4 +1,4 @@
-FactoryGirl.define do
+FactoryBot.define do
 
   factory :admin do
     sequence(:name) { |n| "admin_#{n + 1}" }
