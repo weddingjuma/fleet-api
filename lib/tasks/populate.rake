@@ -1,7 +1,7 @@
 namespace :mapotempo_fleet do
 
   # Example:
-  # rails locatipic:populate
+  # rails mapotempo_fleet:populate
   desc 'Reset the database, migrate the database, initialize with the seed data and reindex models for search'
   task :populate, [] => :environment do |_task, _args|
     unless Rails.env.production?
