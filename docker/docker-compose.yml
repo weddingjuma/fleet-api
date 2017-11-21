@@ -4,12 +4,12 @@ services:
     build:
       context: ..
       dockerfile: docker/Dockerfile
-#    image: mapotempo/geocoder-wrapper:${MAPOTEMPO_VERSION:-55.1.0}
+    image: mapotempo/fleet-api:${MAPOTEMPO_VERSION:-56.0.0}
     ports:
       - "8084:80" # HOST:CONTAINER, edit only HOST part
-#    volumes:
-#        - ./production.rb:/srv/app/config/environments/production.rb
-#        - ./production.rb:/srv/app/config/environments/development.rb
+    volumes:
+        - ./production.rb:/srv/app/config/environments/production.rb
+        - ./production.rb:/srv/app/config/environments/development.rb
     restart: always
     links:
       - redis-cache
