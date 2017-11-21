@@ -32,6 +32,10 @@ gem 'pundit'
 gem 'rspec-rails'
 gem 'rswag'
 
+# Use Factory Girl for generating random data
+gem 'factory_bot_rails'
+gem 'faker'
+
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console'
@@ -45,10 +49,6 @@ end
 group :development, :test do
   # Use Puma as the app server
   gem 'puma', '~> 3.7'
-
-  # Use Factory Girl for generating random test data
-  gem 'factory_bot_rails'
-  gem 'faker'
 
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
   gem 'byebug'
