@@ -48,10 +48,7 @@ end
 
 group :development, :test do
   # Use Puma as the app server
-  gem 'puma', '~> 3.7'
-
-  # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug'
+  gem 'puma'
 
   gem 'rubocop'
   gem 'byebug'
@@ -60,7 +57,6 @@ group :development, :test do
   # Debugging tool
   gem 'awesome_print'
   gem 'pry-rails'
-  gem 'awesome_print'
 
   gem 'brakeman'
 end
