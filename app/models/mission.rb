@@ -92,6 +92,10 @@ class Mission < ApplicationRecord
     Mission.by_external_ref(key: [company_id, id_or_external_ref]).to_a.first || Mission.find(id_or_external_ref)
   end
 
+  def self.first
+    Mission.all.to_a.first
+  end
+
   # == Instance Methods =====================================================
 
   private
