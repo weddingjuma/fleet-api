@@ -41,7 +41,8 @@ module Api::V01
       user = User.find_by(params[:user_id])
 
       missions = missions_params.map do |mission_params|
-        mission = Mission.new
+        # Override mission if already exists
+        mission = Mission.by_external_ref(key: [user.company_id, mission_params['external_ref']]).to_a.first || Mission.new
         mission.assign_attributes(mission_params)
         mission.user = user
         mission.company = user.company
