@@ -86,7 +86,7 @@ module Api::V01
     end
 
     def destroy_multiples
-      ids = ActiveSupport::JSON.decode(params['ids']) rescue params['ids'].split(',')
+      ids = params['ids']
       ids.map do |id|
         mission = Mission.find_by(id, @current_user&.company_id) rescue nil
         if mission
