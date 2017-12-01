@@ -14,6 +14,7 @@ module Api::V01
 
       if missions
         render json: missions,
+               root: 'missions',
                each_serializer: MissionSerializer
       else
         render body: nil, status: :not_found
@@ -87,7 +88,7 @@ module Api::V01
     end
 
     def destroy_multiples
-      ids = params['ids']
+      ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
       ids.map do |id|
         mission = Mission.find_by(id, @current_user&.company_id) rescue nil
         if mission

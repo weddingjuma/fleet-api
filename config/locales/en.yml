@@ -15,6 +15,10 @@ en:
         mission:
           company_id_immutable: "Company id cannot be updated"
           external_ref_immutable: "External reference cannot be updated"
+        mission_placeholder:
+          company_id_immutable: "Company id cannot be updated"
+          sync_user_immutable: "User reference cannot be updated"
+          date_format: "Date must respect this format: YYYY-MM-DD"
         mission_status_type:
           company_id_immutable: "Company id cannot be updated"
         current_location:

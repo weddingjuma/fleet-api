@@ -52,13 +52,6 @@ RSpec.describe Mission, type: :model do
       expect(serialized[:mission][:id]).to eq(@mission.id)
     end
 
-    it 'cannot update external ref' do
-      @mission.update(external_ref: 'other_external_ref')
-      expect(@mission.errors.first[0]).to eq(:external_ref)
-      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.mission.external_ref_immutable'))
-      @mission.update(external_ref: 'uniq_ref_by_company')
-    end
-
     it 'cannot have another mission with the same external ref for the same company' do
       same_external_ref = build(:mission, company: @company, user: @user, external_ref: @mission.external_ref)
       expect(same_external_ref.save).to be false
@@ -67,6 +60,21 @@ RSpec.describe Mission, type: :model do
     it 'returns mission by external_ref or id' do
       expect(Mission.find_by(@mission.external_ref, @company.id).id).to eq(@mission.id)
       expect(Mission.find_by(@mission.id).id).to eq(@mission.id)
+    end
+
+    it 'updated create or update a mission placeholder after save' do
+      current_placeholder = MissionsPlaceholder.find_by_mission(@mission)
+      expect(current_placeholder).not_to be_nil
+      expect(current_placeholder.date).to eq(@mission.date.to_date.strftime('%F'))
+      expect(current_placeholder.revision).to eq(0)
+      @mission.update!(name: 'mission name 2')
+      expect(current_placeholder.reload.revision).to eq(1)
+    end
+
+    it 'cannot update external ref' do
+      @mission.update(external_ref: 'other_external_ref')
+      expect(@mission.errors.first[0]).to eq(:external_ref)
+      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.mission.external_ref_immutable'))
     end
   end
 

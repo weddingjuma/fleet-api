@@ -87,6 +87,8 @@ class Mission < ApplicationRecord
   # == Callbacks ============================================================
   before_validation :set_sync_user, :add_default_status_type
 
+  after_save :update_placeholder
+
   # == Class Methods ========================================================
   def self.find_by(id_or_external_ref, company_id = nil)
     Mission.by_external_ref(key: [company_id, id_or_external_ref]).to_a.first || Mission.find(id_or_external_ref)
@@ -118,5 +120,11 @@ class Mission < ApplicationRecord
     if external_ref_changed?
       errors.add(:external_ref, I18n.t('couchbase.errors.models.mission.external_ref_immutable'))
     end
+  end
+
+  def update_placeholder
+    placeholder = MissionsPlaceholder.find_by_mission(self) || MissionsPlaceholder.new
+    placeholder.assign_attributes(company_id: self.company_id, sync_user: self.sync_user, date: self.date.to_date.strftime('%F'), revision: placeholder.revision ? placeholder.revision + 1 : 0)
+    placeholder.save!
   end
 end
