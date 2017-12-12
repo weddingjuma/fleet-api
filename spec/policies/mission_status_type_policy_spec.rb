@@ -5,7 +5,7 @@ describe MissionStatusTypePolicy, basic: true do
     @user = create(:user, company: @company)
     @mission_status_type = create(:mission_status_type, company: @company)
 
-    @other_company = create(:company, name: 'mapo-company')
+    @other_company = create(:company, name: 'mapo-other-company')
     @other_user = create(:user, company: @other_company)
     @other_mission_status_type = create(:mission_status_type, company: @other_company)
   end

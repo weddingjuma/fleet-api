@@ -5,7 +5,7 @@ describe MissionPolicy, basic: true do
     @user = create(:user, company: @company)
     @mission = create(:mission, company: @company, user: @user)
 
-    @other_company = create(:company, name: 'mapo-company')
+    @other_company = create(:company, name: 'mapo-other-company')
     @other_user = create(:user, company: @other_company,)
     @other_mission = create(:mission, company: @other_company, user: @other_user)
   end

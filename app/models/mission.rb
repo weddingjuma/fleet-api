@@ -98,6 +98,20 @@ class Mission < ApplicationRecord
     Mission.all.to_a.first
   end
 
+  def self.filter_by_date(user_id, end_date, start_date = nil)
+    missions = Mission.by_user(key: user_id).to_a
+
+    missions.select do |mission|
+      mission_date = mission.date.to_date
+
+      if start_date
+        mission_date >= Date.parse(start_date) && mission_date <= Date.parse(end_date)
+      else
+        mission_date <= Date.parse(end_date)
+      end
+    end.map(&:id)
+  end
+
   # == Instance Methods =====================================================
 
   private

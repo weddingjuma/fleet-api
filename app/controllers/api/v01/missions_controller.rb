@@ -88,7 +88,15 @@ module Api::V01
     end
 
     def destroy_multiples
-      ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
+      if params['end_date']
+        user = User.find_by(params['user_id'])
+        ids = Mission.filter_by_date(user.id, params['end_date'], params['start_date'])
+      elsif params['ids']
+        ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
+      else
+        ids = []
+      end
+
       ids.map do |id|
         mission = Mission.find_by(id, @current_user&.company_id) rescue nil
         if mission

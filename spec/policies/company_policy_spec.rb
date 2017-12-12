@@ -4,7 +4,7 @@ describe CompanyPolicy, basic: true do
     @company = create(:company, name: 'mapo-company')
     @user = create(:user, company: @company)
 
-    @other_company = create(:company, name: 'mapo-company')
+    @other_company = create(:company, name: 'mapo-other-company')
     @other_user = create(:user, company: @other_company)
   end
 

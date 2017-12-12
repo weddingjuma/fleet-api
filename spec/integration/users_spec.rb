@@ -405,13 +405,24 @@ describe 'Users API', type: :request do
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
-      parameter name: :ids, in: :query, type: :array, items: { type: :string }, required: true
+      parameter name: :ids, in: :query, type: :array, items: { type: :string }, required: false
+      parameter name: :start_date, in: :query, type: :string, required: false
+      parameter name: :end_date, in: :query, type: :string, required: false
 
       response '204', 'user missions deleted' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
-        let(:ids) { @missions.last(2).map(&:id) }
-        run_test!
+
+        describe 'delete mission by ids' do
+          let(:ids) { @missions.last(2).map(&:id) }
+          run_test!
+        end
+
+        # describe 'delete mission by date' do
+        #   let(:start_date) { Time.now.strftime('%Y-%m-%d') }
+        #   let(:end_date) { Time.now.strftime('%Y-%m-%d') }
+        #   run_test!
+        # end
       end
 
       response '401', 'bad token' do

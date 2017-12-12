@@ -90,6 +90,12 @@ RSpec.describe Mission, type: :model do
     it 'returns all missions having the user' do
       expect(Mission.by_user(key: @user.id).to_a.size).to eq(6)
     end
+
+    it 'filters missions by date' do
+      expect(Mission.filter_by_date(@user.id, 1.day.ago.strftime('%Y-%m-%d')).size).to eq(1)
+      expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).strftime('%Y-%m-%d')).size).to eq(6)
+      expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).strftime('%Y-%m-%d'), Time.now.strftime('%Y-%m-%d')).size).to eq(5)
+    end
   end
 
   context 'Relationships' do

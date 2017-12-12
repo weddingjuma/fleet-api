@@ -26,8 +26,9 @@ RSpec.describe Company, type: :model do
       expect(serialized[:company][:id]).to eq(@company.id)
     end
 
-    it 'returns the first user' do
-      expect(Company.first).to be_a(Company)
+    it 'cannot have another company with the same name' do
+      same_company_name = build(:company, name: @company.name)
+      expect(same_company_name.save).to be false
     end
   end
 
@@ -38,6 +39,10 @@ RSpec.describe Company, type: :model do
 
     it 'returns a company by its name' do
       expect(Company.by_name(key: 'mapotempo').to_a.size).to eq(1)
+    end
+
+    it 'returns the first company' do
+      expect(Company.first).to be_a(Company)
     end
   end
 

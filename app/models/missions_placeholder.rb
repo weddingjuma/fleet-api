@@ -59,19 +59,19 @@ class MissionsPlaceholder < ApplicationRecord
 
   def company_id_immutable
     if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.mission_placeholder.company_id_immutable'))
+      errors.add(:company_id, I18n.t('couchbase.errors.models.missions_placeholder.company_id_immutable'))
     end
   end
 
   def sync_user_immutable
     if sync_user_changed?
-      errors.add(:sync_user, I18n.t('couchbase.errors.models.mission_placeholder.sync_user_immutable'))
+      errors.add(:sync_user, I18n.t('couchbase.errors.models.missions_placeholder.sync_user_immutable'))
     end
   end
 
   def date_format
     if date_changed? && date !~ /\A\d{4}-\d{2}-\d{2}\z/
-      errors.add(:date, I18n.t('couchbase.errors.models.mission_placeholder.date_format'))
+      errors.add(:date, I18n.t('couchbase.errors.models.missions_placeholder.date_format'))
     end
   end
 end

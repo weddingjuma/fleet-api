@@ -31,6 +31,7 @@ class Company < ApplicationRecord
 
   # == Validations ==========================================================
   validates_presence_of :name
+  ensure_unique :name
 
   # == Views ===============================================================
   view :all

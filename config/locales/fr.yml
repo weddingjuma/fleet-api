@@ -15,7 +15,7 @@ fr:
         mission:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
           external_ref_immutable: "La référence externe d'une mission ne peut pas changer"
-        mission_placeholder:
+        missions_placeholder:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
           sync_user_immutable: "La référence utilisateur ne peut pas changer"
           date_format: "La date doit respecter ce format : YYYY-MM-DD"

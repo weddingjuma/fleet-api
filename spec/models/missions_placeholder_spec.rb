@@ -78,7 +78,7 @@ RSpec.describe MissionsPlaceholder, type: :model do
     it 'cannot update company id' do
       @missions_placeholder.update(company_id: 'other_company_id')
       expect(@missions_placeholder.errors.first[0]).to eq(:company_id)
-      expect(@missions_placeholder.errors.first[1]).to eq(I18n.t('couchbase.errors.models.current_location.company_id_immutable'))
+      expect(@missions_placeholder.errors.first[1]).to eq(I18n.t('couchbase.errors.models.missions_placeholder.company_id_immutable'))
       @missions_placeholder.update(company_id: @company.id)
     end
   end

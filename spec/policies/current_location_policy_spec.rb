@@ -10,7 +10,7 @@ describe CurrentLocationPolicy, basic: true do
       date: Time.now.strftime('%FT%T.%L%:z')
     })
 
-    @other_company = create(:company, name: 'mapo-company')
+    @other_company = create(:company, name: 'mapo-other-company')
     @other_user = create(:user, company: @other_company)
   end
 

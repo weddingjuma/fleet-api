@@ -7,7 +7,7 @@ FactoryBot.define do
 
     sequence(:name) { |n| "mission name #{n + 1}" }
     sequence(:external_ref) { |n| "ref_#{n + 1}" }
-    date { Faker::Time.forward(1).strftime('%FT%T.%L%:z') }
+    date { Faker::Time.forward(Random.rand(0..3)).strftime('%FT%T.%L%:z') }
     location {
       {
         lat: Random.rand(43.0..50.0),

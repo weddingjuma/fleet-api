@@ -10,7 +10,7 @@ describe MissionStatusActionPolicy, basic: true do
                                     previous_mission_status_type: @previous_mission_status_type,
                                     next_mission_status_type: @next_mission_status_type)
 
-    @other_company = create(:company, name: 'mapo-company')
+    @other_company = create(:company, name: 'mapo-other-company')
     @other_user = create(:user, company: @other_company)
     @other_previous_mission_status_type = create(:mission_status_type, company: @company)
     @other_next_mission_status_type = create(:mission_status_type, company: @company)
