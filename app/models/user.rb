@@ -14,10 +14,10 @@
 #     "mission.creating",
 #     "mission.updating",
 #     "mission.deleting",
-#     "current_location.creatinge",
-#     "current_location.updating",
-#     "track.updating"
-#     "track.updating"
+#     "user_current_location.creatinge",
+#     "user_current_location.updating",
+#     "user_track.updating"
+#     "user_track.updating"
 #   ]
 # }
 #
@@ -66,6 +66,11 @@ class User < ApplicationRecord
   # == Callbacks ============================================================
   before_create :generate_api_key, :generate_sync_user, :ensure_vehicle
   after_create :add_location_for_vehicle
+  after_create :set_settings
+
+  before_update :update_sync_user
+
+  before_destroy :destroy_sync_user
 
   # == Class Methods ========================================================
   def self.find_by(id_or_sync)
@@ -74,6 +79,10 @@ class User < ApplicationRecord
 
   def self.first
     User.all.to_a.first
+  end
+
+  def self.last
+    User.all.to_a.last
   end
 
   # == Instance Methods =====================================================
@@ -88,7 +97,11 @@ class User < ApplicationRecord
   end
 
   def current_location
-    CurrentLocation.by_user(key: self.id).to_a.first if self.vehicle
+    UserCurrentLocation.by_user(key: self.id).to_a.first if self.vehicle
+  end
+
+  def settings
+    UserSettings.by_user(key: self.id).to_a.first
   end
 
   private
@@ -139,11 +152,44 @@ class User < ApplicationRecord
 
   def add_location_for_vehicle
     if self.vehicle
-      CurrentLocation.create(user: self, company: self.company, date: Time.zone.now.strftime('%FT%T.%L%:z'), locationDetail: {
+      UserCurrentLocation.create(user: self, company: self.company, date: Time.zone.now.strftime('%FT%T.%L%:z'), location_detail: {
         lat: nil,
         lon: nil,
         date: Time.zone.now.strftime('%FT%T.%L%:z')
       })
+    end
+  end
+
+  def set_settings
+    UserSettings.create(user: self, company: self.company,
+                        data_connection: true,
+                        automatic_data_update: true,
+                        map_current_position: true,
+                        night_mode: 'automatic'
+    )
+  end
+
+  def update_sync_user
+    return if Rails.env.test?
+
+    return unless sync_user_changed? || email_changed? || @raw_password
+
+    response = HTTP.put("#{Rails.configuration.x.sync_gateway_url}_user/#{self.sync_user}", json: { 'name': self.sync_user, 'email': self.email, password: @raw_password }.compact)
+
+    if response.code != 200
+      errors.add(:base, I18n.t('couchbase.errors.models.user.update_sync_user'))
+      throw :abort
+    end
+  end
+
+  def destroy_sync_user
+    return if Rails.env.test?
+
+    response = HTTP.delete("#{Rails.configuration.x.sync_gateway_url}_user/#{self.sync_user}")
+
+    if response.code != 200
+      errors.add(:base, I18n.t('couchbase.errors.models.user.delete_sync_user'))
+      throw :abort
     end
   end
 end

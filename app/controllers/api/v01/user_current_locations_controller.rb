@@ -1,13 +1,13 @@
 module Api::V01
-  class CurrentLocationsController < ApiController
+  class UserCurrentLocationsController < ApiController
     after_action :verify_authorized, except: [:index]
 
     # get_vehicles_pos
     def index
-      current_locations = CurrentLocation.by_company(key: @current_user.company.id).to_a
+      current_locations = UserCurrentLocation.by_company(key: @current_user.company.id).to_a
 
       render json: current_locations,
-             each_serializer: CurrentLocationSerializer
+             each_serializer: UserCurrentLocationSerializer
     end
 
     def show
@@ -17,7 +17,7 @@ module Api::V01
 
       if current_location
         render json: current_location,
-               serializer: CurrentLocationSerializer
+               serializer: UserCurrentLocationSerializer
       else
         render body: nil, status: :not_found
       end

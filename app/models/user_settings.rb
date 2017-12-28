@@ -1,36 +1,25 @@
 # == Schema Information
 #
 # {
+#   "type": "user_settings",
 #   "company_id": "company:id",
-#   "user_id": "user:id",
-#   "sync_user": "user_name",
-#   "date": "2017-08-23T18:43:56.150+02:00",
-#   "locationDetail": [
-#     {
-#       "lat": 0,
-#       "lon": 3,
-#       "date": "2017-08-23T18:43:56.150+02:00",
-#       "accuracy": 3,
-#       "speed": 20, # m/s
-#       "bearing": 60, # Degree
-#       "elevation": 400,
-#       "signalStrength": 100,
-#       "cid": 2,
-#       "lac": 5,
-#       "mcc": 456,
-#       "mnc": 789
-#     }
+#   "sync_user": "static"
+#   "data_connection": "true"
+#   "automatic_data_update": "true"
+#   "map_current_position": "true"
+#   "night_mode": "automatic"
 # }
 #
 
-class CurrentLocation < ApplicationRecord
+class UserSettings < ApplicationRecord
 
   # == Attributes ===========================================================
   # This value is automatically set by set_sync_user callback
   attribute :sync_user, type: String
-  attribute :name, type: String
-  attribute :date
-  attribute :locationDetail, type: Hash
+  attribute :data_connection, type: Boolean
+  attribute :automatic_data_update, type: Boolean
+  attribute :map_current_position, type: Boolean
+  attribute :night_mode, type: String
 
   # == Extensions ===========================================================
 
@@ -65,7 +54,7 @@ class CurrentLocation < ApplicationRecord
 
   def company_id_immutable
     if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.current_location.company_id_immutable'))
+      errors.add(:company_id, I18n.t('couchbase.errors.models.user_settings.company_id_immutable'))
     end
   end
 end

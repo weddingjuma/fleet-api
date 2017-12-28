@@ -1,8 +1,8 @@
-class CurrentLocationSerializer < ActiveModel::Serializer
+class UserCurrentLocationSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
              :user_id,
              :sync_user,
              :date,
-             :locationDetail
+             :location_detail
 end

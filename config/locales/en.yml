@@ -10,6 +10,8 @@ en:
         user:
           no_special_characters: "User can contain only ASCII characters without space"
           sync_user: "Cannot create sync user"
+          update_sync_user: "Cannot update sync user"
+          delete_sync_user: "Cannot delete sync user"
           company_id_immutable: "Company id cannot be updated"
           role_format: "A role must contain a separator of type point"
         mission:
@@ -19,9 +21,13 @@ en:
           company_id_immutable: "Company id cannot be updated"
           sync_user_immutable: "User reference cannot be updated"
           date_format: "Date must respect this format: YYYY-MM-DD"
+        mission_status:
+          company_id_immutable: "Company id cannot be updated"
         mission_status_type:
           company_id_immutable: "Company id cannot be updated"
-        current_location:
+        user_current_location:
           company_id_immutable: "Company id cannot be updated"
-        track:
+        user_settings:
+          company_id_immutable: "Company id cannot be updated"
+        user_track:
           company_id_immutable: "Company id cannot be updated"

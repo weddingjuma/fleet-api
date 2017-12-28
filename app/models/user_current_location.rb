@@ -1,37 +1,36 @@
 # == Schema Information
 #
 # {
-#   "user_id": "user:id",
 #   "company_id": "company:id",
+#   "user_id": "user:id",
 #   "sync_user": "user_name",
 #   "date": "2017-08-23T18:43:56.150+02:00",
-#   "locationDetails": [
+#   "location_detail": [
 #     {
 #       "lat": 0,
 #       "lon": 3,
 #       "date": "2017-08-23T18:43:56.150+02:00",
 #       "accuracy": 3,
-#       "speed": 351,
-#       "bearing": 60,
-#       "elevation": 4000,
+#       "speed": 20, # m/s
+#       "bearing": 60, # Degree
+#       "elevation": 400,
 #       "signalStrength": 100,
 #       "cid": 2,
 #       "lac": 5,
 #       "mcc": 456,
 #       "mnc": 789
 #     }
-#   ]
 # }
 #
 
-class Track < ApplicationRecord
+class UserCurrentLocation < ApplicationRecord
 
   # == Attributes ===========================================================
   # This value is automatically set by set_sync_user callback
   attribute :sync_user, type: String
   attribute :name, type: String
   attribute :date
-  attribute :locationDetails, type: Array
+  attribute :location_detail, type: Hash
 
   # == Extensions ===========================================================
 
@@ -66,7 +65,7 @@ class Track < ApplicationRecord
 
   def company_id_immutable
     if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.current_location.company_id_immutable'))
+      errors.add(:company_id, I18n.t('couchbase.errors.models.user_current_location.company_id_immutable'))
     end
   end
 end

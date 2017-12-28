@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-describe 'Current locations API', type: :request do
+describe 'User current locations API', type: :request do
 
   before(:all) do
     @company = create(:company, name: 'mapo-company')
@@ -9,7 +9,7 @@ describe 'Current locations API', type: :request do
     @users = create_list(:user, 3, company: @company)
 
     @current_locations = @users.map do |user|
-      create(:current_location, company: @company, user: user, locationDetail: {
+      create(:current_location, company: @company, user: user, location_detail: {
         lat: Random.rand(43.0..50.0),
         lon: Random.rand(-2.0..6.0),
         date: Time.now.strftime('%FT%T.%L%:z')
@@ -20,10 +20,10 @@ describe 'Current locations API', type: :request do
     @other_user = create(:user, company: @other_company)
   end
 
-  path '/current_locations' do
+  path '/user_current_locations' do
     get 'Get all current locations' do
       tags 'Current Locations'
-      operationId 'getCurrentLocations'
+      operationId 'getUserCurrentLocations'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
 

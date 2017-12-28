@@ -77,7 +77,7 @@ RSpec.describe User, type: :model do
       expect(@user.current_location).to be nil
 
       expect(@users.first.current_location).not_to be nil
-      expect(@users.first.current_location.locationDetail['lat']).to be nil
+      expect(@users.first.current_location.location_detail['lat']).to be nil
     end
 
     it 'cannot update company id' do

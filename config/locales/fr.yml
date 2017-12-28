@@ -8,8 +8,10 @@ fr:
     errors:
       models:
         user:
-          no_special_characters: "L'utilsiateur ne peut contenir que des caractères ASCII sans espace"
-          sync_user: "impossible de créer l'utilsiateur sync"
+          no_special_characters: "L'utilisateur ne peut contenir que des caractères ASCII sans espace"
+          sync_user: "impossible de créer l'utilisateur sync"
+          update_sync_user: "impossible de mettre à jour l'utilisateur sync"
+          delete_sync_user: "impossible de supprimer l'utilisateur sync"
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
           role_format: "Un rôle doit contenir un séparateur de type point"
         mission:
@@ -19,9 +21,13 @@ fr:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
           sync_user_immutable: "La référence utilisateur ne peut pas changer"
           date_format: "La date doit respecter ce format : YYYY-MM-DD"
+        mission_status:
+          company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
         mission_status_type:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
-        current_location:
+        user_current_location:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
-        track:
+        user_settings:
+          company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
+        user_track:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"

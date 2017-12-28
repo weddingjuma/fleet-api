@@ -1,4 +1,4 @@
-class CurrentLocationPolicy
+class UserCurrentLocationPolicy
   attr_reader :current_user, :current_location
 
   def initialize(current_user, current_location)

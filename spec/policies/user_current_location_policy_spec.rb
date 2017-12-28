@@ -1,10 +1,10 @@
-describe CurrentLocationPolicy, basic: true do
+describe UserCurrentLocationPolicy, basic: true do
 
   before(:all) do
     @company = create(:company, name: 'mapo-company')
     @user = create(:user, company: @company)
 
-    @current_location = create(:current_location, company: @company, user: @user, locationDetail: {
+    @current_location = create(:user_current_location, company: @company, user: @user, location_detail: {
       lat: Random.rand(43.0..50.0),
       lon: Random.rand(-2.0..6.0),
       date: Time.now.strftime('%FT%T.%L%:z')
@@ -18,7 +18,7 @@ describe CurrentLocationPolicy, basic: true do
     let(:current_user) { nil }
     let(:user) { nil }
 
-    subject { CurrentLocationPolicy.new(user, @current_location) }
+    subject { UserCurrentLocationPolicy.new(user, @current_location) }
 
     it { should_not grant(:show) }
   end
@@ -26,7 +26,7 @@ describe CurrentLocationPolicy, basic: true do
   context 'for another user from other company' do
     let(:user) { @other_user }
 
-    subject { CurrentLocationPolicy.new(user, @current_location) }
+    subject { UserCurrentLocationPolicy.new(user, @current_location) }
 
     it { should_not grant(:show) }
   end
@@ -34,7 +34,7 @@ describe CurrentLocationPolicy, basic: true do
   context 'for the current user' do
     let(:user) { @user }
 
-    subject { CurrentLocationPolicy.new(user, @current_location) }
+    subject { UserCurrentLocationPolicy.new(user, @current_location) }
 
     it { should grant(:show) }
   end

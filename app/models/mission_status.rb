@@ -1,35 +1,34 @@
 # == Schema Information
 #
 # {
-#   "type": "mission_status_type",
+#   "type": "mission_status",
 #   "company_id": "company_XXXXX",
-#   "label": "Completed",
-#   "color": "#228b22"
+#   "mission_id": "mission_XXXXX",
+#   "mission_status_type_id" : "mission_status_type_XXXX",
+#   "date": "2017-08-23T18:43:56.150Z",
+#   "description": "description of the mission status"
 # }
 #
 
-class MissionStatusType < ApplicationRecord
+class MissionStatus < ApplicationRecord
 
   # == Attributes ===========================================================
-  attribute :color, type: String
-  attribute :label, type: String
+  attribute :date
+  attribute :description, type: String
 
   # == Extensions ===========================================================
 
   # == Relationships ========================================================
   belongs_to :company
-
-  has_many :related_missions,
-           foreign_key: :previous_mission_status_type_id,
-           through: :mission_status_action,
-           through_key: :next_mission_status_type_id,
-           class_name: MissionStatusType
+  belongs_to :mission
+  belongs_to :mission_status_type
 
   # == Validations ==========================================================
   validates_presence_of :company_id
   validate :company_id_immutable, on: :update
 
-  validates_presence_of :label
+  validates_presence_of :mission_id
+  validates_presence_of :mission_status_type_id
 
   # == Views ===============================================================
   view :all
@@ -45,7 +44,7 @@ class MissionStatusType < ApplicationRecord
 
   def company_id_immutable
     if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.mission_status_type.company_id_immutable'))
+      errors.add(:company_id, I18n.t('couchbase.errors.models.mission_status.company_id_immutable'))
     end
   end
 end

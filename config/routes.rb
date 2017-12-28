@@ -25,7 +25,7 @@ Rails.application.routes.draw do
 
       resources :mission_status_actions, only: [:index, :create, :update, :destroy]
 
-      resources :current_locations, only: [:index]
+      resources :user_current_locations, only: [:index]
     end
   end
 end

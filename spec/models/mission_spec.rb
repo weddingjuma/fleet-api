@@ -119,7 +119,7 @@ RSpec.describe Mission, type: :model do
     it 'cannot update company id' do
       @mission.update(company_id: 'other_company_id')
       expect(@mission.errors.first[0]).to eq(:company_id)
-      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.current_location.company_id_immutable'))
+      expect(@mission.errors.first[1]).to eq(I18n.t('couchbase.errors.models.user_current_location.company_id_immutable'))
       @mission.update(company_id: @company.id)
     end
   end

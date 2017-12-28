@@ -202,13 +202,13 @@
         }
       }
     },
-    "/current_locations": {
+    "/user_current_locations": {
       "get": {
         "summary": "Get all current locations",
         "tags": [
           "Current Locations"
         ],
-        "operationId": "getCurrentLocations",
+        "operationId": "getUserCurrentLocations",
         "security": [
           {
             "apiKey": [
@@ -896,7 +896,7 @@
         "tags": [
           "Users"
         ],
-        "operationId": "getUserCurrentLocation",
+        "operationId": "getUserUserCurrentLocation",
         "security": [
           {
             "apiKey": [
@@ -1093,7 +1093,19 @@
             "items": {
               "type": "string"
             },
-            "required": true
+            "required": false
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "type": "string",
+            "required": false
           }
         ],
         "responses": {

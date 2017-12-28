@@ -1,12 +1,12 @@
 FactoryBot.define do
 
-  factory :track do
+  factory :user_track do
     # company_id (required)
     # user_id (required)
     # sync_user (required - automatic)
 
     date { Faker::Time.forward(1).strftime('%FT%T.%L%:z') }
-    locationDetails {
+    location_details {
       Array.new(Random.rand(1..5)) do |i|
         {
           lat: Random.rand(43.0..50.0),

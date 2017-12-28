@@ -25,9 +25,9 @@ class Company < ApplicationRecord
 
   has_many :mission_status_actions, dependent: :destroy
 
-  has_many :current_locations, dependent: :destroy
+  has_many :user_current_locations, dependent: :destroy
 
-  has_many :tracks, dependent: :destroy
+  has_many :user_tracks, dependent: :destroy
 
   # == Validations ==========================================================
   validates_presence_of :name
@@ -42,6 +42,10 @@ class Company < ApplicationRecord
   # == Class Methods ========================================================
   def self.first
     Company.all.to_a.first
+  end
+
+  def self.last
+    Company.all.to_a.last
   end
 
   # == Instance Methods =====================================================

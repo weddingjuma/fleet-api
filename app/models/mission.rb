@@ -60,8 +60,11 @@ class Mission < ApplicationRecord
   belongs_to :company
   belongs_to :user
 
-  # optional
+  # optional : current mission status type
   belongs_to :mission_status_type
+
+  # mission status history
+  has_many :mission_status
 
   # == Validations ==========================================================
   validates_presence_of :company_id
@@ -82,12 +85,15 @@ class Mission < ApplicationRecord
   view :all
   view :by_company, emit_key: :company_id
   view :by_user, emit_key: :user_id
+  view :by_sync_user, emit_key: :sync_user
   view :by_external_ref, emit_key: [:company_id, :external_ref]
 
   # == Callbacks ============================================================
-  before_validation :set_sync_user, :add_default_status_type
+  before_validation :set_sync_user, :add_default_status_type, :create_initial_status
 
   after_save :update_placeholder
+
+  before_destroy :destroy_mission_status
 
   # == Class Methods ========================================================
   def self.find_by(id_or_external_ref, company_id = nil)
@@ -96,6 +102,10 @@ class Mission < ApplicationRecord
 
   def self.first
     Mission.all.to_a.first
+  end
+
+  def self.last
+    Mission.all.to_a.last
   end
 
   def self.filter_by_date(user_id, end_date, start_date = nil)
@@ -124,6 +134,10 @@ class Mission < ApplicationRecord
     self.mission_status_type_id = self.company.default_mission_status_type_id unless self.mission_status_type_id
   end
 
+  def create_initial_status
+    MissionStatus.create(company_id: self.company_id, mission_id: self.id, mission_status_type_id: self.company.default_mission_status_type_id, date: self.date.to_date.strftime('%FT%T.%L%:z'))
+  end
+
   def company_id_immutable
     if company_id_changed?
       errors.add(:company_id, I18n.t('couchbase.errors.models.mission.company_id_immutable'))
@@ -140,5 +154,9 @@ class Mission < ApplicationRecord
     placeholder = MissionsPlaceholder.find_by_mission(self) || MissionsPlaceholder.new
     placeholder.assign_attributes(company_id: self.company_id, sync_user: self.sync_user, date: self.date.to_date.strftime('%F'), revision: placeholder.revision ? placeholder.revision + 1 : 0)
     placeholder.save!
+  end
+
+  def destroy_mission_status
+    self.mission_status.map(&:destroy)
   end
 end

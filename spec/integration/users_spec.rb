@@ -238,7 +238,7 @@ describe 'Users API', type: :request do
   path '/users/{sync_user}/current_location' do
     get 'Retrieves the current location of a user' do
       tags 'Users'
-      operationId 'getUserCurrentLocation'
+      operationId 'getUserUserCurrentLocation'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -249,7 +249,7 @@ describe 'Users API', type: :request do
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['current_location']).not_to be_empty
-          expect(json['current_location']['locationDetail']['lat']).to be nil
+          expect(json['current_location']['location_detail']['lat']).to be nil
         end
       end
 

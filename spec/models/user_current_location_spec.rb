@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe CurrentLocation, type: :model do
+RSpec.describe UserCurrentLocation, type: :model do
 
   before(:all) do
     @company = create(:company,
@@ -10,11 +10,11 @@ RSpec.describe CurrentLocation, type: :model do
                    sync_user: 'mapo-user')
 
     @date = 2.days.ago.strftime('%FT%T.%L%:z')
-    @current_location = CurrentLocation.create(
+    @current_location = UserCurrentLocation.create(
       company: @company,
       user: @user,
       date: @date,
-      locationDetail: {
+      location_detail: {
         lat: -0.56,
         lon: 44.85,
         date: @date,
@@ -30,7 +30,7 @@ RSpec.describe CurrentLocation, type: :model do
       }
     )
 
-    @current_locations = create_list(:current_location, 5, company: @company, user: @user)
+    @current_locations = create_list(:user_current_location, 5, company: @company, user: @user)
   end
 
   subject { @current_location }
@@ -39,31 +39,31 @@ RSpec.describe CurrentLocation, type: :model do
     it { is_expected.to be_valid }
 
     it { expect(@current_location.date).to eq(@date) }
-    it { expect(@current_location.locationDetail['lat']).to eq(-0.56) }
-    it { expect(@current_location.locationDetail['lon']).to eq(44.85) }
-    it { expect(@current_location.locationDetail['date']).to eq(@date) }
+    it { expect(@current_location.location_detail['lat']).to eq(-0.56) }
+    it { expect(@current_location.location_detail['lon']).to eq(44.85) }
+    it { expect(@current_location.location_detail['date']).to eq(@date) }
 
     it 'set sync_user value automatically' do
       expect(@current_location.sync_user).to eq(@user.sync_user)
     end
 
     it 'serializes model' do
-      serialized = ActiveModelSerializers::SerializableResource.new(@current_location, serializer: CurrentLocationSerializer).as_json
+      serialized = ActiveModelSerializers::SerializableResource.new(@current_location, serializer: UserCurrentLocationSerializer).as_json
       expect(serialized[:current_location][:id]).to eq(@current_location.id)
     end
   end
 
   context 'Views' do
     it 'returns all current locations' do
-      expect(CurrentLocation.all.to_a.size).to eq(7)
+      expect(UserCurrentLocation.all.to_a.size).to eq(7)
     end
 
-    it 'returns all CurrentLocations having the company id' do
-      expect(CurrentLocation.by_company(key: @company.id).to_a.size).to eq(7)
+    it 'returns all UserCurrentLocations having the company id' do
+      expect(UserCurrentLocation.by_company(key: @company.id).to_a.size).to eq(7)
     end
 
-    it 'returns all CurrentLocations having the user' do
-      expect(CurrentLocation.by_user(key: @user.id).to_a.size).to eq(7)
+    it 'returns all UserCurrentLocations having the user' do
+      expect(UserCurrentLocation.by_user(key: @user.id).to_a.size).to eq(7)
     end
   end
 
@@ -81,7 +81,7 @@ RSpec.describe CurrentLocation, type: :model do
     it 'cannot update company id' do
       @current_location.update(company_id: 'other_company_id')
       expect(@current_location.errors.first[0]).to eq(:company_id)
-      expect(@current_location.errors.first[1]).to eq(I18n.t('couchbase.errors.models.current_location.company_id_immutable'))
+      expect(@current_location.errors.first[1]).to eq(I18n.t('couchbase.errors.models.user_current_location.company_id_immutable'))
       @current_location.update(company_id: @company.id)
     end
   end
