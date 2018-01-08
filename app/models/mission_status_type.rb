@@ -3,6 +3,7 @@
 # {
 #   "type": "mission_status_type",
 #   "company_id": "company_XXXXX",
+#   "svg_path": "M604.1,440.2h-19.1V333.2c0,...",
 #   "label": "Completed",
 #   "color": "#228b22"
 # }
@@ -11,6 +12,7 @@
 class MissionStatusType < ApplicationRecord
 
   # == Attributes ===========================================================
+  attribute :svg_path, type: String
   attribute :color, type: String
   attribute :label, type: String
 

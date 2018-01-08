@@ -34,8 +34,6 @@ class MissionStatusAction < ApplicationRecord
   validates_presence_of :previous_mission_status_type_id
   validates_presence_of :next_mission_status_type_id
 
-  validates_presence_of :label
-
   # == Views ===============================================================
   view :all
   view :by_company, emit_key: :company_id

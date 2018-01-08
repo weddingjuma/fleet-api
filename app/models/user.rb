@@ -14,7 +14,7 @@
 #     "mission.creating",
 #     "mission.updating",
 #     "mission.deleting",
-#     "user_current_location.creatinge",
+#     "user_current_location.creating",
 #     "user_current_location.updating",
 #     "user_track.updating"
 #     "user_track.updating"
