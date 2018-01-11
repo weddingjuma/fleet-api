@@ -49,7 +49,7 @@ RSpec.describe UserCurrentLocation, type: :model do
 
     it 'serializes model' do
       serialized = ActiveModelSerializers::SerializableResource.new(@current_location, serializer: UserCurrentLocationSerializer).as_json
-      expect(serialized[:current_location][:id]).to eq(@current_location.id)
+      expect(serialized[:user_current_location][:id]).to eq(@current_location.id)
     end
   end
 
@@ -64,6 +64,18 @@ RSpec.describe UserCurrentLocation, type: :model do
 
     it 'returns all UserCurrentLocations having the user' do
       expect(UserCurrentLocation.by_user(key: @user.id).to_a.size).to eq(7)
+    end
+
+    it 'returns user settings by sync_user or id' do
+      expect(UserCurrentLocation.find_by(@user.id).id).to eq(@user.current_location.id)
+    end
+
+    it 'returns the first user settings' do
+      expect(UserCurrentLocation.first).to be_a(UserCurrentLocation)
+    end
+
+    it 'returns the last user settings' do
+      expect(UserCurrentLocation.last).to be_a(UserCurrentLocation)
     end
   end
 

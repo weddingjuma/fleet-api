@@ -14,7 +14,7 @@ Rails.application.routes.draw do
           end
         end
 
-        resource :current_location, only: [:show]
+        resource :current_location, only: [:show], controller: 'user_current_locations'
       end
 
       resources :companies, only: [:index]

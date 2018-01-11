@@ -96,6 +96,14 @@ RSpec.describe Mission, type: :model do
       expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).strftime('%Y-%m-%d')).size).to eq(6)
       expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).strftime('%Y-%m-%d'), Time.now.strftime('%Y-%m-%d')).size).to eq(5)
     end
+
+    it 'returns the first mission' do
+      expect(Mission.first).to be_a(Mission)
+    end
+
+    it 'returns the last mission' do
+      expect(Mission.last).to be_a(Mission)
+    end
   end
 
   context 'Relationships' do

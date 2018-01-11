@@ -47,6 +47,10 @@ RSpec.describe User, type: :model do
     it 'returns the first user' do
       expect(User.first).to be_a(User)
     end
+
+    it 'returns the last user' do
+      expect(User.last).to be_a(User)
+    end
   end
 
   context 'Views' do
@@ -71,6 +75,11 @@ RSpec.describe User, type: :model do
     it 'returns the parent company' do
       expect(@user.company).to eq(@company)
       expect(@user.company.name).to eq('mapo-user')
+    end
+
+    it 'creates settings along with user' do
+      expect(@user.settings).to be_a(UserSettings)
+      expect(@user.settings.data_connection).to be true
     end
 
     it 'returns its current location if user is a vehicle' do

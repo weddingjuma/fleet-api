@@ -44,6 +44,10 @@ RSpec.describe Company, type: :model do
     it 'returns the first company' do
       expect(Company.first).to be_a(Company)
     end
+
+    it 'returns the last company' do
+      expect(Company.last).to be_a(Company)
+    end
   end
 
   context 'Relationships' do

@@ -2,6 +2,7 @@
 #
 # {
 #   "type": "user_settings",
+#   "user_id": "user:id",
 #   "company_id": "company:id",
 #   "sync_user": "static"
 #   "data_connection": "true"
@@ -43,6 +44,17 @@ class UserSettings < ApplicationRecord
   before_validation :set_sync_user
 
   # == Class Methods ========================================================
+  def self.find_by(id_or_sync)
+    UserSettings.by_user(key: id_or_sync).to_a.first || UserSettings.find(id_or_sync)
+  end
+
+  def self.first
+    UserSettings.all.to_a.first
+  end
+
+  def self.last
+    UserSettings.all.to_a.last
+  end
 
   # == Instance Methods =====================================================
 

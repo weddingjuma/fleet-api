@@ -54,6 +54,17 @@ class UserCurrentLocation < ApplicationRecord
   before_validation :set_sync_user
 
   # == Class Methods ========================================================
+  def self.find_by(id_or_sync)
+    UserCurrentLocation.by_user(key: id_or_sync).to_a.first || UserCurrentLocation.find(id_or_sync)
+  end
+
+  def self.first
+    UserCurrentLocation.all.to_a.first
+  end
+
+  def self.last
+    UserCurrentLocation.all.to_a.last
+  end
 
   # == Instance Methods =====================================================
 

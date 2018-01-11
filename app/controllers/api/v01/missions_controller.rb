@@ -97,6 +97,8 @@ module Api::V01
         ids = []
       end
 
+      skip_authorization if ids.empty?
+
       ids.map do |id|
         mission = Mission.find_by(id, @current_user&.company_id) rescue nil
         if mission

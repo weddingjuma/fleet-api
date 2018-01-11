@@ -9,7 +9,7 @@ describe 'User current locations API', type: :request do
     @users = create_list(:user, 3, company: @company)
 
     @current_locations = @users.map do |user|
-      create(:current_location, company: @company, user: user, location_detail: {
+      create(:user_current_location, company: @company, user: user, location_detail: {
         lat: Random.rand(43.0..50.0),
         lon: Random.rand(-2.0..6.0),
         date: Time.now.strftime('%FT%T.%L%:z')
@@ -31,8 +31,8 @@ describe 'User current locations API', type: :request do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['current_locations']).not_to be_empty
-          expect(json['current_locations'].size).to eq(6)
+          expect(json['user_current_locations']).not_to be_empty
+          expect(json['user_current_locations'].size).to eq(6)
         end
       end
 

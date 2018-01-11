@@ -137,7 +137,7 @@ describe 'Mission status actions API', type: :request do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
         let(:id) { @mission_status_action.id }
-        let(:mission_status_action) { { label: nil } }
+        let(:mission_status_action) { { previous_mission_status_type_id: nil } }
         run_test!
       end
 

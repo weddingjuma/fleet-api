@@ -248,8 +248,8 @@ describe 'Users API', type: :request do
         let(:sync_user) { @users.first.sync_user }
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['current_location']).not_to be_empty
-          expect(json['current_location']['location_detail']['lat']).to be nil
+          expect(json['user_current_location']).not_to be_empty
+          expect(json['user_current_location']['location_detail']['lat']).to be nil
         end
       end
 
@@ -415,6 +415,11 @@ describe 'Users API', type: :request do
 
         describe 'delete mission by ids' do
           let(:ids) { @missions.last(2).map(&:id) }
+          run_test!
+        end
+
+        describe 'delete with no missions' do
+          let(:ids) { [] }
           run_test!
         end
 

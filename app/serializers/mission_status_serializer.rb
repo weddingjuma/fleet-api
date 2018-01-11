@@ -1,4 +1,4 @@
-class MissionStatusTypeSerializer < ActiveModel::Serializer
+class MissionStatusSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
              :mission_id,
