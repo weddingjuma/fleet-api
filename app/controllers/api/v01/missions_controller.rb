@@ -42,8 +42,18 @@ module Api::V01
       user = User.find_by(params[:user_id])
 
       missions = missions_params.map do |mission_params|
+        existing_mission = Mission.by_external_ref(key: [user.company_id, mission_params['external_ref']]).to_a
+
+        # If several missions exists for the same uniq reference, delete all
+        if existing_mission.size > 1
+          existing_mission.map(&:destroy)
+          existing_mission = nil
+        else
+          existing_mission = existing_mission.first
+        end
+
         # Override mission if already exists
-        mission = Mission.by_external_ref(key: [user.company_id, mission_params['external_ref']]).to_a.first || Mission.new
+        mission = existing_mission || Mission.new
         mission.assign_attributes(mission_params)
         mission.user = user
         mission.company = user.company
@@ -100,7 +110,7 @@ module Api::V01
       skip_authorization if ids.empty?
 
       ids.map do |id|
-        mission = Mission.find_by(id, @current_user&.company_id) rescue nil
+        mission = Mission.find(id) rescue nil
         if mission
           authorize mission, :destroy?
           mission.destroy
