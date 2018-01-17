@@ -17,16 +17,12 @@ RUN apt-get update && \
                        apt-get install -y nodejs && \
     cd /srv/app && \
     bundle install --full-index --without test development && \
-    \
-# Minify and update sync function
-    cd ./SyncFunction && \
-    npm run production && \
-    cd .. \
+    cd .. && \
 # Fix permissions
     chown -R www-data:www-data . && \
     \
 # Cleanup Debian packages
-    apt-get remove -y git build-essential cmake libevent-dev && \
+    apt-get remove -y git build-essential cmake libevent-dev apt-transport-https curl && \
     apt-get autoremove -y && \
     apt-get clean && \
     echo -n > /var/lib/apt/extended_states && \
