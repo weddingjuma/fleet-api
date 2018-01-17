@@ -1,0 +1,16 @@
+{
+  "name": "sync",
+  "dependencies": {
+    "expect.js": "0.3.1",
+    "js-beautify": "1.6.14",
+    "mocha": "3.4.2",
+    "node-jq": "1.2.0",
+    "simple-mock": "0.8.0",
+    "synctos": "1.9.1",
+    "uglify-js": "3.3.7"
+  },
+  "scripts": {
+    "test": "node_modules/.bin/mocha",
+    "production": "export sync_min=\"`NODE_ENV=production node ./node_modules/uglify-js/bin/uglifyjs -c -b quote_style=1,beautify=false SyncFunction.js`\" && ./node_modules/node-jq/bin/jq \". .databases.db.sync=\\\"$sync_min\\\"\" -M ../docker/sync-gateway-config.json > sync_tmp.json && mv sync_tmp.json ../docker/sync-gateway-config.json"
+  }
+}
