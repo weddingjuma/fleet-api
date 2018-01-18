@@ -50,6 +50,6 @@ module MapotempoFleet
     # Swagger configuration
     config.x.swagger_docs_base_path = 'http://localhost:3000/'
     config.x.api_contact_email = 'tech@mapotempo.com'
-    config.x.api_contact_url = 'https://github.com/Mapotempo/mapotempo-web'
+    config.x.api_contact_url = 'https://github.com/Mapotempo/fleet-api'
   end
 end

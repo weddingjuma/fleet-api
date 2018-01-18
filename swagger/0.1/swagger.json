@@ -6,7 +6,7 @@
     "contact_email": "tech@mapotempo.com",
     "contact_url": "https://github.com/Mapotempo/mapotempo-web",
     "license": "GNU Affero General Public License 3",
-    "license_url": "https://raw.githubusercontent.com/Mapotempo/mapotempo-web/master/LICENSE",
+    "license_url": "https://raw.githubusercontent.com/Mapotempo/fleet-api/master/LICENSE",
     "description": ""
   },
   "definitions": {

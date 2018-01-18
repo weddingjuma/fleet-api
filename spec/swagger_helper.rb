@@ -21,7 +21,7 @@ RSpec.configure do |config|
         contact_email: MapotempoFleet::Application.config.x.api_contact_email,
         contact_url: MapotempoFleet::Application.config.x.api_contact_url,
         license: 'GNU Affero General Public License 3',
-        license_url: 'https://raw.githubusercontent.com/Mapotempo/mapotempo-web/master/LICENSE',
+        license_url: 'https://raw.githubusercontent.com/Mapotempo/fleet-api/master/LICENSE',
         description: ''
       },
       definitions: {
