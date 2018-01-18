@@ -202,34 +202,6 @@
         }
       }
     },
-    "/user_current_locations": {
-      "get": {
-        "summary": "Get all current locations",
-        "tags": [
-          "Current Locations"
-        ],
-        "operationId": "getUserCurrentLocations",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "responses": {
-          "200": {
-            "description": "all current locations"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      }
-    },
     "/mission_status_actions": {
       "get": {
         "summary": "Retrieves all mission status actions for user company",
@@ -653,6 +625,34 @@
         "responses": {
           "200": {
             "description": "all missions"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/user_current_locations": {
+      "get": {
+        "summary": "Get all current locations",
+        "tags": [
+          "Current Locations"
+        ],
+        "operationId": "getUserCurrentLocations",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "all current locations"
           },
           "401": {
             "description": "bad token"

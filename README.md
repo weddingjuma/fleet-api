@@ -12,20 +12,21 @@ API server for Mapotempo Route
 7. [Initialization](#initialization)
 7. [Update Sync Function](#update-sync-function)
 8. [Running](#running)
+8. [Swagger](#swagger)
 
 ### Project dependencies
 
 Install Ruby (>= 2.3 is needed) and other dependencies from system package.
 
-First, install Ruby :
+First, install Ruby:
 
     sudo apt-get install ruby2.3 ruby2.3-dev
 
-You need some others libs :
+You need some others libs:
 
     sudo apt-get build-essential libz-dev libicu-dev libevent-dev
     
-Next, install docker to run Couchbase :
+Next, install docker to run Couchbase:
 
     sudo apt-get docker docker-compose
 
@@ -59,7 +60,7 @@ Add following code :
     export GEM_HOME=~/.gem/ruby/2.3
     export PATH=$PATH:~/.gem/ruby/2.3/bin
 
-Save changes and Quit
+Save changes and quit
 
 Run this command to activate your modifications :
 
@@ -69,15 +70,15 @@ Run this command to activate your modifications :
 
 For the following installation, your current working directory needs to be the mapotempo-fleet root directory.
 
-Clone the project :
+Clone the project:
 
     git clone git@gitlab.com:mapotempo/mapotempo-fleet.git
 
-Go to project directory :
+Go to project directory:
 
     cd mapotempo-fleet
 
-Then install gem project dependencies with :
+Then install gem project dependencies with:
 
     bundle install
 
@@ -90,7 +91,7 @@ Note: In case the default Python in the system is Python 3, you must setup a vir
 
 ### Initialization
 
-First, initialize docker environment before building it: 
+First, initialize docker environment before building it:
 
     cd docker
     ./initialize-sync-func.sh
@@ -113,10 +114,12 @@ Restart the docker.
 
 ### Update Sync Function
 
-To update the sync function (in ./SyncFunction/SyncFunction.js):
+Only needed, if sync function has changed.
 
-    cd ./SyncFunction
-    npm run production
+To update the sync function (in ./SyncFunction/SyncFunction.js) for docker (docker/sync-gateway-config.json):
+
+    cd docker
+    ./initialize-sync-func.sh
     
 Restart SyncGateway in the docker.
 
@@ -125,3 +128,9 @@ Restart SyncGateway in the docker.
 Run the docker containing couchbase (8091), sync-gateway (4984 and 4985) and fleet-api (8084): 
 
     sudo docker-compose up
+
+## Swagger
+
+Generate the Swagger JSON file:
+
+    rails rswag:specs:swaggerize
