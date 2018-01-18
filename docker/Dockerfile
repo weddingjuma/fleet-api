@@ -18,6 +18,9 @@ RUN apt-get update && \
     cd /srv/app && \
     bundle install --full-index --without test development && \
     \
+    cd ./SyncFunction && \
+    npm install && \
+    cd .. && \
 # Fix permissions
     chown -R www-data:www-data . && \
     \
