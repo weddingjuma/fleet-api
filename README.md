@@ -87,18 +87,28 @@ Note: In case the default Python in the system is Python 3, you must setup a vir
     virtualenv -p python2.7 venv2.7
     source venv2.7/bin/activate
 
+You need to install nodeJS for Sync Function:
+
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+    curl -sL https://deb.nodesource.com/setup_8.x | bash -
+    apt install nodejs
+    
+Then install required packages:
+
+    cd ./SynFunction
+    npm i
+
 ## Configuration for docker
 
 ### Initialization
 
-First, initialize docker environment before building it:
-
-    cd docker
-    ./initialize-sync-func.sh
-
-The build the docker image:
+Build the docker image:
 
     sudo docker-compose build
+
+Update sync function through docker:
+
+    sudo docker-compose run wrapper bash ./initialize-sync-func.sh
 
 Run the docker:
 

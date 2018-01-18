@@ -8,6 +8,7 @@ services:
     ports:
       - "8084:80" # HOST:CONTAINER, edit only HOST part
     volumes:
+        - ./sync-gateway-config.json:/srv/app/docker/sync-gateway-config.json
         - ./production.rb:/srv/app/config/environments/production.rb
         - ./production.rb:/srv/app/config/environments/development.rb
     restart: always

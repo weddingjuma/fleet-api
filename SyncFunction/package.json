@@ -11,6 +11,6 @@
   },
   "scripts": {
     "test": "node_modules/.bin/mocha",
-    "production": "export sync_min=\"`NODE_ENV=production node ./node_modules/uglify-js/bin/uglifyjs -c -b quote_style=1,beautify=false SyncFunction.js`\" && ./node_modules/node-jq/bin/jq \". .databases.db.sync=\\\"$sync_min\\\"\" -M ../docker/sync-gateway-config.json > sync_tmp.json && mv sync_tmp.json ../docker/sync-gateway-config.json"
+    "production": "export sync_min=\"`NODE_ENV=production node ./node_modules/uglify-js/bin/uglifyjs -c -b quote_style=1,beautify=false SyncFunction.js`\" && ./node_modules/node-jq/bin/jq \". .databases.db.sync=\\\"$sync_min\\\"\" -M ../docker/sync-gateway-config.json > sync_tmp.json && cat sync_tmp.json > ../docker/sync-gateway-config.json && rm sync_tmp.json"
   }
 }

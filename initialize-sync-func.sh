@@ -9,6 +9,6 @@ die() {
 
 set -e
 
-cd ../SyncFunction
+cd ./SyncFunction
 npm run production
 cd -
