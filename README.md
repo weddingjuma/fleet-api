@@ -81,6 +81,11 @@ Then install gem project dependencies with :
 
     bundle install
 
+Note: In case the default Python in the system is Python 3, you must setup a virtualenv with Python 2 to be able to compile native gem libuv. So before running `bundle install`:
+
+    virtualenv -p python2.7 venv2.7
+    source venv2.7/bin/activate
+
 ## Configuration for docker
 
 ### Initialization
