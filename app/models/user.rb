@@ -22,7 +22,8 @@
 #   "type" : "user",
 #   "_id" : "user_XXXXX_XXXXX_XXXX_XXXXX"
 #   "company_id" : "company_XXXXX_XXXXX_XXXX_XXXXX",
-#   "sync_user" : "chauffeur_1",
+#   "name" : "chauffeur_1",
+#   "sync_user" : "aze54az6e4az564s4f5sd4f",
 #   "email" : "chauffeur_1@mapotempo.com",
 #   "vehicle" : true,
 #   "color": "#228b22"
@@ -44,6 +45,7 @@ class User < ApplicationRecord
 
   # == Attributes ===========================================================
   attribute :sync_user, type: String
+  attribute :name, type: String
   attribute :email, type: String
   attribute :vehicle, type: Boolean
   attribute :color, type: String
@@ -68,6 +70,8 @@ class User < ApplicationRecord
   validates_presence_of :email
   ensure_unique :email
 
+  validates_presence_of :name
+
   validates_presence_of :password
 
   validate :no_special_characters
@@ -77,12 +81,14 @@ class User < ApplicationRecord
 
   # == Views ===============================================================
   view :all
+  view :by_name, emit_key: :name
   view :by_sync_user, emit_key: :sync_user
   view :by_company, emit_key: :company_id
   view :by_token, emit_key: :api_key
 
   # == Callbacks ============================================================
-  before_create :generate_api_key, :generate_sync_user, :ensure_vehicle
+  before_validation :generate_sync_user
+  before_create :generate_api_key, :create_sync_gateway_user, :ensure_vehicle
   after_create :add_location_for_vehicle
   after_create :set_settings
 
@@ -124,6 +130,11 @@ class User < ApplicationRecord
 
   private
 
+  def generate_sync_user
+    # Convert user email to sha256 to generate a uniq sync_user, used for login
+    self.sync_user = Digest::SHA256.hexdigest(self.email)
+  end
+
   def no_special_characters
     if self.sync_user !~ /^[a-zA-Z0-9_\-]*$/
       errors.add(:sync_user, I18n.t('couchbase.errors.models.user.no_special_characters'))
@@ -145,9 +156,10 @@ class User < ApplicationRecord
     self.api_key = api_key
   end
 
-  def generate_sync_user
+  def create_sync_gateway_user
     return if Rails.env.test?
 
+    # Create the user in sync gateway
     response = HTTP.post("#{Rails.configuration.x.sync_gateway_url}_user/", json: { 'name': self.sync_user, 'password': @raw_password, 'email': self.email, 'disabled': false })
 
     if response.code != 201
@@ -192,7 +204,7 @@ class User < ApplicationRecord
 
     return unless sync_user_changed? || email_changed? || @raw_password
 
-    response = HTTP.put("#{Rails.configuration.x.sync_gateway_url}_user/#{self.sync_user}", json: { 'name': self.sync_user, 'email': self.email, password: @raw_password }.compact)
+    response = HTTP.put("#{Rails.configuration.x.sync_gateway_url}_user/#{self.sync_user}", json: { 'name': self.sync_user, 'email': self.email, 'password': @raw_password }.compact)
 
     if response.code != 200
       errors.add(:base, I18n.t('couchbase.errors.models.user.update_sync_user'))

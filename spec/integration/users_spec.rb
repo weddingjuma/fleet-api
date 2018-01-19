@@ -6,7 +6,7 @@ describe 'Users API', type: :request do
     @company = create(:company, name: 'mapo-company')
     @user = User.create(
       company: @company,
-      sync_user: 'mapotempo-user',
+      name: 'mapotempo-user',
       email: 'test@mapotempo.com',
       password: 'password',
       vehicle: false
@@ -67,22 +67,23 @@ describe 'Users API', type: :request do
 
       response '200', 'user created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user) {  { sync_user: 'user_name', password: 'password', email: 'user@mapotempo.com', roles: %w(mission.creating mission.updating mission.deleting) } }
+        let(:user) {  { name: 'user_name', email: 'user@mapotempo.com', password: 'password', roles: %w(mission.creating mission.updating mission.deleting) } }
         run_test! do |response|
           json = JSON.parse(response.body)
+          expect(json['user']['name']).not_to be_empty
           expect(json['user']['sync_user']).not_to be_empty
         end
       end
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user) { { sync_user: 'user_name', password: nil, email: 'user@mapotempo.com', roles: %w(creating) } }
+        let(:user) { { name: 'user_name', password: nil, email: 'user@mapotempo.com', roles: %w(creating) } }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
-        let(:user) { { sync_user: 'user_name', password: 'password', email: 'user@mapotempo.com' } }
+        let(:user) { { name: 'user_name', password: 'password', email: 'user@mapotempo.com' } }
         run_test!
       end
     end
@@ -151,18 +152,18 @@ describe 'Users API', type: :request do
       response '200', 'user updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @users.second.sync_user }
-        let(:user) { { sync_user: 'test' } }
+        let(:user) { { name: 'test' } }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['user']).not_to be_empty
-          expect(json['user']['sync_user']).to eq('test')
+          expect(json['user']['name']).to eq('test')
         end
       end
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @users.third.sync_user }
-        let(:user) { { sync_user: nil } }
+        let(:user) { { name: nil, sync_user: nil } }
         run_test!
       end
 

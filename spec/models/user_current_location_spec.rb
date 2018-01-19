@@ -7,7 +7,7 @@ RSpec.describe UserCurrentLocation, type: :model do
                       name: 'mapo-company')
     @user = create(:user,
                    company: @company,
-                   sync_user: 'mapo-user')
+                   name: 'mapo-user')
 
     @date = 2.days.ago.strftime('%FT%T.%L%:z')
     @current_location = UserCurrentLocation.create(
@@ -45,6 +45,10 @@ RSpec.describe UserCurrentLocation, type: :model do
 
     it 'set sync_user value automatically' do
       expect(@current_location.sync_user).to eq(@user.sync_user)
+    end
+
+    it 'set name value automatically' do
+      expect(@current_location.name).to eq(@user.name)
     end
 
     it 'serializes model' do

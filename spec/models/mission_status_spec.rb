@@ -7,7 +7,7 @@ RSpec.describe MissionStatus, type: :model do
                       name: 'mapo-user')
     @user = create(:user,
                    company: @company,
-                   sync_user: 'mapo-user')
+                   name: 'mapo-user')
     @todo_status_type = create(:mission_status_type,
                                company: @company,
                                label: 'To do',

@@ -7,7 +7,7 @@ RSpec.describe UserTrack, type: :model do
                       name: 'mapo-company')
     @user = create(:user,
                    company: @company,
-                   sync_user: 'mapo-user')
+                   name: 'mapo-user')
 
     @date = 2.days.ago.strftime('%FT%T.%L%:z')
     @track = UserTrack.create(

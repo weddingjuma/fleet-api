@@ -56,7 +56,7 @@ RSpec.configure do |config|
         user_required: {
           type: 'object',
           properties: {
-            sync_user: { type: :string },
+            name: { type: :string },
             email: { type: :string },
             password: { type: :string },
             roles: { type: :array, items: { type: :string } }
@@ -66,7 +66,7 @@ RSpec.configure do |config|
         user: {
           type: 'object',
           properties: {
-            sync_user: { type: :string },
+            name: { type: :string },
             email: { type: :string },
             password: { type: :string },
             roles: { type: :array, items: { type: :string } }

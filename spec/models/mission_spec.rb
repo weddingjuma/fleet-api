@@ -8,7 +8,7 @@ RSpec.describe Mission, type: :model do
                       name: 'mapo-company')
     @user = create(:user,
                    company: @company,
-                   sync_user: 'mapo-user')
+                   name: 'mapo-user')
 
     @todo_status_type = create(:mission_status_type, company: @company, label: 'To do', color: '#ff0000')
     @company.update_attribute(:default_mission_status_type_id, @todo_status_type.id)

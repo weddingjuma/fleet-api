@@ -45,13 +45,13 @@ namespace :mapotempo_fleet do
     company = FactoryBot.create(:company, name: 'default')
 
     # Users for connexion
-    FactoryBot.create(:user, company: company, sync_user: 'default', password: '123456', email: 'fleet@mapotempo.com', vehicle: false)
+    FactoryBot.create(:user, company: company, name: 'default', password: '123456', email: 'fleet@mapotempo.com', vehicle: false)
 
     # Driver users for testing purpose
     driver_roles = %w[mission.updating mission.deleting mission_status.creating mission_status.updating mission_status.deleting user_settings.creating user_settings.updating user_current_location.creating user_current_location.updating user_track.creating user_track.updating]
-    driver_1 = FactoryBot.create(:user, company: company, sync_user: 'driver1', password: '123456', email: 'driver1@mapotempo.com', vehicle: true, roles: driver_roles)
-    driver_2 = FactoryBot.create(:user, company: company, sync_user: 'driver2', password: '123456', email: 'driver2@mapotempo.com', vehicle: true, roles: driver_roles)
-    driver_3 = FactoryBot.create(:user, company: company, sync_user: 'driver3', password: '123456', email: 'driver3@mapotempo.com', vehicle: true, roles: driver_roles)
+    driver_1 = FactoryBot.create(:user, company: company, name: 'driver1', password: '123456', email: 'driver1@mapotempo.com', vehicle: true, roles: driver_roles)
+    driver_2 = FactoryBot.create(:user, company: company, name: 'driver2', password: '123456', email: 'driver2@mapotempo.com', vehicle: true, roles: driver_roles)
+    driver_3 = FactoryBot.create(:user, company: company, name: 'driver3', password: '123456', email: 'driver3@mapotempo.com', vehicle: true, roles: driver_roles)
 
     # Mission status types
     todo_status_type = FactoryBot.create(:mission_status_type, company: company, label: 'To do', color: '#337AB7', svg_path: 'M 29.62266,0 C 21.6892,0 14.3112,3.06885 8.69003,8.69003 3.06885,14.3112 0,21.6892 0,29.62266 l 0,68.76068 c 0,7.93347 3.06885,15.30546 8.69003,20.92663 C 14.3112,124.93115 21.6892,128 29.62266,128 l 68.76065,0 c 7.93347,0 15.30549,-3.06885 20.92666,-8.69003 C 124.93115,113.6888 128,106.31681 128,98.38334 l 0,-68.76068 C 128,21.6892 124.93115,14.3112 119.30997,8.69003 113.6888,3.06885 106.31678,0 98.38331,0 L 29.62266,0 Z m 0,22.21849 68.76065,0 c 2.25524,0 3.59459,0.55036 5.2212,2.177 1.62664,1.62664 2.18297,2.97193 2.18297,5.22717 l 0,68.76068 c 0,2.25524 -0.55633,3.59456 -2.18297,5.2212 -1.62661,1.62661 -2.96593,2.18297 -5.2212,2.18297 l -68.76065,0 c -2.25527,0 -3.60056,-0.55636 -5.2272,-2.18297 -1.62664,-1.62664 -2.17697,-2.96596 -2.17697,-5.2212 l 0,-68.76068 c 0,-2.25524 0.55033,-3.60053 2.17697,-5.22717 1.62664,-1.62664 2.97196,-2.177 5.2272,-2.177 z')

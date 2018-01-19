@@ -20,6 +20,7 @@ class UserCurrentLocationSerializer < ActiveModel::Serializer
              :company_id,
              :user_id,
              :sync_user,
+             :name,
              :date,
              :location_detail
 end

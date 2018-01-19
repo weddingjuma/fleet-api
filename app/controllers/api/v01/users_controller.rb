@@ -86,6 +86,7 @@ module Api::V01
     def user_params
       params.permit(
         :sync_user,
+        :name,
         :email,
         :password,
         :vehicle,

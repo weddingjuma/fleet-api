@@ -7,7 +7,7 @@ RSpec.describe UserSettings, type: :model do
                       name: 'mapo-company')
     @user = create(:user,
                    company: @company,
-                   sync_user: 'mapo-user')
+                   name: 'mapo-user')
 
     @user_settings = UserSettings.create(company: @company,
                                          user: @user,

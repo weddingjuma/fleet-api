@@ -19,6 +19,7 @@ class UserSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
              :sync_user,
+             :name,
              :email,
              :vehicle,
              :color,

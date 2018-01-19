@@ -9,7 +9,7 @@ RSpec.describe User, type: :model do
 
     @user = User.create(
       company: @company,
-      sync_user: 'mapotempo-user',
+      name: 'mapotempo-user',
       email: 'test@mapotempo.com',
       password: 'password',
       vehicle: false
@@ -23,10 +23,16 @@ RSpec.describe User, type: :model do
   context 'Object' do
     it { is_expected.to be_valid }
 
-    it { expect(@user.sync_user).to eq('mapotempo-user') }
+    it { expect(@user.name).to eq('mapotempo-user') }
+
+    it 'generate sync user on creation' do
+      expect(@user.sync_user).to be_a(String)
+      expect(@user.sync_user).not_to be_empty
+    end
 
     it 'generate api key on creation' do
-      expect(@user.api_key).not_to be_nil
+      expect(@user.api_key).to be_a(String)
+      expect(@user.api_key).not_to be_empty
     end
 
     it 'ensure vehicle value' do
@@ -59,7 +65,11 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns a user by its name' do
-      expect(User.by_sync_user(key: 'mapotempo-user').to_a.size).to eq(1)
+      expect(User.by_name(key: 'mapotempo-user').to_a.size).to eq(1)
+    end
+
+    it 'returns a user by its sync user' do
+      expect(User.by_sync_user(key: @user.sync_user).to_a.size).to eq(1)
     end
 
     it 'returns all users having the company id' do

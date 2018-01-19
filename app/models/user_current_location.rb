@@ -21,7 +21,8 @@
 # {
 #   "company_id": "company:id",
 #   "user_id": "user:id",
-#   "sync_user": "user_name",
+#   "sync_user": "sync_user",
+#   "name": "user_name",
 #   "date": "2017-08-23T18:43:56.150+02:00",
 #   "location_detail": [
 #     {
@@ -69,7 +70,7 @@ class UserCurrentLocation < ApplicationRecord
   view :by_user, emit_key: :user_id
 
   # == Callbacks ============================================================
-  before_validation :set_sync_user
+  before_validation :set_sync_user, :set_name
 
   # == Class Methods ========================================================
   def self.find_by(id_or_sync)
@@ -90,6 +91,10 @@ class UserCurrentLocation < ApplicationRecord
 
   def set_sync_user
     self.sync_user = self.user&.sync_user
+  end
+
+  def set_name
+    self.name = self.user&.name
   end
 
   def company_id_immutable
