@@ -25,7 +25,7 @@ First, install Ruby:
 You need some others libs:
 
     sudo apt-get build-essential libz-dev libicu-dev libevent-dev
-    
+
 Next, install docker to run Couchbase:
 
     sudo apt-get docker docker-compose
@@ -92,7 +92,7 @@ You need to install nodeJS for Sync Function:
     curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
     curl -sL https://deb.nodesource.com/setup_8.x | bash -
     apt install nodejs
-    
+
 Then install required packages:
 
     cd ./SynFunction
@@ -108,11 +108,11 @@ Build the docker image:
 
 Update sync function through docker:
 
-    sudo docker-compose run wrapper bash ./initialize-sync-func.sh
+    sudo docker-compose -p fleet run --rm wrapper ./initialize-sync-func.sh
 
 Run the docker:
 
-    sudo docker-compose up
+    sudo docker-compose -p fleet up
 
 Initialize Couchbase:
 
@@ -130,14 +130,14 @@ To update the sync function (in ./SyncFunction/SyncFunction.js) for docker (dock
 
     cd docker
     ./initialize-sync-func.sh
-    
+
 Restart SyncGateway in the docker.
 
 ### Running
 
 Run the docker containing couchbase (8091), sync-gateway (4984 and 4985) and fleet-api (8084): 
 
-    sudo docker-compose up
+    sudo docker-compose -p fleet up
 
 ## Swagger
 
