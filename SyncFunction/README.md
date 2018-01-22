@@ -63,12 +63,11 @@ TODO
 {
   "company_id": "company_XXXXX_XXXXX_XXXX_XXXXX",
   "type": "user",
-  "sync_user": "chauffeur_1",
-  "roles": ["mission-update", "mission-deleting", "mission-creating"],
-  "channels": [
-     "XXXX",
-     "XXXX",
-  ],
+  "sync_user": "<sha256_from_email>",
+  "email": "chauffeur_1@mapotempo.com",
+  "name": "chauffeur_1",
+  "vehicle": true,
+  "color": "#ffffff",
   "roles": [
     "mission.creating",
     "mission.updating",
@@ -77,6 +76,10 @@ TODO
     "current_location.updating",
     "track.creating",
     "track.updating"
+  ],
+  "channels": [
+     "XXXX",
+     "XXXX"
   ],
   "_id": "user_de20ef854f96c00fe46089d16f0554be"
 }

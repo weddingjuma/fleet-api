@@ -22,9 +22,9 @@
 #   "type" : "user",
 #   "_id" : "user_XXXXX_XXXXX_XXXX_XXXXX"
 #   "company_id" : "company_XXXXX_XXXXX_XXXX_XXXXX",
-#   "name" : "chauffeur_1",
 #   "sync_user" : "aze54az6e4az564s4f5sd4f",
 #   "email" : "chauffeur_1@mapotempo.com",
+#   "name" : "chauffeur_1",
 #   "vehicle" : true,
 #   "color": "#228b22"
 #   "password_hash" : "mqsfqsdjbfhvafuysdfqfaze",
