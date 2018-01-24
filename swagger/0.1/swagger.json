@@ -4,7 +4,7 @@
     "title": "API v0.1",
     "version": "v0.1",
     "contact_email": "tech@mapotempo.com",
-    "contact_url": "https://github.com/Mapotempo/mapotempo-web",
+    "contact_url": "https://github.com/Mapotempo/fleet-api",
     "license": "GNU Affero General Public License 3",
     "license_url": "https://raw.githubusercontent.com/Mapotempo/fleet-api/master/LICENSE",
     "description": ""
@@ -61,7 +61,7 @@
     "user_required": {
       "type": "object",
       "properties": {
-        "sync_user": {
+        "name": {
           "type": "string"
         },
         "email": {
@@ -86,7 +86,7 @@
     "user": {
       "type": "object",
       "properties": {
-        "sync_user": {
+        "name": {
           "type": "string"
         },
         "email": {

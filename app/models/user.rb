@@ -132,7 +132,7 @@ class User < ApplicationRecord
 
   def generate_sync_user
     # Convert user email to sha256 to generate a uniq sync_user, used for login
-    self.sync_user = Digest::SHA256.hexdigest(self.email)
+    self.sync_user = Digest::SHA256.hexdigest(self.email) if self.email
   end
 
   def no_special_characters
