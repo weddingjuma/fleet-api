@@ -8,16 +8,16 @@ services:
     ports:
       - "8084:80" # HOST:CONTAINER, edit only HOST part
     volumes:
-        - ./sync-gateway-config.json:/srv/app/docker/sync-gateway-config.json
-        - ./production.rb:/srv/app/config/environments/production.rb
-        - ./production.rb:/srv/app/config/environments/development.rb
+      - ./sync-gateway-config.json:/srv/app/docker/sync-gateway-config.json
+      - ./production.rb:/srv/app/config/environments/production.rb
+      - ./production.rb:/srv/app/config/environments/development.rb
     restart: always
     links:
       - redis-cache
     environment:
-      APP_ENV: production # Switch to "development" for more traces
-      COUCHBASE_PASSWORD: 123456
-      SECRET_KEY_BASE: wieTipuij4RoaRei1AaGhohmutoh9ahGeeheith3cuquajah0oi2uux6Bie4uqu6leiwo9Ooquu7hiec6Coh1eemahng4ainap9seew8queid8sashoixigahsee1zie
+      - APP_ENV:production # Switch to "development" for more traces
+      - COUCHBASE_PASSWORD:123456
+      - SECRET_KEY_BASE:wieTipuij4RoaRei1AaGhohmutoh9ahGeeheith3cuquajah0oi2uux6Bie4uqu6leiwo9Ooquu7hiec6Coh1eemahng4ainap9seew8queid8sashoixigahsee1zie
 
   redis-cache:
     image: redis:${REDIS_VERSION:-3.2-alpine}

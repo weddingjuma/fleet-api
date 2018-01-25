@@ -112,11 +112,11 @@ Update sync function through docker:
 
 Run the docker:
 
-    sudo docker-compose -p fleet up
+    sudo docker-compose -p fleet up -d
 
 Initialize Couchbase:
 
-    ./initialize-db.sh
+    ./initialize-db.sh fleet
 
 It creates a cluster, a bucket and an admin user.
 
