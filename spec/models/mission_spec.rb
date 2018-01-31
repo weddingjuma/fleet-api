@@ -117,6 +117,10 @@ RSpec.describe Mission, type: :model do
       expect(@mission.user).to eq(@user)
     end
 
+    it 'returns its mission status' do
+      expect(@mission.mission_statuses.to_a.count).to eq(1)
+    end
+
     it 'has an optional mission status type' do
       mission_status_type = create(:mission_status_type, company: @company)
       @mission.mission_status_type = mission_status_type

@@ -82,7 +82,7 @@ class Mission < ApplicationRecord
   belongs_to :mission_status_type
 
   # mission status history
-  has_many :mission_status
+  has_many :mission_statuses
 
   # == Validations ==========================================================
   validates_presence_of :company_id
@@ -107,7 +107,9 @@ class Mission < ApplicationRecord
   view :by_external_ref, emit_key: [:company_id, :external_ref]
 
   # == Callbacks ============================================================
-  before_validation :set_sync_user, :add_default_status_type, :create_initial_status
+  before_validation :set_sync_user, :add_default_status_type
+
+  after_create :create_initial_status
 
   after_save :update_placeholder
 
@@ -153,7 +155,7 @@ class Mission < ApplicationRecord
   end
 
   def create_initial_status
-    MissionStatus.create(company_id: self.company_id, mission_id: self.id, mission_status_type_id: self.company.default_mission_status_type_id, date: self.date.to_date.strftime('%FT%T.%L%:z'))
+    MissionStatus.create!(company_id: self.company_id, mission_id: self.id, mission_status_type_id: self.company.default_mission_status_type_id, date: self.date.to_date.strftime('%FT%T.%L%:z'))
   end
 
   def company_id_immutable
@@ -175,6 +177,6 @@ class Mission < ApplicationRecord
   end
 
   def destroy_mission_status
-    self.mission_status.map(&:destroy)
+    self.mission_statuses.map(&:destroy)
   end
 end
