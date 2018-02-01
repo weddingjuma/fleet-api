@@ -83,6 +83,7 @@ class User < ApplicationRecord
   view :all
   view :by_name, emit_key: :name
   view :by_sync_user, emit_key: :sync_user
+  view :by_email, emit_key: :email
   view :by_company, emit_key: :company_id
   view :by_token, emit_key: :api_key
 
