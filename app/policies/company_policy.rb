@@ -32,6 +32,10 @@ class CompanyPolicy
     same_company?
   end
 
+  def create?
+    connected?
+  end
+
   private
 
   def connected?

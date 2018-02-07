@@ -18,6 +18,7 @@
 class UserSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
+             :api_key,
              :sync_user,
              :name,
              :email,

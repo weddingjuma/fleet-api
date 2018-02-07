@@ -67,5 +67,21 @@ class Company < ApplicationRecord
   end
 
   # == Instance Methods =====================================================
+  def add_default_workflow
+    return unless self.id
+
+    DefaultWorkflow.new(self)
+  end
+
+  def create_admin_user(email, name = 'admin')
+    return unless self.id
+
+    User.create!(
+      company: self,
+      name: name,
+      email: email,
+      vehicle: false
+    )
+  end
 
 end

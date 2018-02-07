@@ -25,6 +25,12 @@ RSpec.configure do |config|
         description: ''
       },
       definitions: {
+        company: {
+          type: 'object',
+          properties: {
+            name: { type: :string }
+          }
+        },
         location: {
           type: 'object',
           properties: {

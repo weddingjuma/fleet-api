@@ -42,6 +42,7 @@ class ApplicationController < ActionController::API
   protected
 
   # Authenticate the user with token based authentication
+  # Check first if it's admin
   def authenticate
     authenticate_token || render_unauthorized
   end

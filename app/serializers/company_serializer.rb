@@ -18,5 +18,10 @@
 class CompanySerializer < ActiveModel::Serializer
   attributes :id,
              :name,
-             :default_mission_status_type_id
+             :default_mission_status_type_id,
+             :admin_user
+
+  def admin_user
+    UserSerializer.new(instance_options[:with_admin]).attributes if instance_options[:with_admin]
+  end
 end

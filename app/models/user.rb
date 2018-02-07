@@ -72,7 +72,7 @@ class User < ApplicationRecord
 
   validates_presence_of :name
 
-  validates_presence_of :password
+  validates_presence_of :password, if: -> { vehicle }
 
   validate :no_special_characters
   validate :company_id_immutable, on: :update
@@ -89,7 +89,7 @@ class User < ApplicationRecord
 
   # == Callbacks ============================================================
   before_validation :generate_sync_user
-  before_create :generate_api_key, :create_sync_gateway_user, :ensure_vehicle
+  before_create :ensure_vehicle, :generate_api_key, :create_sync_gateway_user
   after_create :add_location_for_vehicle
   after_create :set_settings
 
@@ -131,6 +131,10 @@ class User < ApplicationRecord
 
   private
 
+  def ensure_vehicle
+    self.vehicle = true if self.vehicle.nil?
+  end
+
   def generate_sync_user
     # Convert user email to sha256 to generate a uniq sync_user, used for login
     self.sync_user = Digest::SHA256.hexdigest(self.email) if self.email
@@ -160,6 +164,8 @@ class User < ApplicationRecord
   def create_sync_gateway_user
     return if Rails.env.test?
 
+    return unless self.vehicle
+
     # Create the user in sync gateway
     response = HTTP.post("#{Rails.configuration.x.sync_gateway_url}_user/", json: { 'name': self.sync_user, 'password': @raw_password, 'email': self.email, 'disabled': false })
 
@@ -167,10 +173,6 @@ class User < ApplicationRecord
       errors.add(:base, I18n.t('couchbase.errors.models.user.sync_user'))
       throw :abort
     end
-  end
-
-  def ensure_vehicle
-    self.vehicle = true if self.vehicle.nil?
   end
 
   def role_format
@@ -203,6 +205,8 @@ class User < ApplicationRecord
   def update_sync_user
     return if Rails.env.test?
 
+    return unless self.vehicle
+
     return unless sync_user_changed? || email_changed? || @raw_password
 
     response = HTTP.put("#{Rails.configuration.x.sync_gateway_url}_user/#{self.sync_user}", json: { 'name': self.sync_user, 'email': self.email, 'password': @raw_password }.compact)
@@ -215,6 +219,8 @@ class User < ApplicationRecord
 
   def destroy_sync_user
     return if Rails.env.test?
+
+    return unless self.vehicle
 
     response = HTTP.delete("#{Rails.configuration.x.sync_gateway_url}_user/#{self.sync_user}")
 
