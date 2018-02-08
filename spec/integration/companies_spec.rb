@@ -49,13 +49,26 @@ describe 'Companies API', type: :request do
         '$ref': '#/definitions/company'
       }
 
-      response '200', 'user created' do
+      response '200', 'company created' do
         let(:Authorization) { "Token token=#{@admin.api_key}" }
         let(:company) {  { name: 'company_name' } }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['company']['name']).to eq('company_name')
           expect(json['company']['default_mission_status_type_id']).not_to be_empty
+        end
+      end
+
+      response '200', 'company created with admin user' do
+        let(:Authorization) { "Token token=#{@admin.api_key}" }
+        let(:company) {  { name: 'company_name_with_admin', user_email: 'admin@mapotempo.com' } }
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['company']['name']).to eq('company_name_with_admin')
+          expect(json['company']['default_mission_status_type_id']).not_to be_empty
+          expect(json['company']['admin_user']).not_to be_empty
+          expect(json['company']['admin_user']['email']).to eq('admin@mapotempo.com')
+          expect(Company.last.mission_status_types.to_a.count).to eq(4)
         end
       end
 

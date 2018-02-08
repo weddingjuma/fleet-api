@@ -11,7 +11,13 @@ RSpec.describe User, type: :model do
       company: @company,
       name: 'mapotempo-user',
       email: 'test@mapotempo.com',
-      password: 'password',
+      password: 'password'
+    )
+
+    @user_without_vehicle = User.create(
+      company: @company,
+      name: 'admin-user',
+      email: 'admin@mapotempo.com',
       vehicle: false
     )
 
@@ -25,19 +31,30 @@ RSpec.describe User, type: :model do
 
     it { expect(@user.name).to eq('mapotempo-user') }
 
-    it 'generate sync user on creation' do
+    it 'validates password only if user is not a vehicle' do
+      expect(@user_without_vehicle).to be_valid
+      expect(@user_without_vehicle.password_hash).to be nil
+
+      expect(@user.password_hash).not_to be nil
+    end
+
+    it 'generates sync user on creation' do
       expect(@user.sync_user).to be_a(String)
       expect(@user.sync_user).not_to be_empty
+      expect(@user_without_vehicle.sync_user).to be_a(String)
+      expect(@user_without_vehicle.sync_user).not_to be_empty
     end
 
-    it 'generate api key on creation' do
+    it 'generates api key on creation' do
       expect(@user.api_key).to be_a(String)
       expect(@user.api_key).not_to be_empty
+      expect(@user_without_vehicle.api_key).to be_a(String)
+      expect(@user_without_vehicle.api_key).not_to be_empty
     end
 
-    it 'ensure vehicle value' do
-      expect(@user.vehicle).to be false
-      expect(@users.first.vehicle).to be true
+    it 'ensures vehicle value' do
+      expect(@user.vehicle).to be true
+      expect(@user_without_vehicle.vehicle).to be false
     end
 
     it 'serializes model' do
@@ -61,7 +78,7 @@ RSpec.describe User, type: :model do
 
   context 'Views' do
     it 'returns all users' do
-      expect(User.all.to_a.size).to eq(6)
+      expect(User.all.to_a.size).to eq(7)
     end
 
     it 'returns a user by its name' do
@@ -73,7 +90,7 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns all users having the company id' do
-      expect(User.by_company(key: 'company_with_users').to_a.size).to eq(6)
+      expect(User.by_company(key: 'company_with_users').to_a.size).to eq(7)
     end
 
     it 'returns a user by its token' do
@@ -93,10 +110,10 @@ RSpec.describe User, type: :model do
     end
 
     it 'returns its current location if user is a vehicle' do
-      expect(@user.current_location).to be nil
+      expect(@user_without_vehicle.current_location).to be nil
 
-      expect(@users.first.current_location).not_to be nil
-      expect(@users.first.current_location.location_detail['lat']).to be nil
+      expect(@user.current_location).not_to be nil
+      expect(@user.current_location.location_detail['lat']).to be nil
     end
 
     it 'cannot update company id' do

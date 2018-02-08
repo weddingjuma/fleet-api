@@ -57,7 +57,7 @@ namespace :mapotempo_fleet do
     driver_3 = FactoryBot.create(:user, company: company, name: 'driver3', password: '123456', email: 'driver3@mapotempo.com', vehicle: true, roles: driver_roles)
 
     # Create default workflow
-    DefaultWorkflow.new(company)
+    company.add_default_workflow
 
     if Rails.env.development?
       # Add current location for all drivers (in Bordeaux city)

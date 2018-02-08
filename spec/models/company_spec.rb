@@ -5,7 +5,8 @@ RSpec.describe Company, type: :model do
   before(:all) do
     @company = Company.create(
       id: 'company_id',
-      name: 'mapotempo'
+      name: 'mapotempo',
+      default_mission_status_type_id: 'type_id'
     )
 
     @companies = create_list(:company, 5)
@@ -30,6 +31,19 @@ RSpec.describe Company, type: :model do
       same_company_name = build(:company, name: @company.name)
       expect(same_company_name.save).to be false
     end
+
+    it 'creates a default workflow' do
+      @company.add_default_workflow
+
+      expect(@company.mission_status_types.to_a.count).to eq(4)
+    end
+
+    it 'creates an admin user associated to the company' do
+      user = @company.create_admin_user('admin@mapotempo.com')
+
+      expect(user.email).to eq('admin@mapotempo.com')
+      expect(User.last.company_id).to eq(@company.id)
+    end
   end
 
   context 'Views' do
@@ -53,7 +67,7 @@ RSpec.describe Company, type: :model do
   context 'Relationships' do
     it 'returns all users for a company' do
       company_with_users = Company.find('company_id')
-      expect(company_with_users.users.to_a.size).to eq(3)
+      expect(company_with_users.users.to_a.size).to eq(4)
     end
 
     it 'returns all missions for a company' do
