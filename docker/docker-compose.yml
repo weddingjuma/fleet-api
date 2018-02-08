@@ -17,7 +17,7 @@ services:
     environment:
       - APP_ENV=production # Switch to "development" for more traces
       - RAILS_LOG_TO_STDOUT=true
-      - COUCHBASE_PASSWORD=123456
+      - COUCHBASE_PASSWORD=123456 # Same password in couchbaseserver > healthcheck > test
       - SECRET_KEY_BASE=wieTipuij4RoaRei1AaGhohmutoh9ahGeeheith3cuquajah0oi2uux6Bie4uqu6leiwo9Ooquu7hiec6Coh1eemahng4ainap9seew8queid8sashoixigahsee1zie
 
   redis-cache:
@@ -33,7 +33,7 @@ services:
     volumes:
       - ./couchbase-db:/opt/couchbase/var
     healthcheck:
-      test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup | grep -q complete"]
+      test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup | grep -q complete"] # Same password in wrapper > environment > COUCHBASE_PASSWORD
       interval: 30s
       timeout: 10s
       retries: 50
