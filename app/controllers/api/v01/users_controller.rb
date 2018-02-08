@@ -26,6 +26,7 @@ module Api::V01
       users = users.select(&:vehicle) if params[:with_vehicle]
 
       render json: users,
+             root: 'users',
              each_serializer: UserSerializer
     end
 
