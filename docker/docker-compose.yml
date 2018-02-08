@@ -32,12 +32,11 @@ services:
 #      - "11210:11210" # DB connection, internal access
     volumes:
       - ./couchbase-db:/opt/couchbase/var
-    command: bash -c "sleep 5 ; until cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup | grep -q complete; do sleep 5; cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup ; done ; echo finish"
-#    healthcheck:
-#      test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup | grep -q complete"]
-#      interval: 10s
-#      timeout: 10s
-#      retries: 5
+    healthcheck:
+      test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup | grep -q complete"]
+      interval: 30s
+      timeout: 10s
+      retries: 50
 
   sync-gateway:
     build:
