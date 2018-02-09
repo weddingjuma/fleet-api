@@ -37,15 +37,21 @@ class Company < ApplicationRecord
   # == Relationships ========================================================
   has_many :users, dependent: :destroy
 
+  has_many :user_current_locations, dependent: :destroy
+
+  has_many :user_settings, class_name: 'UserSettings', dependent: :destroy
+
+  has_many :user_tracks, dependent: :destroy
+
   has_many :missions, dependent: :destroy
+
+  has_many :missions_placeholders, class_name: 'MissionsPlaceholder', dependent: :destroy
+
+  has_many :mission_statuses, dependent: :destroy
 
   has_many :mission_status_types, dependent: :destroy
 
   has_many :mission_status_actions, dependent: :destroy
-
-  has_many :user_current_locations, dependent: :destroy
-
-  has_many :user_tracks, dependent: :destroy
 
   # == Validations ==========================================================
   validates_presence_of :name
