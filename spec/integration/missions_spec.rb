@@ -17,6 +17,7 @@ describe 'Missions API', type: :request do
     get 'Get all missions' do
       tags 'Missions'
       operationId 'getMissions'
+      description 'Retrieves all missions from the company of the current user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
 

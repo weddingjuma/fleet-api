@@ -16,9 +16,10 @@ describe 'Mission status types API', type: :request do
   end
 
   path '/mission_status_types' do
-    get 'Retrieves all mission status types for a user company' do
+    get 'Retrieves all mission status types for a user' do
       tags 'Mission Status Types'
       operationId 'getMissionStatusTypes'
+      description 'Retrieves all mission status types for a user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :sync_user, in: :query, type: :string, required: true
@@ -54,9 +55,10 @@ describe 'Mission status types API', type: :request do
       end
     end
 
-    post 'Creates a mission status type for a user company' do
+    post 'Creates a mission status type for a user' do
       tags 'Mission Status Types'
       operationId 'createMissionStatusType'
+      description 'Creates a mission status type for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :query, type: :string, required: true
@@ -96,9 +98,10 @@ describe 'Mission status types API', type: :request do
   end
 
   path '/mission_status_types/{id}' do
-    put 'Updates a mission status type of a user company' do
+    put 'Updates a mission status type for a user' do
       tags 'Mission Status Types'
       operationId 'updateMissionStatusType'
+      description 'Updates a mission status type for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :id, in: :path, type: :string
@@ -140,9 +143,10 @@ describe 'Mission status types API', type: :request do
       end
     end
 
-    delete 'Deletes a mission status type of a user company' do
+    delete 'Deletes a mission status type for a user' do
       tags 'Mission Status Types'
       operationId 'deleteMissionStatusType'
+      description 'Deletes a mission status type for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :id, in: :path, type: :string

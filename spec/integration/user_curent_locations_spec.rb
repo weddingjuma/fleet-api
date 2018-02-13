@@ -24,6 +24,7 @@ describe 'User current locations API', type: :request do
     get 'Get all current locations' do
       tags 'Current Locations'
       operationId 'getUserCurrentLocations'
+      description 'Retrieves all current locations of users from the company of the current user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
 

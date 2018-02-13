@@ -3,13 +3,26 @@
   "info": {
     "title": "API v0.1",
     "version": "v0.1",
-    "contact_email": "tech@mapotempo.com",
-    "contact_url": "https://github.com/Mapotempo/fleet-api",
-    "license": "GNU Affero General Public License 3",
-    "license_url": "https://raw.githubusercontent.com/Mapotempo/fleet-api/master/LICENSE",
-    "description": ""
+    "contact": {
+      "name": "Mapotempo support",
+      "email": "tech@mapotempo.com",
+      "url": "https://github.com/Mapotempo/fleet-api"
+    },
+    "license": {
+      "name": "GNU Affero General Public License 3",
+      "url": "https://raw.githubusercontent.com/Mapotempo/fleet-api/master/LICENSE"
+    },
+    "description": "\n## Overview\nThe purpose of this API is to be an interface to Couchbase/SyncGateway and ease communication with mobile.\n\n## Model\nModel is structured around three majors concepts: Company, User and Mission.\n* `Company`: main object for all other elements, all models must have a reference to a company. The Company has many users, each user has his own `api_key` to make API call. To create or mutate a company, an `admin` account must be used with its own API key.\n\n* `User`: user can make API call (through an API key) or connect to a mobile device.\n  * Each `user` has a `current location` which tracks mobile location. The location s updated only by the mobile.\n  * All users from a company, share common settings through `user settings` model.\n  * For mobile be able to update theses models (through SyncGateway), user must have declared roles. The default roles are: mission.updating, mission.deleting, mission_status.creating, mission_status.updating, mission_status.deleting, user_settings.creating, user_settings.updating, user_current_location.creating, user_current_location.updating, user_track.creating, user_track.updating.\n\n* `Mission`: describe the mission that the user must realize.\n  * Each `Mission` have an associated `mission status type` which describe its current state.\n  * To switch to another status, a `mission status action` is used to declare the links between statuses.\n  * Finally, to keep mission status history, each `mission` has many `mission status`.\n  * Due to the SyncGateway process, a `mission placeholder` is created or updated each time a mission is saved to keep mobile in a correct sync state. This model must not be called directly.\n\nIn order to know the next status available, a default workflow is defined when creating a company. It follows this pattern:\n* `To do` => `In progress`\n* `To do` => `Uncompleted`\n\n* `In progress` => `To do`\n* `In progress` => `Completed`\n* `In progress` => `Uncompleted`\n\n* `Uncompleted` => `To do`\n\n## Technical access\n### Swagger descriptor\nThis REST API is described with Swagger. The Swagger descriptor defines the request end-points, the parameters and the return values. The API can be addressed by HTTP request or with a generated client using the Swagger descriptor.\n### API key\nAll access to the API are subject to an `api_key` parameter in order to authenticate the user. This parameter must be sent in header with the following form: `\"Token token=user_api_key\"`\n### Return\nThe API supports one return format: `json`.\n"
   },
   "definitions": {
+    "company": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      }
+    },
     "location": {
       "type": "object",
       "properties": {
@@ -181,6 +194,7 @@
           "Companies"
         ],
         "operationId": "getCompanies",
+        "description": "Return all companies (admin account required)",
         "security": [
           {
             "apiKey": [
@@ -200,15 +214,54 @@
             "description": "bad token"
           }
         }
+      },
+      "post": {
+        "summary": "Creates a company",
+        "tags": [
+          "Companies"
+        ],
+        "operationId": "createCompanies",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "company",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/company"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "company created with admin user"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
       }
     },
     "/mission_status_actions": {
       "get": {
-        "summary": "Retrieves all mission status actions for user company",
+        "summary": "Retrieves all mission status actions for a user",
         "tags": [
           "Mission Status Actions"
         ],
         "operationId": "getMissionStatusActions",
+        "description": "Retrieves all mission status actions for a user",
         "security": [
           {
             "apiKey": [
@@ -241,11 +294,12 @@
         }
       },
       "post": {
-        "summary": "Creates a mission status action for user company",
+        "summary": "Creates a mission status action for a user",
         "tags": [
           "Mission Status Actions"
         ],
         "operationId": "createMissionStatusAction",
+        "description": "Creates a mission status action for a user",
         "security": [
           {
             "apiKey": [
@@ -306,11 +360,12 @@
     },
     "/mission_status_actions/{id}": {
       "put": {
-        "summary": "Updates a mission status action for user company",
+        "summary": "Updates a mission status action for a user",
         "tags": [
           "Mission Status Actions"
         ],
         "operationId": "updateMissionStatusAction",
+        "description": "Updates a mission status action for a user",
         "security": [
           {
             "apiKey": [
@@ -370,11 +425,12 @@
         }
       },
       "delete": {
-        "summary": "Deletes a mission status type for user company",
+        "summary": "Deletes a mission status type for a user",
         "tags": [
           "Mission Status Actions"
         ],
         "operationId": "deleteMissionStatusAction",
+        "description": "Deletes a mission status type for a user",
         "security": [
           {
             "apiKey": [
@@ -412,11 +468,12 @@
     },
     "/mission_status_types": {
       "get": {
-        "summary": "Retrieves all mission status types for a user company",
+        "summary": "Retrieves all mission status types for a user",
         "tags": [
           "Mission Status Types"
         ],
         "operationId": "getMissionStatusTypes",
+        "description": "Retrieves all mission status types for a user",
         "security": [
           {
             "apiKey": [
@@ -449,11 +506,12 @@
         }
       },
       "post": {
-        "summary": "Creates a mission status type for a user company",
+        "summary": "Creates a mission status type for a user",
         "tags": [
           "Mission Status Types"
         ],
         "operationId": "createMissionStatusType",
+        "description": "Creates a mission status type for a user",
         "security": [
           {
             "apiKey": [
@@ -506,11 +564,12 @@
     },
     "/mission_status_types/{id}": {
       "put": {
-        "summary": "Updates a mission status type of a user company",
+        "summary": "Updates a mission status type for a user",
         "tags": [
           "Mission Status Types"
         ],
         "operationId": "updateMissionStatusType",
+        "description": "Updates a mission status type for a user",
         "security": [
           {
             "apiKey": [
@@ -564,11 +623,12 @@
         }
       },
       "delete": {
-        "summary": "Deletes a mission status type of a user company",
+        "summary": "Deletes a mission status type for a user",
         "tags": [
           "Mission Status Types"
         ],
         "operationId": "deleteMissionStatusType",
+        "description": "Deletes a mission status type for a user",
         "security": [
           {
             "apiKey": [
@@ -611,6 +671,7 @@
           "Missions"
         ],
         "operationId": "getMissions",
+        "description": "Retrieves all missions from the company of the current user",
         "security": [
           {
             "apiKey": [
@@ -639,6 +700,7 @@
           "Current Locations"
         ],
         "operationId": "getUserCurrentLocations",
+        "description": "Retrieves all current locations of users from the company of the current user",
         "security": [
           {
             "apiKey": [
@@ -667,6 +729,7 @@
           "Users"
         ],
         "operationId": "getUsers",
+        "description": "Retrieves all users from the company of the current user",
         "security": [
           {
             "apiKey": [
@@ -701,6 +764,7 @@
           "Users"
         ],
         "operationId": "createUser",
+        "description": "Create a new user in the current company",
         "security": [
           {
             "apiKey": [
@@ -741,6 +805,7 @@
           "Users"
         ],
         "operationId": "getUser",
+        "description": "Retrieves a user in the current company",
         "security": [
           {
             "apiKey": [
@@ -778,6 +843,7 @@
           "Users"
         ],
         "operationId": "updateUser",
+        "description": "Updates a user in the current company",
         "security": [
           {
             "apiKey": [
@@ -822,6 +888,7 @@
           "Users"
         ],
         "operationId": "deleteUser",
+        "description": "Deletes a user in the current company",
         "security": [
           {
             "apiKey": [
@@ -858,6 +925,7 @@
           "Users"
         ],
         "operationId": "getUserCompany",
+        "description": "Retrieves the company of the current user",
         "security": [
           {
             "apiKey": [
@@ -897,6 +965,7 @@
           "Users"
         ],
         "operationId": "getUserUserCurrentLocation",
+        "description": "Retrieves the current location of the current user",
         "security": [
           {
             "apiKey": [
@@ -936,6 +1005,7 @@
           "Users"
         ],
         "operationId": "getUserMissions",
+        "description": "Retrieves all missions of the current user",
         "security": [
           {
             "apiKey": [
@@ -973,6 +1043,7 @@
           "Users"
         ],
         "operationId": "createUserMission",
+        "description": "Creates a mission for the current user",
         "security": [
           {
             "apiKey": [
@@ -1019,6 +1090,7 @@
           "Users"
         ],
         "operationId": "createUserMissions",
+        "description": "Creates a set of missions for the current user",
         "security": [
           {
             "apiKey": [
@@ -1068,6 +1140,7 @@
           "Users"
         ],
         "operationId": "destroyUserMissions",
+        "description": "Deletes a set of missions for the current user",
         "security": [
           {
             "apiKey": [
@@ -1125,6 +1198,7 @@
           "Users"
         ],
         "operationId": "updateUserMission",
+        "description": "Updates a mission belonging to the current user",
         "security": [
           {
             "apiKey": [
@@ -1175,6 +1249,7 @@
           "Users"
         ],
         "operationId": "deleteUserMission",
+        "description": "Deletes a mission belonging to the current user",
         "security": [
           {
             "apiKey": [

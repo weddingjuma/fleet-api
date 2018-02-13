@@ -15,6 +15,7 @@ describe 'Companies API', type: :request do
     get 'Get all companies' do
       tags 'Companies'
       operationId 'getCompanies'
+      description 'Return all companies (admin account required)'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
 

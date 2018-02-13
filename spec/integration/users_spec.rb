@@ -27,6 +27,7 @@ describe 'Users API', type: :request do
     get 'Get all users' do
       tags 'Users'
       operationId 'getUsers'
+      description 'Retrieves all users from the company of the current user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :with_vehicle, in: :query, type: :boolean, required: false
@@ -59,6 +60,7 @@ describe 'Users API', type: :request do
     post 'Creates a user' do
       tags 'Users'
       operationId 'createUser'
+      description 'Create a new user in the current company'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :user, in: :body, schema: {
@@ -93,6 +95,7 @@ describe 'Users API', type: :request do
     get 'Retrieves a user' do
       tags 'Users'
       operationId 'getUser'
+      description 'Retrieves a user in the current company'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -142,6 +145,7 @@ describe 'Users API', type: :request do
     put 'Updates a user' do
       tags 'Users'
       operationId 'updateUser'
+      description 'Updates a user in the current company'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -178,6 +182,7 @@ describe 'Users API', type: :request do
     delete 'Deletes a user' do
       tags 'Users'
       operationId 'deleteUser'
+      description 'Deletes a user in the current company'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -200,6 +205,7 @@ describe 'Users API', type: :request do
     get 'Retrieves a company of a user' do
       tags 'Users'
       operationId 'getUserCompany'
+      description 'Retrieves the company of the current user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -240,6 +246,7 @@ describe 'Users API', type: :request do
     get 'Retrieves the current location of a user' do
       tags 'Users'
       operationId 'getUserUserCurrentLocation'
+      description 'Retrieves the current location of the current user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -286,6 +293,7 @@ describe 'Users API', type: :request do
     get 'Retrieves all missions of a user' do
       tags 'Users'
       operationId 'getUserMissions'
+      description 'Retrieves all missions of the current user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -324,6 +332,7 @@ describe 'Users API', type: :request do
     post 'Creates a mission for a user' do
       tags 'Users'
       operationId 'createUserMission'
+      description 'Creates a mission for the current user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -362,6 +371,7 @@ describe 'Users API', type: :request do
     post 'Creates a list of missions for a user' do
       tags 'Users'
       operationId 'createUserMissions'
+      description 'Creates a set of missions for the current user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -403,6 +413,7 @@ describe 'Users API', type: :request do
     delete 'Deletes a list of missions for a user' do
       tags 'Users'
       operationId 'destroyUserMissions'
+      description 'Deletes a set of missions for the current user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -444,6 +455,7 @@ describe 'Users API', type: :request do
     put 'Updates a mission of a user' do
       tags 'Users'
       operationId 'updateUserMission'
+      description 'Updates a mission belonging to the current user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string
@@ -484,6 +496,7 @@ describe 'Users API', type: :request do
     delete 'Deletes a mission of a user' do
       tags 'Users'
       operationId 'deleteUserMission'
+      description 'Deletes a mission belonging to the current user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :path, type: :string

@@ -20,9 +20,10 @@ describe 'Mission status actions API', type: :request do
   end
 
   path '/mission_status_actions' do
-    get 'Retrieves all mission status actions for user company' do
+    get 'Retrieves all mission status actions for a user' do
       tags 'Mission Status Actions'
       operationId 'getMissionStatusActions'
+      description 'Retrieves all mission status actions for a user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :sync_user, in: :query, type: :string, required: true
@@ -58,9 +59,10 @@ describe 'Mission status actions API', type: :request do
       end
     end
 
-    post 'Creates a mission status action for user company' do
+    post 'Creates a mission status action for a user' do
       tags 'Mission Status Actions'
       operationId 'createMissionStatusAction'
+      description 'Creates a mission status action for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :query, type: :string, required: true
@@ -104,9 +106,10 @@ describe 'Mission status actions API', type: :request do
   end
 
   path '/mission_status_actions/{id}' do
-    put 'Updates a mission status action for user company' do
+    put 'Updates a mission status action for a user' do
       tags 'Mission Status Actions'
       operationId 'updateMissionStatusAction'
+      description 'Updates a mission status action for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :id, in: :path, type: :string
@@ -150,9 +153,10 @@ describe 'Mission status actions API', type: :request do
       end
     end
 
-    delete 'Deletes a mission status type for user company' do
+    delete 'Deletes a mission status type for a user' do
       tags 'Mission Status Actions'
       operationId 'deleteMissionStatusAction'
+      description 'Deletes a mission status type for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :id, in: :path, type: :string
