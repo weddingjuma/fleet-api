@@ -139,8 +139,58 @@ Run the docker containing couchbase (8091), sync-gateway (4984 and 4985) and fle
 
     sudo docker-compose -p fleet up
 
+### Populate Couchbase database
+
+In order to create initial required data, a populate script is available through:
+
+    bundle exec rails mapotempo_fleet:populate
+    
+It performs 3 main things:
+
+- Create Couchbase views to query data in models
+
+- Create an admin account (which _api_key_ is required to create companies)
+
+- Create a default company (_default_) with the default workflow
+
+### Company workflow
+
+In order to proceed nominally, each company needs a workflow. A default workflow is automatically associated to a company when creating it through the API call.
+
+Each workflow is composed of:
+
+- A set of MissionStatusAction, linked to a previous and a next MissionStatusType.
+
+- Only the previous and next MissionStatusType, defined in MissionStatusAction, are accessible from the current MissionStatusType.
+
+- MissionStatusType defined the name of the current status, its color and a svg path.
+
+Finally, each company have an initial status to start with.
+
+The default workflow is defined in _lib/workflow/default_workflow.rb_.
+
+### Create dummies data
+
+In order to test Couchbase, the gem FactoryBot can create dummies data for all models. Theses commands must be run in a console.
+
+All fields which are not specified are automatically populated with fake data, except for relationships. The fake data are defined in _spec/factories/*_ repertory.
+
+Create one data, for a company for instance:
+
+    FactoryBot.create(:company, name: 'default')
+
+Or for a user:
+
+    FactoryBot.create(:company, company: Company.first, name: 'default')
+
+It's also possible to create a set of data in one command, 10 for instance:
+
+    FactoryBot.create_list(:company, 10)
+    
+Sometime a field must be uniq, like name, to avoid a conflict, use the fake data and don't specified the field.
+
 ## Swagger
 
-Generate the Swagger JSON file:
+Generate the Swagger JSON file, before running in production:
 
     rails rswag:specs:swaggerize
