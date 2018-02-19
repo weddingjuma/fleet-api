@@ -12,6 +12,7 @@ API server for Mapotempo Route
 7. [Initialization](#initialization)
 7. [Update Sync Function](#update-sync-function)
 8. [Running](#running)
+9. [Migrations](#migrations)
 8. [Swagger](#swagger)
 
 ### Project dependencies
@@ -188,6 +189,18 @@ It's also possible to create a set of data in one command, 10 for instance:
     FactoryBot.create_list(:company, 10)
     
 Sometime a field must be uniq, like name, to avoid a conflict, use the fake data and don't specified the field.
+
+## Migrations
+
+To update Couchbase data, migration scripts must be written and executed after deployment of a new version if needed.
+
+All scripts are under the directory:
+
+    lib/tasks/migrations
+
+To list all migrations available (prefixed by mapo), run the command:
+
+    rails -T 
 
 ## Swagger
 

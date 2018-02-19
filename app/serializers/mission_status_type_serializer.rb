@@ -18,6 +18,7 @@
 class MissionStatusTypeSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
+             :reference,
              :color,
              :label
 end

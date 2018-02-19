@@ -22,7 +22,8 @@
 #   "type": "mission_status_type",
 #   "company_id": "company_XXXXX",
 #   "svg_path": "M604.1,440.2h-19.1V333.2c0,...",
-#   "label": "Completed",
+#   "reference": "completed",
+#   "label": "Réalisé",
 #   "color": "#228b22"
 # }
 #
@@ -30,9 +31,10 @@
 class MissionStatusType < ApplicationRecord
 
   # == Attributes ===========================================================
-  attribute :svg_path, type: String
-  attribute :color, type: String
+  attribute :reference, type: String
   attribute :label, type: String
+  attribute :color, type: String
+  attribute :svg_path, type: String
 
   # == Extensions ===========================================================
 
@@ -49,6 +51,7 @@ class MissionStatusType < ApplicationRecord
   validates_presence_of :company_id
   validate :company_id_immutable, on: :update
 
+  validates_presence_of :reference
   validates_presence_of :label
 
   # == Views ===============================================================
@@ -56,6 +59,13 @@ class MissionStatusType < ApplicationRecord
   view :by_company, emit_key: :company_id
 
   # == Callbacks ============================================================
+  def self.first
+    MissionStatusType.all.to_a.first
+  end
+
+  def self.last
+    MissionStatusType.all.to_a.last
+  end
 
   # == Class Methods ========================================================
 

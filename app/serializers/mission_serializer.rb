@@ -31,8 +31,13 @@ class MissionSerializer < ActiveModel::Serializer
              :reference,
              :duration,
              :time_windows,
+             :status_type_reference,
              :status_type_label,
              :status_type_color
+
+  def status_type_reference
+    object.mission_status_type.reference if !instance_options[:destroy] && object.mission_status_type
+  end
 
   def status_type_label
     object.mission_status_type.label if !instance_options[:destroy] && object.mission_status_type
