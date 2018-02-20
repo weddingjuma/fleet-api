@@ -134,6 +134,12 @@ To update the sync function (in ./SyncFunction/SyncFunction.js) for docker (dock
 
 Restart SyncGateway in the docker.
 
+### Before running
+
+Before running rails server always execute the following migration (ensure consistency of couchbase views): 
+
+    rails mapotempo_fleet:ensure_couchbase_views
+
 ### Running
 
 Run the docker containing couchbase (8091), sync-gateway (4984 and 4985) and fleet-api (8084): 
@@ -192,7 +198,7 @@ Sometime a field must be uniq, like name, to avoid a conflict, use the fake data
 
 ## Migrations
 
-To update Couchbase data, migration scripts must be written and executed after deployment of a new version if needed.
+To update Couchbase data, migration scripts must be written and executed after deployment of a new version if needed. Executed migrations are stored in SchemaMigration documents. Migrations isn't executed if already present in database (see SchemaMigration document).
 
 All scripts are under the directory:
 

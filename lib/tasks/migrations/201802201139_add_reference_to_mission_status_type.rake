@@ -20,6 +20,13 @@ namespace :mapotempo_fleet do
   desc 'Add reference field to missions status type'
   task :add_reference_to_mission_status_type, [] => :environment do |_task, _args|
 
+    MIGRATION_NAME = '201802201139_add_reference_to_mission_status_type'.freeze
+
+    if SchemaMigration.find_by(MIGRATION_NAME)
+       p 'migration aborted, reason : already executed'
+       next
+    end
+
     MissionStatusType.all.map do |mission_status_type|
       reference = if mission_status_type.label == 'To do' || mission_status_type.label == 'Planifié'
                     'to_do'
@@ -34,5 +41,6 @@ namespace :mapotempo_fleet do
       mission_status_type.update_attribute(:reference, reference) if reference
     end
 
+    SchemaMigration.create(migration: MIGRATION_NAME, date: DateTime.now.to_s)
   end
 end
