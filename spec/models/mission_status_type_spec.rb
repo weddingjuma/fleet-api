@@ -8,6 +8,7 @@ RSpec.describe MissionStatusType, type: :model do
 
     @mission_status_type = MissionStatusType.create(
       company: @company,
+      reference: 'completed',
       label: 'Completed',
       color: '#228b22'
     )

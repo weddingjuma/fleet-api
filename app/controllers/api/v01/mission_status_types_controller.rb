@@ -79,7 +79,8 @@ module Api::V01
     def mission_status_type_params
       params.permit(
         :color,
-        :label
+        :label,
+        :reference
       )
     end
 

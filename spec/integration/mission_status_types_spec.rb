@@ -74,7 +74,7 @@ describe 'Mission status types API', type: :request do
       response '200', 'user mission status type created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
-        let(:mission_status_type) { { label: 'complete', color: '#123456' } }
+        let(:mission_status_type) { { label: 'complete', color: '#123456',  reference: 'to_do'} }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['mission_status_type']).not_to be_empty
