@@ -40,6 +40,8 @@ namespace :mapotempo_fleet do
     UserCurrentLocation.ensure_design_document!
     UserSettings.ensure_design_document!
     UserTrack.ensure_design_document!
+    SchemaMigration.ensure_design_document!
+    MetaInfo.ensure_design_document!
 
     # Admin
     admin = FactoryBot.create(:admin, name: 'Admin', email: 'admin@mapotempo.com', password: '123456')

@@ -32,6 +32,7 @@ namespace :mapotempo_fleet do
     UserSettings.ensure_design_document!
     UserTrack.ensure_design_document!
     SchemaMigration.ensure_design_document!
+    MetaInfo.ensure_design_document!
 
   end
 end

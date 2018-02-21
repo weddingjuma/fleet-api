@@ -12,6 +12,7 @@ RSpec.configure do |config|
     UserSettings.ensure_design_document!
     UserTrack.ensure_design_document!
     SchemaMigration.ensure_design_document!
+    MetaInfo.ensure_design_document!
   end
 
   config.after(:all) do
@@ -26,6 +27,7 @@ RSpec.configure do |config|
     UserCurrentLocation.all.stream { |ob| ob.delete }
     UserSettings.all.stream { |ob| ob.delete }
     SchemaMigration.all.stream { |ob| ob.delete }
+    MetaInfo.all.stream { |ob| ob.delete }
   end
 
   # config.after(:all) do

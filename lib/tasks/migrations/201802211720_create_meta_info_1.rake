@@ -17,28 +17,23 @@
 #
 namespace :mapotempo_fleet do
 
-  desc 'Add reference field to missions status type'
-  task :_201802201139_add_reference_to_mission_status_type, [] => :environment do |_task, _args|
+  desc 'Create meta info 1'
+  task :_201802211720_create_meta_info_1, [] => :environment do |_task, _args|
 
-    MIGRATION_NAME = '201802201139_add_reference_to_mission_status_type'.freeze
+    MIGRATION_NAME = '201802211720_create_meta_info_1'.freeze
+    SERVER_VERSION = 1
+    MINIMAL_CLIENT_VERSION = 1
 
     if SchemaMigration.find_by(MIGRATION_NAME)
        p 'migration aborted, reason : already executed'
        next
     end
+    mi = MetaInfo.last
 
-    MissionStatusType.all.map do |mission_status_type|
-      reference = if mission_status_type.label == 'To do' || mission_status_type.label == 'Planifié'
-                    'to_do'
-                  elsif mission_status_type.label == 'In progress' || mission_status_type.label == 'En cours'
-                    'in_progress'
-                  elsif mission_status_type.label == 'Completed' || mission_status_type.label == 'Réalisé'
-                    'completed'
-                  elsif mission_status_type.label == 'Uncompleted' || mission_status_type.label == 'Rejeté'
-                    'uncompleted'
-                  end
-
-      mission_status_type.update_attribute(:reference, reference) if reference
+    if mi
+      mi.update(server_version: SERVER_VERSION, minimal_client_version: MINIMAL_CLIENT_VERSION)
+    else
+      MetaInfo.create(server_version: SERVER_VERSION, minimal_client_version: MINIMAL_CLIENT_VERSION)
     end
 
     SchemaMigration.create(migration: MIGRATION_NAME, date: DateTime.now.to_s)
