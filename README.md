@@ -25,11 +25,11 @@ First, install Ruby:
 
 You need some others libs:
 
-    sudo apt-get build-essential libz-dev libicu-dev libevent-dev
+    sudo apt-get install build-essential libz-dev libicu-dev libevent-dev
 
 Next, install docker to run Couchbase:
 
-    sudo apt-get docker docker-compose
+    sudo apt-get install docker docker-compose
 
 __It's important to have all of this installed packages before installing following gems.__
 
@@ -136,13 +136,13 @@ Restart SyncGateway in the docker.
 
 ### Before running
 
-Before running rails server always execute the following migration (ensure consistency of couchbase views): 
+Before running rails server always execute the following migration (ensure consistency of couchbase views):
 
     rails mapotempo_fleet:ensure_couchbase_views
 
 ### Running
 
-Run the docker containing couchbase (8091), sync-gateway (4984 and 4985) and fleet-api (8084): 
+Run the docker containing couchbase (8091), sync-gateway (4984 and 4985) and fleet-api (8084):
 
     sudo docker-compose -p fleet up
 
@@ -151,7 +151,7 @@ Run the docker containing couchbase (8091), sync-gateway (4984 and 4985) and fle
 In order to create initial required data, a populate script is available through:
 
     bundle exec rails mapotempo_fleet:populate
-    
+
 It performs 3 main things:
 
 - Create Couchbase views to query data in models
@@ -193,7 +193,7 @@ Or for a user:
 It's also possible to create a set of data in one command, 10 for instance:
 
     FactoryBot.create_list(:company, 10)
-    
+
 Sometime a field must be uniq, like name, to avoid a conflict, use the fake data and don't specified the field.
 
 ## Migrations
@@ -206,7 +206,7 @@ All scripts are under the directory:
 
 To list all migrations available (prefixed by mapo), run the command:
 
-    rails -T 
+    rails -T
 
 ## Swagger
 
