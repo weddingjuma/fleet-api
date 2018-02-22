@@ -21,6 +21,7 @@ class MissionSerializer < ActiveModel::Serializer
              :user_id,
              :mission_status_type_id,
              :sync_user,
+             :mission_type,
              :external_ref,
              :name,
              :date,

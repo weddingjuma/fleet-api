@@ -27,6 +27,7 @@ FactoryBot.define do
     comment { Faker::Lorem.sentence(3) }
     phone '0600000000'
     duration { Random.rand(1..300) }
+    mission_type 'mission'
   end
 
 end

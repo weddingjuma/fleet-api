@@ -4,7 +4,7 @@
     "title": "API v0.1",
     "version": "v0.1",
     "contact": {
-      "name": "Mapotempo support",
+      "name": "Mapotempo",
       "email": "tech@mapotempo.com",
       "url": "https://github.com/Mapotempo/fleet-api"
     },
@@ -145,6 +145,15 @@
         },
         "time_windows": {
           "$ref": "#/definitions/time_windows"
+        },
+        "mission_type": {
+          "type": "string",
+          "enum": [
+            "mission",
+            "stop",
+            "start",
+            "pause"
+          ]
         }
       },
       "required": [
@@ -182,6 +191,15 @@
         },
         "time_windows": {
           "$ref": "#/definitions/time_windows"
+        },
+        "mission_type": {
+          "type": "string",
+          "enum": [
+            "mission",
+            "stop",
+            "start",
+            "pause"
+          ]
         }
       }
     }

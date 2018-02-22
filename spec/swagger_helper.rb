@@ -130,12 +130,16 @@ The API supports one return format: `json`.
             reference: { type: :string },
             duration: { type: :number },
             address: { '$ref': '#/definitions/address' },
-            time_windows: { '$ref': '#/definitions/time_windows' }
+            time_windows: { '$ref': '#/definitions/time_windows' },
+            mission_type: {
+              type: :string,
+              enum: %w(mission stop start pause)
+            }
           },
           required: %w(name date location)
         },
         mission: {
-          type: :object,
+          type: 'object',
           properties: {
             name: { type: :string },
             date: { type: :string },
@@ -145,7 +149,11 @@ The API supports one return format: `json`.
             reference: { type: :string },
             duration: { type: :number },
             address: { '$ref': '#/definitions/address' },
-            time_windows: { '$ref': '#/definitions/time_windows' }
+            time_windows: { '$ref': '#/definitions/time_windows' },
+            mission_type: {
+              type: :string,
+              enum: %w(mission stop start pause)
+            }
           }
         }
       },

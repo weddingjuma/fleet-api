@@ -142,6 +142,7 @@ module Api::V01
     def mission_params
       params.permit(
         :external_ref,
+        :mission_type,
         :name,
         :date,
         :comment,
@@ -177,6 +178,7 @@ module Api::V01
     def mission_attributes
       [
         :external_ref,
+        :mission_type,
         :name,
         :date,
         :comment,

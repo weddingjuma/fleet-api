@@ -52,7 +52,8 @@
 #       "start" : "2017-08-23T13:00:00.000Z",
 #       "end" : "2017-08-23T17:00:00.000Z"
 #     }
-#   ]
+#   ],
+#   mission_type: default
 # }
 #
 
@@ -60,6 +61,7 @@ class Mission < ApplicationRecord
 
   # == Attributes ===========================================================
   attribute :external_ref, type: String
+  attribute :mission_type, type: String
   # This value is automatically set by set_sync_user callback
   attribute :sync_user, type: String
   attribute :name, type: String
@@ -98,6 +100,13 @@ class Mission < ApplicationRecord
   validates_presence_of :name
   validates_presence_of :date
   validates_presence_of :location
+
+  validates :mission_type,
+    inclusion: {
+      in: %w(mission stop start pause),
+      message: "%{value} is not a valid mission_type"
+    },
+    presence: true
 
   # == Views ===============================================================
   view :all
@@ -179,4 +188,5 @@ class Mission < ApplicationRecord
   def destroy_mission_status
     self.mission_statuses.map(&:destroy)
   end
+
 end

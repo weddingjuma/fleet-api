@@ -18,6 +18,7 @@ RSpec.describe Mission, type: :model do
       company: @company,
       external_ref: 'uniq_ref_by_company',
       user: @user,
+      mission_type: 'mission',
       name: 'mission name',
       date: @date,
       location: {
