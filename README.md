@@ -134,7 +134,7 @@ To update the sync function (in ./SyncFunction/SyncFunction.js) for docker (dock
 
 Restart SyncGateway in the docker.
 
-### Before running
+### Before running
 
 Before running rails server always execute the following migration (ensure consistency of couchbase views):
 
@@ -200,13 +200,39 @@ Sometime a field must be uniq, like name, to avoid a conflict, use the fake data
 
 To update Couchbase data, migration scripts must be written and executed after deployment of a new version if needed. Executed migrations are stored in SchemaMigration documents. Migrations isn't executed if already present in database (see SchemaMigration document).
 
+To apply all unexecuted migrations, run the command:
+ `rails mapotempo_fleet:migrate`
+
+To list all migrations available (prefixed by migration_), run the command:
+
+    rails -T
+
 All scripts are under the directory:
 
     lib/tasks/migrations
 
-To list all migrations available (prefixed by mapo), run the command:
+New migration can be add with the following template :
+```
+namespace :mapotempo_fleet do
 
-    rails -T
+  desc 'Descrive the migration'
+  task :migration_201802211720_new_migration_name, [] => :environment do |_task, _args|
+
+	# Verify migration execution
+    migration_name = 'migration_201802211720_new_migration_name'.freeze
+    if SchemaMigration.find_by(migration_name)
+       p 'migration aborted, reason : already executed'
+       next
+    end
+
+	# Do migration here
+
+	# Save migration execution
+    SchemaMigration.create(migration: migration_name, date: DateTime.now.to_s)
+  end
+end
+```
+The name format should be migration_[YEAR MONTH DAY HOUR MINUTE]_name
 
 ## Swagger
 
