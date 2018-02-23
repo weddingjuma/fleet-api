@@ -24,6 +24,7 @@ module Api::V01
       current_locations = UserCurrentLocation.by_company(key: @current_user.company.id).to_a
 
       render json: current_locations,
+             root: 'user_current_locations',
              each_serializer: UserCurrentLocationSerializer
     end
 
