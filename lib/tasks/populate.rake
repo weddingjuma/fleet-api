@@ -43,6 +43,14 @@ namespace :mapotempo_fleet do
     SchemaMigration.ensure_design_document!
     MetaInfo.ensure_design_document!
 
+    # MetaInfo
+    mi = MetaInfo.last
+    if mi
+      mi.update(server_version: SERVER_VERSION, minimal_client_version: MINIMAL_CLIENT_VERSION)
+    else
+      MetaInfo.create(server_version: SERVER_VERSION, minimal_client_version: MINIMAL_CLIENT_VERSION)
+    end
+
     # Admin
     admin = FactoryBot.create(:admin, name: 'Admin', email: 'admin@mapotempo.com', password: '123456')
 

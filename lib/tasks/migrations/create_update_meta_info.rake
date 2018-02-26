@@ -20,14 +20,12 @@ namespace :mapotempo_fleet do
   desc 'Create update meta info'
   task :create_update_meta_info, [] => :environment do |_task, _args|
 
-    server_version = SERVER_VERSION
-    minimal_client_version = MINIMAL_CLIENT_VERSION
     mi = MetaInfo.last
 
     if mi
-      mi.update(server_version: server_version, minimal_client_version: minimal_client_version)
+      mi.update(server_version: SERVER_VERSION, minimal_client_version: MINIMAL_CLIENT_VERSION)
     else
-      MetaInfo.create(server_version: server_version, minimal_client_version: minimal_client_version)
+      MetaInfo.create(server_version: SERVER_VERSION, minimal_client_version: MINIMAL_CLIENT_VERSION)
     end
 
   end
