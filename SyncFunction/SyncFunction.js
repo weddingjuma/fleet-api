@@ -98,7 +98,7 @@ function sync_func(doc, oldDoc) {
   var MISSION_STATUS_ACTION = 'mission_status_action';
   var USER_TRACK = 'user_track';
   var USER_CURRENT_LOCATION = 'user_current_location';
-  var METADATA = 'metadata';
+  var METAINFO = 'meta_info';
 
   // TYPES DRIVER
   var TYPES_DRIVER = {
@@ -112,7 +112,7 @@ function sync_func(doc, oldDoc) {
     mission_status: mission_status,
     mission_status_type: mission_status_type,
     mission_status_action: mission_status_action,
-    metadata: ''
+    meta_info: meta_info
   };
 
   // ACTIONS CONST
@@ -215,6 +215,7 @@ function sync_func(doc, oldDoc) {
         access([sync_user], [companyChannel]);
         access([sync_user], [missionStatusTypeChannel]);
         access([sync_user], [missionStatusActionChannel]);
+        access([sync_user], ["!"]);
         break;
       case DELETING:
         break;
@@ -222,9 +223,9 @@ function sync_func(doc, oldDoc) {
     }
   }
 
-  // ######################
+  // ########################
   // CURRENT LOCATION MANAGER
-  // ######################
+  // ########################
   function user_current_location(doc, oldDoc, params) {
     var sync_user = checkSyncUser(doc, oldDoc);
     switch (params.action) {
@@ -254,9 +255,9 @@ function sync_func(doc, oldDoc) {
     }
   }
 
-  // ######################
+  // #############
   // TRACK MANAGER
-  // ######################
+  // #############
   function user_track(doc, oldDoc, params) {
   }
 
@@ -332,6 +333,19 @@ function sync_func(doc, oldDoc) {
     var missionStatusActionChannel = makeMissionStatusActionChannel(params.company_id);
     // Add current doc in all channels
     channel([missionStatusActionChannel]);
+  }
+
+  // #################
+  // META_INFO MANAGER
+  // #################
+  function meta_info(doc, oldDoc, params) {
+    switch (params.action) {
+      case CREATING:
+      case UPDATING:
+      case DELETING:
+      default:
+        channel(["!"]);
+    }
   }
 
   // ######################
@@ -538,12 +552,14 @@ function sync_func(doc, oldDoc) {
   function getCompanyID(doc, oldDoc, type) {
     if (type === 'company')
       return oldDoc ? oldDoc._id : doc._id;
+    else if (type === 'meta_info')
+      return "mapotempo";
     else
       return oldDoc ? oldDoc.company_id : doc.company_id;
   }
 
   function checkCompanyID(doc, oldDoc, type) {
-    if (type === 'company')
+    if (type === 'company' || 'meta_data')
       return;
     var company_id = oldDoc ? oldDoc.company_id : doc.company_id;
     if (!company_id) {

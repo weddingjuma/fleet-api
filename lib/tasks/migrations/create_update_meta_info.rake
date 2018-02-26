@@ -17,18 +17,11 @@
 #
 namespace :mapotempo_fleet do
 
-  desc 'Create meta info 1'
-  task :migration_201802211720_create_update_meta_info, [] => :environment do |_task, _args|
+  desc 'Create update meta info'
+  task :create_update_meta_info, [] => :environment do |_task, _args|
 
-    # Verify migration execution
-    migration_name = 'migration_201802211720_create_update_meta_info'.freeze
-    if SchemaMigration.find_by(migration_name)
-       p 'migration aborted, reason : already executed'
-       next
-    end
-
-    server_version = 1
-    minimal_client_version = 1
+    server_version = SERVER_VERSION
+    minimal_client_version = MINIMAL_CLIENT_VERSION
     mi = MetaInfo.last
 
     if mi
@@ -37,7 +30,5 @@ namespace :mapotempo_fleet do
       MetaInfo.create(server_version: server_version, minimal_client_version: minimal_client_version)
     end
 
-    # Save migration execution
-    SchemaMigration.create(migration: migration_name, date: DateTime.now.to_s)
   end
 end

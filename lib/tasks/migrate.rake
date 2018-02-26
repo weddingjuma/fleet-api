@@ -21,9 +21,18 @@ namespace :mapotempo_fleet do
   desc 'apply all unexecuted migrations'
   task :migrate, [] => :environment do |_task, _args|
 
-    puts ' - apply ensure_couchbase_views task before migrations'
+    # ===============================================================
+    # == 1) - apply ensure_couchbase_views to ensure documents schema
+    # ===============================================================
+
+    puts ' - apply task: ensure_couchbase_views'
     Rake.application.invoke_task('mapotempo_fleet:ensure_couchbase_views')
 
+    # ====================================
+    # == 2) - execute unapplied migrations
+    # ====================================
+
+    puts ' - execute migrations'
     # Select filter migration rake task
     migrations = Rake.application.tasks.select do |task|
         task.name.match('mapotempo_fleet:migration_\d+')
@@ -36,15 +45,22 @@ namespace :mapotempo_fleet do
         if SchemaMigration.find_by(migration_name)
             next
         else
-            puts 'migrate : ' + migration_name
+            puts '   migrate: ' + migration_name
             Rake.application.invoke_task(task.name)
             migration_counter+=1
         end
 
     end
 
-    puts ' - ' + migration_counter.to_s + ' migration'.pluralize(migration_counter) + ' executed'
+    puts '   ' + migration_counter.to_s + ' migration'.pluralize(migration_counter) + ' executed'
 
+
+    # =========================================================================
+    # == 3) - apply create_update_meta_info to ensure meta_info doc consistancy
+    # =========================================================================
+
+    puts ' - apply task: create_update_meta_info task'
+    Rake.application.invoke_task('mapotempo_fleet:create_update_meta_info')
   end
 
 end

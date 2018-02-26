@@ -55,6 +55,7 @@ class User < ApplicationRecord
 
   # == Extensions ===========================================================
   include BCrypt
+  include TouchableConcern
 
   # == Relationships ========================================================
   belongs_to :company
