@@ -53,7 +53,7 @@
 #       "end" : "2017-08-23T17:00:00.000Z"
 #     }
 #   ],
-#   mission_type: default
+#   mission_type: mission
 # }
 #
 
@@ -101,12 +101,7 @@ class Mission < ApplicationRecord
   validates_presence_of :date
   validates_presence_of :location
 
-  validates :mission_type,
-    inclusion: {
-      in: %w(mission stop start pause),
-      message: "%{value} is not a valid mission_type"
-    },
-    presence: true
+  validates :mission_type, presence: true
 
   # == Views ===============================================================
   view :all
