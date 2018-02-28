@@ -21,7 +21,7 @@ namespace :mapotempo_fleet do
   task :migration_201802201139_add_reference_to_mission_status_type, [] => :environment do |_task, _args|
 
     # Verify migration execution
-    migration_name = 'migration_201802201139_add_reference_to_mission_status_type'.freeze
+    migration_name = _task.name.split(':').last.freeze
     if SchemaMigration.find_by(migration_name)
       p 'migration aborted, reason : already executed'
       next

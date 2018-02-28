@@ -21,7 +21,7 @@ namespace :mapotempo_fleet do
   task :migration_201802231849_touch_now_user, [] => :environment do |_task, _args|
 
     # Verify migration execution
-   	migration_name = 'migration_201802231849_touch_now_user'.freeze
+    migration_name = _task.name.split(':').last.freeze
     if SchemaMigration.find_by(migration_name)
       p 'migration aborted, reason : already executed'
       next

@@ -218,16 +218,16 @@ namespace :mapotempo_fleet do
   desc 'Descrive the migration'
   task :migration_201802211720_new_migration_name, [] => :environment do |_task, _args|
 
-	# Verify migration execution
-    migration_name = 'migration_201802211720_new_migration_name'.freeze
+    # Verify migration execution
+    migration_name = _task.name.split(':').last.freeze
     if SchemaMigration.find_by(migration_name)
        p 'migration aborted, reason : already executed'
        next
     end
 
-	# Do migration here
+    # Do migration here
 
-	# Save migration execution
+    # Save migration execution
     SchemaMigration.create(migration: migration_name, date: DateTime.now.to_s)
   end
 end
