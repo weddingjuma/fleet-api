@@ -36,7 +36,7 @@ namespace :mapotempo_fleet do
     # Select filter migration rake task
     migrations = Rake.application.tasks.select do |task|
         task.name.match('mapotempo_fleet:migration_\d+')
-    end
+    end.sort_by { |task| task.name }
 
     migration_counter = 0
     migrations.each do |task|
@@ -56,7 +56,7 @@ namespace :mapotempo_fleet do
 
 
     # =========================================================================
-    # == 3) - apply create_update_meta_info to ensure meta_info doc consistancy
+    # == 3) - apply create_update_meta_info to ensure meta_info doc consistency
     # =========================================================================
 
     puts ' - apply task: create_update_meta_info task'
