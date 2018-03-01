@@ -57,8 +57,13 @@ class MissionStatusType < ApplicationRecord
   # == Views ===============================================================
   view :all
   view :by_company, emit_key: :company_id
+  view :by_reference, emit_key: [:company_id, :reference]
 
   # == Callbacks ============================================================
+  def self.find_by(reference, company_id)
+    MissionStatusType.by_reference(key: [company_id, reference]).to_a.first
+  end
+
   def self.first
     MissionStatusType.all.to_a.first
   end

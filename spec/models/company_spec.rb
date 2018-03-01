@@ -33,7 +33,7 @@ RSpec.describe Company, type: :model do
     end
 
     it 'creates a default workflow' do
-      @company.add_default_workflow
+      @company.set_workflow
 
       expect(@company.mission_status_types.to_a.count).to eq(4)
     end

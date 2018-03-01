@@ -111,7 +111,7 @@ class Mission < ApplicationRecord
   view :by_external_ref, emit_key: [:company_id, :external_ref]
 
   # == Callbacks ============================================================
-  before_validation :set_sync_user, :add_default_status_type
+  before_validation :set_sync_user, :set_workflow
 
   after_create :create_initial_status
 
@@ -154,8 +154,9 @@ class Mission < ApplicationRecord
     self.sync_user = self.user&.sync_user
   end
 
-  def add_default_status_type
-    self.mission_status_type_id = self.company.default_mission_status_type_id unless self.mission_status_type_id
+  def set_workflow
+    # Set mission_status_type_id to the mission
+    WorkflowMissionManager.new(self)
   end
 
   def create_initial_status

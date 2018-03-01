@@ -54,7 +54,7 @@ module Api::V01
       authorize company
 
       if company.save
-        company.add_default_workflow
+        company.set_workflow
         admin_user = company.create_admin_user(params[:user_email]) if params[:user_email]
 
         render json: company,
