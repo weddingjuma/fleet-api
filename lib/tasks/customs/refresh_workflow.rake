@@ -17,11 +17,8 @@
 #
 namespace :mapotempo_fleet do
 
-  desc 'Reinit all workflow from all companies'
+  desc 'Refresh workflow from all companies'
   task :reinit_workflow, [] => :environment do |_task, _args|
-
-    MissionStatusAction.all.to_a.map(&:destroy)
-    MissionStatusType.all.to_a.map(&:destroy)
 
     Company.all.to_a.map do |company|
       company.set_workflow
