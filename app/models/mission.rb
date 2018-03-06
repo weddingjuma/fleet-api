@@ -32,6 +32,10 @@
 #     "lat" : "-0.5680988",
 #     "lon" : " 44.8547927"
 #   },
+#   "picked_location" : {
+#     "lat" : "-0.5680988",
+#     "lon" : " 44.8547927"
+#   },
 #   "address" : {
 #     "city" : "Bordeaux",
 #     "country" : "France",
@@ -67,6 +71,7 @@ class Mission < ApplicationRecord
   attribute :name, type: String
   attribute :date
   attribute :location, type: Hash
+  attribute :picked_location, type: Hash
   attribute :address, type: Hash
   attribute :comment, type: String
   attribute :phone, type: String
