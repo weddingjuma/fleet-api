@@ -1,4 +1,22 @@
 fr:
+  workflow:
+    mission:
+      to_do: "Planifié"
+      in_progress: "En cours"
+      completed: "Réalisé"
+      uncompleted: "Rejeté"
+    departure:
+      to_do: "Planifié"
+      loading: "En chargement"
+      gone: "Parti"
+    rest:
+      to_do: "Planifié"
+      resting: "En pause"
+      done: "Réalisé"
+    arrival:
+      to_do: "Planifié"
+      unloading: "En déchargement"
+      arrived: "Arrivé"
   authentication:
     bad_credentials: "Vous n'êtes pas autorisé(e) à réaliser cette action"
   error:

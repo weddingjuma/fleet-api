@@ -79,10 +79,17 @@ class Company < ApplicationRecord
   def set_workflow
     return unless self.id
 
-    MissionWorkflow.new(self, default: true)
-    DepartureWorkflow.new(self)
-    ArrivalWorkflow.new(self)
-    RestWorkflow.new(self)
+    # Switch locale for workflow
+    initial_language = I18n.locale
+    begin
+      I18n.locale = self.default_language
+      MissionWorkflow.new(self, default: true)
+      DepartureWorkflow.new(self)
+      ArrivalWorkflow.new(self)
+      RestWorkflow.new(self)
+    ensure
+      I18n.locale = initial_language
+    end
   end
 
   def create_admin_user(email, name = 'admin')

@@ -1,4 +1,22 @@
 en:
+  workflow:
+    mission:
+      to_do: "To do"
+      in_progress: "In progress"
+      completed: "Completed"
+      uncompleted: "Uncompleted"
+    departure:
+      to_do: "To do"
+      loading: "Loading"
+      gone: "Gone"
+    rest:
+      to_do: "To do"
+      resting: "In rest"
+      done: "Done"
+    arrival:
+      to_do: "To do"
+      unloading: "Unloading"
+      arrived: "Arrived"
   authentication:
     bad_credentials: "Your are not authorized to perform this action"
   error:

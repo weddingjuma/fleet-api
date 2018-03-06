@@ -23,7 +23,7 @@
 #   "company_id": "company_XXXXX",
 #   "svg_path": "M604.1,440.2h-19.1V333.2c0,...",
 #   "reference": "completed",
-#   "label": "Réalisé",
+#   "label_translations": "{'en' => 'Done', 'fr' => 'Réalisé'}",
 #   "color": "#228b22"
 # }
 #
@@ -32,9 +32,15 @@ class MissionStatusType < ApplicationRecord
 
   # == Attributes ===========================================================
   attribute :reference, type: String
-  attribute :label, type: String
+  attribute :label_translations, type: Hash, default: {}
   attribute :color, type: String
   attribute :svg_path, type: String
+
+  include TranslationConcern
+  translates :label,
+             auto_strip_translation_fields: [:label],
+             default_language: proc { |type| type.company && type.company.default_language },
+             fallbacks_for_empty_translations: true
 
   # == Extensions ===========================================================
 
@@ -52,7 +58,7 @@ class MissionStatusType < ApplicationRecord
   validate :company_id_immutable, on: :update
 
   validates_presence_of :reference
-  validates_presence_of :label
+  validates_presence_of :label_translations
 
   # == Views ===============================================================
   view :all
