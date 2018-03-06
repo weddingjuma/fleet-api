@@ -30,6 +30,7 @@ class Company < ApplicationRecord
 
   # == Attributes ===========================================================
   attribute :name, type: String
+  attribute :default_language, type: String
   attribute :default_mission_status_type_id, type: String
 
   # == Extensions ===========================================================
@@ -56,6 +57,8 @@ class Company < ApplicationRecord
   # == Validations ==========================================================
   validates_presence_of :name
   ensure_unique :name
+
+  validates_presence_of :default_language
 
   # == Views ===============================================================
   view :all
