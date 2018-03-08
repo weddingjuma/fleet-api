@@ -293,53 +293,7 @@ describe("Mission create update delete test", function() {
         );
     });
 
-    it("Create : 7- can't create a mission document without location field", function() {
-        var doc = {
-            "address": {
-                "city": "Paris",
-                "country": "France",
-                "detail": "Pépinière éco-créative",
-                "postalcode": "33000",
-                "state": "Gironde",
-                "street": "9 Rue André Darbon"
-            },
-            "comment": "laisser le colis au gardein",
-            "company_id": "mapotempo_company",
-            "date": "2017-07-21T16:22:27.348Z",
-            "duration": 50,
-            //"location": {
-            //  "lat": "40.0",
-            //  "lon": "-1.0"
-            // },
-            "mission_status_type_id": "Pending:7Cito9g5g5-defd-4b40-58g-9e33abg57185",
-            "name": "test",
-            "sync_user": "static",
-            "phone": "0600010203",
-            "reference": "ABCDEF",
-            "time_windows": [{
-                    "end": "2017-08-21T010:00:00Z",
-                    "start": "2017-08-21T08:00:00Z"
-                },
-                {
-                    "end": "2017-08-21T013:00:00Z",
-                    "start": "2017-08-21T14:00:00Z"
-                }
-            ],
-            "type": "mission",
-            "_rev": "74-5dafed6558915c015ac98f338382067a",
-            "_id": "Mission_68g95ac3-da6d-4b40-973b-9e3341879085"
-        }
-
-        testHelper.verifyDocumentNotCreated(
-            doc,
-            "mission",
-            "Document must have a location", {
-                expectedRoles: ["mapotempo_company.mission.creating"],
-                expectedUsers: ["static"]
-            });
-    });
-
-    it("Create : 8- can't create a mission document without name field", function() {
+    it("Create : 7- can't create a mission document without name field", function() {
         var doc = {
             "address": {
                 "city": "Paris",
@@ -385,7 +339,7 @@ describe("Mission create update delete test", function() {
             });
     });
 
-    it("Create : 9- can create a mission document without address field", function() {
+    it("Create : 8- can create a mission document without address field", function() {
         var doc = {
             "company_id": "mapotempo_company",
             "date": "2017-07-21T16:22:27.348Z",

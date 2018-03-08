@@ -45,6 +45,11 @@ describe("User create update delete test", function() {
                     expectedUsers: ["static"]
                 },
                 {
+                    expectedType: "channel",
+                    expectedChannels: ["!"],
+                    expectedUsers: ["static"]
+                },
+                {
                     expectedType: "role",
                     expectedRoles: ["company_xxxx.mission.creating", "company_xxxx.mission.updating"],
                     expectedUsers: ["static"]

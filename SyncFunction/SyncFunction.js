@@ -274,7 +274,6 @@ function sync_func(doc, oldDoc) {
     switch (params.action) {
       case CREATING:
       case UPDATING:
-        checkLocation(doc, oldDoc);
         checkName(doc, oldDoc);
         access([sync_user], [syncUserChannels]);
         break;
@@ -415,56 +414,54 @@ function sync_func(doc, oldDoc) {
     return date;
   }
 
-  function checkLocation(doc, oldDoc) {
-    // Make sure that the location property exists in the new doc :
-    var location = doc.location;
-    if (location) {
-      if (isNaN(location.lon) || isNaN(location.lat)) {
-        throw ({
-          forbidden: 'location lat and lon must be a float values'
-        });
-      } else {
-        return location;
-      }
-    } else
-      throw ({
-        forbidden: 'Document must have a location'
-      });
-  }
+  // function checkLocation(doc, oldDoc) {
+  //   // Make sure that the location property exists in the new doc :
+  //   var location = doc.location;
+  //   if (location) {
+  //     if (isNaN(location.lon) || isNaN(location.lat)) {
+  //       throw ({
+  //         forbidden: 'location lat and lon must be a float values'
+  //       });
+  //     } else {
+  //       return location;
+  //     }
+  //   } else
+  //     throw ({
+  //       forbidden: 'Document must have a location'
+  //     });
+  // }
 
   // REMOVE checkAddress function, this isn't mandatory
-  /*
-      function checkAddress(doc, oldDoc) {
-          // Make sure that the address property exists in the new doc :
-          var address = doc.address;
-          if (address) {
-              if (!address.street)
-                  throw ({
-                      forbidden: 'street field in address is mandatory'
-                  });
-              if (!address.postalcode)
-                  throw ({
-                      forbidden: 'postalcode field in address is mandatory'
-                  });
-              if (!address.city)
-                  throw ({
-                      forbidden: 'city field in address is mandatory'
-                  });
-              if (!address.state)
-                  throw ({
-                      forbidden: 'state field in address is mandatory'
-                  });
-              if (!address.country)
-                  throw ({
-                      forbidden: 'country field in address is mandatory'
-                  });
-          } else
-              throw ({
-                  forbidden: 'Document must have an address'
-              });
-          return address;
-      }
-  */
+  // function checkAddress(doc, oldDoc) {
+  //     // Make sure that the address property exists in the new doc :
+  //     var address = doc.address;
+  //     if (address) {
+  //         if (!address.street)
+  //             throw ({
+  //                 forbidden: 'street field in address is mandatory'
+  //             });
+  //         if (!address.postalcode)
+  //             throw ({
+  //                 forbidden: 'postalcode field in address is mandatory'
+  //             });
+  //         if (!address.city)
+  //             throw ({
+  //                 forbidden: 'city field in address is mandatory'
+  //             });
+  //         if (!address.state)
+  //             throw ({
+  //                 forbidden: 'state field in address is mandatory'
+  //             });
+  //         if (!address.country)
+  //             throw ({
+  //                 forbidden: 'country field in address is mandatory'
+  //             });
+  //     } else
+  //         throw ({
+  //             forbidden: 'Document must have an address'
+  //         });
+  //     return address;
+  // }
 
   function checkName(doc, oldDoc) {
     if (!doc.name || typeof(doc.name) !== 'string') {
@@ -559,9 +556,10 @@ function sync_func(doc, oldDoc) {
   }
 
   function checkCompanyID(doc, oldDoc, type) {
-    if (type === 'company' || 'meta_data')
+    if (type === 'company' || type === 'meta_data')
       return;
     var company_id = oldDoc ? oldDoc.company_id : doc.company_id;
+
     if (!company_id) {
       throw ({
         forbidden: 'Document must have a company_id'
