@@ -43,6 +43,11 @@ namespace :mapotempo_fleet do
     SchemaMigration.ensure_design_document!
     MetaInfo.ensure_design_document!
 
+    if SchemaMigration.all.to_a.empty?
+      puts ' - apply task: initialize schema migration'
+      Rake.application.invoke_task('mapotempo_fleet:init_schema_migration')
+    end
+
     # MetaInfo
     mi = MetaInfo.last
     if mi

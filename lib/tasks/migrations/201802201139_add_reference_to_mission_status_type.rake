@@ -27,20 +27,18 @@ namespace :mapotempo_fleet do
       next
     end
 
-    if SERVER_VERSION == 1
-      MissionStatusType.all.map do |mission_status_type|
-        reference = if mission_status_type.label == 'To do' || mission_status_type.label == 'Planifié'
-                      'to_do'
-                    elsif mission_status_type.label == 'In progress' || mission_status_type.label == 'En cours'
-                      'in_progress'
-                    elsif mission_status_type.label == 'Completed' || mission_status_type.label == 'Réalisé'
-                      'completed'
-                    elsif mission_status_type.label == 'Uncompleted' || mission_status_type.label == 'Rejeté'
-                      'uncompleted'
-                    end
+    MissionStatusType.all.map do |mission_status_type|
+      reference = if mission_status_type.label == 'To do' || mission_status_type.label == 'Planifié'
+                    'to_do'
+                  elsif mission_status_type.label == 'In progress' || mission_status_type.label == 'En cours'
+                    'in_progress'
+                  elsif mission_status_type.label == 'Completed' || mission_status_type.label == 'Réalisé'
+                    'completed'
+                  elsif mission_status_type.label == 'Uncompleted' || mission_status_type.label == 'Rejeté'
+                    'uncompleted'
+                  end
 
-        mission_status_type.update_attribute(:reference, reference) if reference
-      end
+      mission_status_type.update_attribute(:reference, reference) if reference
     end
 
     # Save migration execution

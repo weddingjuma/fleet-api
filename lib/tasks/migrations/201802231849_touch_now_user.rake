@@ -27,10 +27,8 @@ namespace :mapotempo_fleet do
       next
     end
 
-    if SERVER_VERSION == 1
-      User.all.to_a.each do | user |
-      user.touch_now!
-      end
+    User.all.to_a.each do | user |
+    user.touch_now!
     end
 
     # Save migration execution

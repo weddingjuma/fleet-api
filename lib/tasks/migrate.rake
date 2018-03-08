@@ -28,6 +28,11 @@ namespace :mapotempo_fleet do
     puts ' - apply task: ensure_couchbase_views'
     Rake.application.invoke_task('mapotempo_fleet:ensure_couchbase_views')
 
+    if SchemaMigration.all.to_a.empty?
+      puts ' - apply task: initialize schema migration'
+      Rake.application.invoke_task('mapotempo_fleet:init_schema_migration')
+    end
+
     # ====================================
     # == 2) - execute unapplied migrations
     # ====================================
@@ -35,20 +40,20 @@ namespace :mapotempo_fleet do
     puts ' - execute migrations'
     # Select filter migration rake task
     migrations = Rake.application.tasks.select do |task|
-        task.name.match('mapotempo_fleet:migration_\d+')
-    end.sort_by { |task| task.name }
+      task.name.match('mapotempo_fleet:migration_\d+')
+    end.sort_by(&:name)
 
     migration_counter = 0
     migrations.each do |task|
 
-        migration_name = task.name.split(':')[1]
-        if SchemaMigration.find_by(migration_name)
-            next
-        else
-            puts '   migrate: ' + migration_name
-            Rake.application.invoke_task(task.name)
-            migration_counter+=1
-        end
+      migration_name = task.name.split(':')[1]
+      if SchemaMigration.find_by(migration_name)
+        next
+      else
+        puts '   migrate: ' + migration_name
+        Rake.application.invoke_task(task.name)
+        migration_counter+=1
+      end
 
     end
 
