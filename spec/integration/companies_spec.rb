@@ -69,7 +69,7 @@ describe 'Companies API', type: :request do
           expect(json['company']['default_mission_status_type_id']).not_to be_empty
           expect(json['company']['admin_user']).not_to be_empty
           expect(json['company']['admin_user']['email']).to eq('admin@mapotempo.com')
-          expect(Company.last.mission_status_types.to_a.count).to eq(4)
+          expect(Company.last.mission_status_types.to_a.count).to eq(13)
         end
       end
 

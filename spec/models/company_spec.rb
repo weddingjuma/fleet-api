@@ -35,7 +35,7 @@ RSpec.describe Company, type: :model do
     it 'creates a default workflow' do
       @company.set_workflow
 
-      expect(@company.mission_status_types.to_a.count).to eq(4)
+      expect(@company.mission_status_types.to_a.count).to eq(13)
     end
 
     it 'creates an admin user associated to the company' do
