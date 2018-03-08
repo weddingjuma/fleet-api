@@ -17,21 +17,16 @@
 #
 namespace :mapotempo_fleet do
 
-  desc 'Add mission_type field to missions'
-  task :migration_201802261139_add_mission_type_to_missions, [] => :environment do |_task, _args|
+  desc 'Init schema migration'
+  task :init_schema_migration, [] => :environment do |_task, _args|
 
-    # Verify migration execution
-    migration_name = _task.name.split(':').last.freeze
-    if SchemaMigration.find_by(migration_name)
-      p 'migration aborted, reason : already executed'
-      next
+    migrations = Rake.application.tasks.select do |task|
+      task.name.match('mapotempo_fleet:migration_\d+')
+    end.sort_by(&:name)
+
+    migrations.each do |task|
+      SchemaMigration.create!(migration: task.name.split(':')[1], date: Time.now.to_s)
     end
 
-    Mission.all.map do |mission|
-      mission.update_attribute(:mission_type, 'mission')
-    end
-
-    # Save migration execution
-    SchemaMigration.create(migration: migration_name, date: DateTime.now.to_s)
   end
 end
