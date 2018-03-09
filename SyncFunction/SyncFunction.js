@@ -63,11 +63,11 @@
 |  mission_placeholder   | describe a mission date, this document is  |
 |                        | used to maintain missions user's channel   |
 |                        | access.                                    |
-|  mission_status        | describe a status mission at a specific    |
-|                        | date with a specific mission_status_type.  |
+|  mission_actions       | describe a status action at a specific     |
+|                        | date with a specific mission_action_type.  |
 |  mission_status_type   | describe a status type possible for a      |
 |                        | company.                                   |
-|  mission_status_action | describe previous and after                |
+|  mission_action_type   | describe previous and after                |
 |                        | mission_status_type action.                |
 |  track                 | contains multiple locations history.       |
 |  current_location      | describe the current_location for a user.  |
@@ -93,9 +93,9 @@ function sync_func(doc, oldDoc) {
   var USER_PREFERENCE = 'user_settings';
   var MISSION = 'mission';
   var MISSIONS_PLACEHOLDER = 'missions_placeholder';
-  var MISSION_STATUS = 'mission_status';
+  var MISSION_ACTION = 'mission_action';
   var MISSION_STATUS_TYPE = 'mission_status_type';
-  var MISSION_STATUS_ACTION = 'mission_status_action';
+  var MISSION_ACTION_TYPE = 'mission_action_type';
   var USER_TRACK = 'user_track';
   var USER_CURRENT_LOCATION = 'user_current_location';
   var METAINFO = 'meta_info';
@@ -109,9 +109,9 @@ function sync_func(doc, oldDoc) {
     user_track: user_track,
     mission: mission,
     missions_placeholder: missions_placeholder,
-    mission_status: mission_status,
+    mission_action: mission_action,
     mission_status_type: mission_status_type,
-    mission_status_action: mission_status_action,
+    mission_action_type: mission_action_type,
     meta_info: meta_info
   };
 
@@ -203,8 +203,8 @@ function sync_func(doc, oldDoc) {
     doc.channels.push(companyChannel);
     var missionStatusTypeChannel = makeMissionStatusTypeChannel(params.company_id);
     doc.channels.push(missionStatusTypeChannel);
-    var missionStatusActionChannel = makeMissionStatusActionChannel(params.company_id);
-    doc.channels.push(missionStatusActionChannel);
+    var missionActionTypeChannel = makeMissionActionTypeChannel(params.company_id);
+    doc.channels.push(missionActionTypeChannel);
     switch (params.action) {
       case CREATING:
       case UPDATING:
@@ -214,7 +214,7 @@ function sync_func(doc, oldDoc) {
         access([sync_user], [channelUser]);
         access([sync_user], [companyChannel]);
         access([sync_user], [missionStatusTypeChannel]);
-        access([sync_user], [missionStatusActionChannel]);
+        access([sync_user], [missionActionTypeChannel]);
         access([sync_user], ["!"]);
         break;
       case DELETING:
@@ -313,7 +313,7 @@ function sync_func(doc, oldDoc) {
   // ######################
   // MISSION STATUS MANAGER
   // ######################
-  function mission_status(doc, oldDoc, params) {
+  function mission_action(doc, oldDoc, params) {
   }
 
   // ######################
@@ -328,10 +328,10 @@ function sync_func(doc, oldDoc) {
   // ######################
   // MISSION STATUS ACTION MANAGER
   // ######################
-  function mission_status_action(doc, oldDoc, params) {
-    var missionStatusActionChannel = makeMissionStatusActionChannel(params.company_id);
+  function mission_action_type(doc, oldDoc, params) {
+    var missionActionTypeChannel = makeMissionActionTypeChannel(params.company_id);
     // Add current doc in all channels
-    channel([missionStatusActionChannel]);
+    channel([missionActionTypeChannel]);
   }
 
   // #################
@@ -482,8 +482,8 @@ function sync_func(doc, oldDoc) {
     return MISSION_STATUS_TYPE + CHANNEL_SEPARATOR + company_id;
   }
 
-  function makeMissionStatusActionChannel(company_id) {
-    return MISSION_STATUS_ACTION + CHANNEL_SEPARATOR + company_id;
+  function makeMissionActionTypeChannel(company_id) {
+    return MISSION_ACTION_TYPE + CHANNEL_SEPARATOR + company_id;
   }
 
   function makeUserChannel(user) {

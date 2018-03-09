@@ -12,7 +12,7 @@
       "name": "GNU Affero General Public License 3",
       "url": "https://raw.githubusercontent.com/Mapotempo/fleet-api/master/LICENSE"
     },
-    "description": "\n## Overview\nThe purpose of this API is to be an interface to Couchbase/SyncGateway and ease communication with mobile.\n\n## Model\nModel is structured around three majors concepts: Company, User and Mission.\n* `Company`: main object for all other elements, all models must have a reference to a company. The Company has many users, each user has his own `api_key` to make API call. To create or mutate a company, an `admin` account must be used with its own API key.\n\n* `User`: user can make API call (through an API key) or connect to a mobile device.\n  * Each `user` has a `current location` which tracks mobile location. The location s updated only by the mobile.\n  * All users from a company, share common settings through `user settings` model.\n  * For mobile be able to update theses models (through SyncGateway), user must have declared roles. The default roles are: mission.updating, mission.deleting, mission_status.creating, mission_status.updating, mission_status.deleting, user_settings.creating, user_settings.updating, user_current_location.creating, user_current_location.updating, user_track.creating, user_track.updating.\n\n* `Mission`: describe the mission that the user must realize.\n  * Each `Mission` have an associated `mission status type` which describe its current state.\n  * To switch to another status, a `mission status action` is used to declare the links between statuses.\n  * Finally, to keep mission status history, each `mission` has many `mission status`.\n  * Due to the SyncGateway process, a `mission placeholder` is created or updated each time a mission is saved to keep mobile in a correct sync state. This model must not be called directly.\n\nIn order to know the next status available, a default workflow is defined when creating a company. It follows this pattern:\n* `To do` => `In progress`\n* `To do` => `Uncompleted`\n\n* `In progress` => `To do`\n* `In progress` => `Completed`\n* `In progress` => `Uncompleted`\n\n* `Uncompleted` => `To do`\n\n## Technical access\n### Swagger descriptor\nThis REST API is described with Swagger. The Swagger descriptor defines the request end-points, the parameters and the return values. The API can be addressed by HTTP request or with a generated client using the Swagger descriptor.\n### API key\nAll access to the API are subject to an `api_key` parameter in order to authenticate the user. This parameter must be sent in header with the following form: `\"Token token=user_api_key\"`\n### Return\nThe API supports one return format: `json`.\n"
+    "description": "\n## Overview\nThe purpose of this API is to be an interface to Couchbase/SyncGateway and ease communication with mobile.\n\n## Model\nModel is structured around three majors concepts: Company, User and Mission.\n* `Company`: main object for all other elements, all models must have a reference to a company. The Company has many users, each user has his own `api_key` to make API call. To create or mutate a company, an `admin` account must be used with its own API key.\n\n* `User`: user can make API call (through an API key) or connect to a mobile device.\n  * Each `user` has a `current location` which tracks mobile location. The location s updated only by the mobile.\n  * All users from a company, share common settings through `user settings` model.\n  * For mobile be able to update theses models (through SyncGateway), user must have declared roles. The default roles are: mission.updating, mission.deleting, mission_action.creating, mission_action.updating, mission_action.deleting, user_settings.creating, user_settings.updating, user_current_location.creating, user_current_location.updating, user_track.creating, user_track.updating.\n\n* `Mission`: describe the mission that the user must realize.\n  * Each `Mission` have an associated `mission status type` which describe its current state.\n  * To switch to another status, a `mission status action` is used to declare the links between statuses.\n  * Finally, to keep mission status history, each `mission` has many `mission status`.\n  * Due to the SyncGateway process, a `mission placeholder` is created or updated each time a mission is saved to keep mobile in a correct sync state. This model must not be called directly.\n\nIn order to know the next status available, a default workflow is defined when creating a company. It follows this pattern:\n* `To do` => `In progress`\n* `To do` => `Uncompleted`\n\n* `In progress` => `To do`\n* `In progress` => `Completed`\n* `In progress` => `Uncompleted`\n\n* `Uncompleted` => `To do`\n\n## Technical access\n### Swagger descriptor\nThis REST API is described with Swagger. The Swagger descriptor defines the request end-points, the parameters and the return values. The API can be addressed by HTTP request or with a generated client using the Swagger descriptor.\n### API key\nAll access to the API are subject to an `api_key` parameter in order to authenticate the user. This parameter must be sent in header with the following form: `\"Token token=user_api_key\"`\n### Return\nThe API supports one return format: `json`.\n"
   },
   "definitions": {
     "company": {
@@ -272,13 +272,13 @@
         }
       }
     },
-    "/mission_status_actions": {
+    "/mission_action_type": {
       "get": {
         "summary": "Retrieves all mission status actions for a user",
         "tags": [
           "Mission Status Actions"
         ],
-        "operationId": "getMissionStatusActions",
+        "operationId": "getMissionActionTypes",
         "description": "Retrieves all mission status actions for a user",
         "security": [
           {
@@ -316,7 +316,7 @@
         "tags": [
           "Mission Status Actions"
         ],
-        "operationId": "createMissionStatusAction",
+        "operationId": "createMissionActionType",
         "description": "Creates a mission status action for a user",
         "security": [
           {
@@ -337,7 +337,7 @@
             "required": true
           },
           {
-            "name": "mission_status_action",
+            "name": "mission_action_type",
             "in": "body",
             "schema": {
               "type": "object",
@@ -376,13 +376,13 @@
         }
       }
     },
-    "/mission_status_actions/{id}": {
+    "/mission_action_types/{id}": {
       "put": {
         "summary": "Updates a mission status action for a user",
         "tags": [
           "Mission Status Actions"
         ],
-        "operationId": "updateMissionStatusAction",
+        "operationId": "updateMissionActionType",
         "description": "Updates a mission status action for a user",
         "security": [
           {
@@ -409,7 +409,7 @@
             "required": true
           },
           {
-            "name": "mission_status_action",
+            "name": "mission_action_type",
             "in": "body",
             "schema": {
               "type": "object",
@@ -447,7 +447,7 @@
         "tags": [
           "Mission Status Actions"
         ],
-        "operationId": "deleteMissionStatusAction",
+        "operationId": "deleteMissionActionType",
         "description": "Deletes a mission status type for a user",
         "security": [
           {

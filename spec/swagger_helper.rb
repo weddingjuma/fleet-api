@@ -38,7 +38,7 @@ Model is structured around three majors concepts: Company, User and Mission.
 * `User`: user can make API call (through an API key) or connect to a mobile device.
   * Each `user` has a `current location` which tracks mobile location. The location s updated only by the mobile.
   * All users from a company, share common settings through `user settings` model.
-  * For mobile be able to update theses models (through SyncGateway), user must have declared roles. The default roles are: mission.updating, mission.deleting, mission_status.creating, mission_status.updating, mission_status.deleting, user_settings.creating, user_settings.updating, user_current_location.creating, user_current_location.updating, user_track.creating, user_track.updating.
+  * For mobile be able to update theses models (through SyncGateway), user must have declared roles. The default roles are: mission.updating, mission.deleting, mission_action.creating, mission_action.updating, mission_action.deleting, user_settings.creating, user_settings.updating, user_current_location.creating, user_current_location.updating, user_track.creating, user_track.updating.
 
 * `Mission`: describe the mission that the user must realize.
   * Each `Mission` have an associated `mission status type` which describe its current state.

@@ -15,7 +15,7 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class MissionStatusActionSerializer < ActiveModel::Serializer
+class MissionActionTypeSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
              :previous_mission_status_type_id,

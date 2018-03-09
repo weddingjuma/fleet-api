@@ -9,7 +9,7 @@ describe 'Mission status actions API', type: :request do
 
     @mission_status_type = create(:mission_status_type, company: @company)
     @related_status_type = create(:mission_status_type, company: @company)
-    @mission_status_action = create(:mission_status_action,
+    @mission_action_type = create(:mission_action_type,
                                     company: @company,
                                     previous_mission_status_type: @mission_status_type,
                                     next_mission_status_type: @related_status_type)
@@ -19,10 +19,10 @@ describe 'Mission status actions API', type: :request do
     @other_missions = create_list(:mission, 3, company: @other_company, user: @other_user)
   end
 
-  path '/mission_status_actions' do
+  path '/mission_action_types' do
     get 'Retrieves all mission status actions for a user' do
       tags 'Mission Status Actions'
-      operationId 'getMissionStatusActions'
+      operationId 'getMissionActionTypes'
       description 'Retrieves all mission status actions for a user'
       security [apiKey: []]
       produces 'application/json', 'application/xml'
@@ -33,8 +33,8 @@ describe 'Mission status actions API', type: :request do
         let(:sync_user) { @user.sync_user }
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['mission_status_actions']).not_to be_empty
-          expect(json['mission_status_actions'].size).to eq(1)
+          expect(json['mission_action_types']).not_to be_empty
+          expect(json['mission_action_types'].size).to eq(1)
         end
       end
 
@@ -61,12 +61,12 @@ describe 'Mission status actions API', type: :request do
 
     post 'Creates a mission status action for a user' do
       tags 'Mission Status Actions'
-      operationId 'createMissionStatusAction'
+      operationId 'createMissionActionType'
       description 'Creates a mission status action for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :sync_user, in: :query, type: :string, required: true
-      parameter name: :mission_status_action, in: :body, schema: {
+      parameter name: :mission_action_type, in: :body, schema: {
         type: :object,
         properties: {
           label: { type: :string },
@@ -80,41 +80,41 @@ describe 'Mission status actions API', type: :request do
       response '200', 'user mission status action created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
-        let(:mission_status_action) { { label: 'complete', group: 'default', previous_mission_status_type_id: @mission_status_type.id, next_mission_status_type_id: @related_status_type.id } }
+        let(:mission_action_type) { { label: 'complete', group: 'default', previous_mission_status_type_id: @mission_status_type.id, next_mission_status_type_id: @related_status_type.id } }
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['mission_status_action']).not_to be_empty
-          expect(json['mission_status_action']['previous_mission_status_type_id']).to eq(@mission_status_type.id)
-          expect(json['mission_status_action']['next_mission_status_type_id']).to eq(@related_status_type.id)
+          expect(json['mission_action_type']).not_to be_empty
+          expect(json['mission_action_type']['previous_mission_status_type_id']).to eq(@mission_status_type.id)
+          expect(json['mission_action_type']['next_mission_status_type_id']).to eq(@related_status_type.id)
         end
       end
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
-        let(:mission_status_action) { { label: nil } }
+        let(:mission_action_type) { { label: nil } }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
         let(:sync_user) { @user.sync_user }
-        let(:mission_status_action) { { label: 'complete', color: '#123456' } }
+        let(:mission_action_type) { { label: 'complete', color: '#123456' } }
         run_test!
       end
     end
   end
 
-  path '/mission_status_actions/{id}' do
+  path '/mission_action_types/{id}' do
     put 'Updates a mission status action for a user' do
       tags 'Mission Status Actions'
-      operationId 'updateMissionStatusAction'
+      operationId 'updateMissionActionType'
       description 'Updates a mission status action for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
       parameter name: :id, in: :path, type: :string
       parameter name: :sync_user, in: :query, type: :string, required: true
-      parameter name: :mission_status_action, in: :body, schema: {
+      parameter name: :mission_action_type, in: :body, schema: {
         type: :object,
         properties: {
           label: { type: :string },
@@ -127,35 +127,35 @@ describe 'Mission status actions API', type: :request do
       response '200', 'user mission status action updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
-        let(:id) { @mission_status_action.id }
-        let(:mission_status_action) { { label: 'new label' } }
+        let(:id) { @mission_action_type.id }
+        let(:mission_action_type) { { label: 'new label' } }
         run_test! do |response|
           json = JSON.parse(response.body)
-          expect(json['mission_status_action']).not_to be_empty
-          expect(json['mission_status_action']['label']).to eq('new label')
+          expect(json['mission_action_type']).not_to be_empty
+          expect(json['mission_action_type']['label']).to eq('new label')
         end
       end
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
-        let(:id) { @mission_status_action.id }
-        let(:mission_status_action) { { previous_mission_status_type_id: nil } }
+        let(:id) { @mission_action_type.id }
+        let(:mission_action_type) { { previous_mission_status_type_id: nil } }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
         let(:sync_user) { @user.sync_user }
-        let(:id) { @mission_status_action.id }
-        let(:mission_status_action) { @missions.first.attributes }
+        let(:id) { @mission_action_type.id }
+        let(:mission_action_type) { @missions.first.attributes }
         run_test!
       end
     end
 
     delete 'Deletes a mission status type for a user' do
       tags 'Mission Status Actions'
-      operationId 'deleteMissionStatusAction'
+      operationId 'deleteMissionActionType'
       description 'Deletes a mission status type for a user'
       security [apiKey: []]
       consumes 'application/json', 'application/xml'
@@ -165,14 +165,14 @@ describe 'Mission status actions API', type: :request do
       response '200', 'user mission status type deleted' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:sync_user) { @user.sync_user }
-        let(:id) { @mission_status_action.id }
+        let(:id) { @mission_action_type.id }
         run_test!
       end
 
       response '401', 'bad token' do
         let(:Authorization) { "Token token='bad token'" }
         let(:sync_user) { @user.sync_user }
-        let(:id) { @mission_status_action.id }
+        let(:id) { @mission_action_type.id }
         run_test!
       end
     end

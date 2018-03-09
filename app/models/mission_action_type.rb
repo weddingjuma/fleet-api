@@ -19,9 +19,9 @@
 # == Schema Information
 #
 # {
-#   "type": "mission_status_action",
-#   "_id": "status_action-XXXX"
-#   "company_id": "company_XXXXX_XXXXX_XXXX_XXXXX",
+#   "type": "mission_action_type",
+#   "_id": "mission_action_type-XXXX"
+#   "company_id": "company-XXXXX_XXXXX_XXXX_XXXXX",
 #   "previous_mission_status_type_id": "status_pending"
 #   "next_mission_status_type_id": "status_completed"
 #   "label": "To pending",
@@ -29,7 +29,7 @@
 # }
 #
 
-class MissionStatusAction < ApplicationRecord
+class MissionActionType < ApplicationRecord
 
   # == Attributes ===========================================================
   attribute :group, type: String

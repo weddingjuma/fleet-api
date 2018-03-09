@@ -41,9 +41,9 @@ class MissionStatusType < ApplicationRecord
   # == Relationships ========================================================
   belongs_to :company
 
-  has_many :related_missions,
+  has_many :related_mission_types,
            foreign_key: :previous_mission_status_type_id,
-           through: :mission_status_action,
+           through: :mission_action_type,
            through_key: :next_mission_status_type_id,
            class_name: MissionStatusType
 

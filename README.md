@@ -166,9 +166,9 @@ In order to proceed nominally, each company needs a workflow. A default workflow
 
 Each workflow is composed of:
 
-- A set of MissionStatusAction, linked to a previous and a next MissionStatusType.
+- A set of MissionActionType, linked to a previous and a next MissionStatusType.
 
-- Only the previous and next MissionStatusType, defined in MissionStatusAction, are accessible from the current MissionStatusType.
+- Only the previous and next MissionStatusType, defined in MissionActionType, are accessible from the current MissionStatusType.
 
 - MissionStatusType defined the name of the current status, its color and a svg path.
 

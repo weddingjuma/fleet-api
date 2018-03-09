@@ -47,11 +47,11 @@ class Company < ApplicationRecord
 
   has_many :missions_placeholders, class_name: 'MissionsPlaceholder', dependent: :destroy
 
-  has_many :mission_statuses, dependent: :destroy
+  has_many :mission_actions, dependent: :destroy
 
   has_many :mission_status_types, dependent: :destroy
 
-  has_many :mission_status_actions, dependent: :destroy
+  has_many :mission_action_types, dependent: :destroy
 
   # == Validations ==========================================================
   validates_presence_of :name

@@ -24,9 +24,9 @@ namespace :mapotempo_fleet do
     Company.ensure_design_document!
     User.ensure_design_document!
     Mission.ensure_design_document!
-    MissionStatus.ensure_design_document!
+    MissionAction.ensure_design_document!
     MissionStatusType.ensure_design_document!
-    MissionStatusAction.ensure_design_document!
+    MissionActionType.ensure_design_document!
     MissionsPlaceholder.ensure_design_document!
     UserCurrentLocation.ensure_design_document!
     UserSettings.ensure_design_document!

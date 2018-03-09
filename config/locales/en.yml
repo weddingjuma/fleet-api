@@ -21,7 +21,7 @@ en:
           company_id_immutable: "Company id cannot be updated"
           sync_user_immutable: "User reference cannot be updated"
           date_format: "Date must respect this format: YYYY-MM-DD"
-        mission_status:
+        mission_action:
           company_id_immutable: "Company id cannot be updated"
         mission_status_type:
           company_id_immutable: "Company id cannot be updated"

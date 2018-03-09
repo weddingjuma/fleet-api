@@ -15,11 +15,11 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class MissionStatusSerializer < ActiveModel::Serializer
+class MissionActionSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
              :mission_id,
-             :mission_status_type_id,
+             :mission_action_type_id,
              :date,
-             :description
+             :comment
 end
