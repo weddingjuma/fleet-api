@@ -10,15 +10,15 @@ class RestWorkflow < Workflow
   protected
 
   def create_workflow(company, status_types)
-    # Mission status actions
+    # Mission action types
     # to do => in rest
     # to do => done
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:in_rest_status_type])
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:done_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:in_rest_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:done_status_type])
     # in rest => done
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:in_rest_status_type], next_mission_status_type: status_types[:done_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:in_rest_status_type], next_mission_status_type: status_types[:done_status_type])
     # done => in rest
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:done_status_type], next_mission_status_type: status_types[:in_rest_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:done_status_type], next_mission_status_type: status_types[:in_rest_status_type])
   end
 
   def create_mission_status_types(company)

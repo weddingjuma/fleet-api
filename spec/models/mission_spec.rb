@@ -24,7 +24,8 @@ RSpec.describe Mission, type: :model do
       location: {
         lat: -0.5680988,
         lon: 44.8547927
-      }
+      },
+      mission_status_type: @todo_status_type
     )
 
     @missions = create_list(:mission, 5, company: @company, user: @user)
@@ -119,7 +120,7 @@ RSpec.describe Mission, type: :model do
     end
 
     it 'returns its mission status' do
-      expect(@mission.mission_statuses.to_a.count).to eq(1)
+      expect(@mission.mission_actions.to_a.count).to eq(0)
     end
 
     it 'has an optional mission status type' do

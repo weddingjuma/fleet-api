@@ -33,9 +33,9 @@ namespace :mapotempo_fleet do
     Company.ensure_design_document!
     User.ensure_design_document!
     Mission.ensure_design_document!
-    MissionStatus.ensure_design_document!
+    MissionAction.ensure_design_document!
     MissionStatusType.ensure_design_document!
-    MissionStatusAction.ensure_design_document!
+    MissionActionType.ensure_design_document!
     MissionsPlaceholder.ensure_design_document!
     UserCurrentLocation.ensure_design_document!
     UserSettings.ensure_design_document!
@@ -66,7 +66,7 @@ namespace :mapotempo_fleet do
     FactoryBot.create(:user, company: company, name: 'default', password: '123456', email: 'fleet@mapotempo.com', vehicle: false)
 
     # Driver users for testing purpose
-    driver_roles = %w[mission.updating mission.deleting mission_status.creating mission_status.updating mission_status.deleting user_settings.creating user_settings.updating user_current_location.creating user_current_location.updating user_track.creating user_track.updating]
+    driver_roles = %w[mission.updating mission_action.creating mission_action.updating user_settings.creating user_settings.updating user_current_location.creating user_current_location.updating user_track.creating user_track.updating]
     driver_1 = FactoryBot.create(:user, company: company, name: 'driver1', password: '123456', email: 'driver1@mapotempo.com', vehicle: true, roles: driver_roles)
     driver_2 = FactoryBot.create(:user, company: company, name: 'driver2', password: '123456', email: 'driver2@mapotempo.com', vehicle: true, roles: driver_roles)
     driver_3 = FactoryBot.create(:user, company: company, name: 'driver3', password: '123456', email: 'driver3@mapotempo.com', vehicle: true, roles: driver_roles)

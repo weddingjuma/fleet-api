@@ -20,10 +20,10 @@
 #
 # {
 #   "type" : "mission",
-#   "_id" : "mission_XXXXX_XXXXX_XXXX_XXXXX"
-#   "company_id" : "company_XXXXX_XXXXX_XXXX_XXXXX",
+#   "_id" : "mission-XXXXX_XXXXX_XXXX_XXXXX"
+#   "company_id" : "company-XXXXX_XXXXX_XXXX_XXXXX",
 #   "external_ref" : "XXXXX_XXXXX_XXXX_XXXXX",
-#   "user_id" : "user_XXXX_XXXX",
+#   "user_id" : "user-XXXX_XXXX",
 #   "sync_user" : "chauffeur_1",
 #   "mission_status_type_id" : "mission_status_type_id",
 #   "name" : "Mission-48",
@@ -88,8 +88,8 @@ class Mission < ApplicationRecord
   # optional : current mission status type
   belongs_to :mission_status_type
 
-  # mission status history
-  has_many :mission_statuses
+  # mission actions history
+  has_many :mission_actions
 
   # == Validations ==========================================================
   validates_presence_of :company_id
@@ -118,11 +118,9 @@ class Mission < ApplicationRecord
   # == Callbacks ============================================================
   before_validation :set_sync_user, :set_workflow
 
-  after_create :create_initial_status
-
   after_save :update_placeholder
 
-  before_destroy :destroy_mission_status
+  before_destroy :destroy_mission_actions
 
   # == Class Methods ========================================================
   def self.find_by(id_or_external_ref, company_id = nil)
@@ -161,11 +159,7 @@ class Mission < ApplicationRecord
 
   def set_workflow
     # Set mission_status_type_id to the mission
-    WorkflowMissionManager.new(self)
-  end
-
-  def create_initial_status
-    MissionStatus.create!(company_id: self.company_id, mission_id: self.id, mission_status_type_id: self.company.default_mission_status_type_id, date: self.date.to_date.strftime('%FT%T.%L%:z'))
+    WorkflowMissionManager.init_workflow(self)
   end
 
   def company_id_immutable
@@ -186,8 +180,8 @@ class Mission < ApplicationRecord
     placeholder.save!
   end
 
-  def destroy_mission_status
-    self.mission_statuses.map(&:destroy)
+  def destroy_mission_actions
+    self.mission_actions.map(&:destroy)
   end
 
 end

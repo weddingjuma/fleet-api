@@ -10,15 +10,15 @@ class ArrivalWorkflow < Workflow
   protected
 
   def create_workflow(company, status_types)
-    # Mission status actions
+    # Mission action types
     # to do => unloading
     # to do => arrived
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:unloading_status_type])
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:arrived_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:unloading_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:arrived_status_type])
     # unloading => arrived
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:unloading_status_type], next_mission_status_type: status_types[:arrived_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:unloading_status_type], next_mission_status_type: status_types[:arrived_status_type])
     # arrived => unloading
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:arrived_status_type], next_mission_status_type: status_types[:unloading_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:arrived_status_type], next_mission_status_type: status_types[:unloading_status_type])
   end
 
   def create_mission_status_types(company)

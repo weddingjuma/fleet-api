@@ -49,15 +49,15 @@ RSpec.describe MissionStatusType, type: :model do
       before(:all) do
         @related_status_type = create(:mission_status_type, company: @company)
 
-        @action = create(:mission_status_action,
+        @action = create(:mission_action_type,
                          company: @company,
                          previous_mission_status_type: @mission_status_type,
                          next_mission_status_type: @related_status_type)
       end
 
       it 'returns related types through action' do
-        expect(@mission_status_type.related_missions.to_a.size).to eq(1)
-        expect(@mission_status_type.related_missions.to_a.first).to eq(@related_status_type)
+        expect(@mission_status_type.related_mission_types.to_a.size).to eq(1)
+        expect(@mission_status_type.related_mission_types.to_a.first).to eq(@related_status_type)
       end
     end
   end

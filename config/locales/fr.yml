@@ -21,7 +21,7 @@ fr:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
           sync_user_immutable: "La référence utilisateur ne peut pas changer"
           date_format: "La date doit respecter ce format : YYYY-MM-DD"
-        mission_status:
+        mission_action:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
         mission_status_type:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"

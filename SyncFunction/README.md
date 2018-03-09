@@ -3,14 +3,14 @@
 ---
 ## Description
 The sync function ensure the security and manages users channels and roles.
-This documentation describe the sync function behaviors that occurs on every Sync/Couchbase Document.
+This documentation describes the sync function behaviors that occurs on every Sync/Couchbase Document.
 ## Documents Base Format
 #### Base
-A base format is required for every document that analyzed by the sync function. All document who don't respect the base format will be rejecte.
+A base format is required for every document that analyzed by the sync function. All documents who don't respect the base format will be rejected.
 
 ```json
-{ 
-"_id": "type_hash", 
+{
+"_id": "type_hash",
 "type": "type",
 "company_id": "company_hash"
 }
@@ -18,24 +18,25 @@ A base format is required for every document that analyzed by the sync function.
 
 #### Type
 The type field is used to dispatch the document in the appropriate specific function.
-The valide types accepted by the sync function are
+The valid types accepted by the sync function are:
 >  - company
 >  - user
 >  - mission
+>  - mission_action
 >  - mission_status
 >  - track
 >  - metadata
 This type is also used to verify role and build the channel, it's the base of channel formating.
 
 #### Company ID
-The `company_id` field is mandatory in every documents to ensure the property of all documents. The sync function require this field for dispatch all documents in their good channels.
+The `company_id` field is mandatory in every documents to ensure the property of all documents. The sync function requires this field for dispatch all documents in their good channels.
 The sync function can't verify if this `company_id` field is a valid document id in the nosql database, the creator should be assure the validity of this field.
 Document `company` type is only one who is exempt because the sync function use his _id field.
 
 #### Role
 The role for the sync function is build with company_id type and action :
 	[company_id-type-action]
-for example the  role need for update a mission type document is :
+for example the role needs for updating a mission type document is :
 		companyid.mission.updating
 
 #### Base channel
@@ -45,8 +46,8 @@ TODO
 ### Company
 ##### Model
 ```json
- { 
-	"_id": "company_XXXXX_XXXXX_XXXX_XXXXX", 
+ {
+	"_id": "company_XXXXX_XXXXX_XXXX_XXXXX",
 	"type": "company",
 	"name": "mapotempo"
  }

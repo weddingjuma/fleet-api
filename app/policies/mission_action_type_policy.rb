@@ -15,13 +15,13 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class MissionStatusActionPolicy
-  attr_reader :current_user, :mission_status_action
+class MissionActionTypePolicy
+  attr_reader :current_user, :mission_action_type
 
-  def initialize(current_user, mission_status_action)
-    raise Pundit::NotAuthorizedError unless mission_status_action
+  def initialize(current_user, mission_action_type)
+    raise Pundit::NotAuthorizedError unless mission_action_type
     @current_user = current_user
-    @mission_status_action = mission_status_action
+    @mission_action_type = mission_action_type
   end
 
   def show?
@@ -43,6 +43,6 @@ class MissionStatusActionPolicy
   private
 
   def same_company?
-    @current_user && @mission_status_action.company == @current_user.company
+    @current_user && @mission_action_type.company == @current_user.company
   end
 end

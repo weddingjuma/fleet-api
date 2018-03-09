@@ -1,12 +1,12 @@
 FactoryBot.define do
 
-  factory :mission_status do
+  factory :mission_action do
     # company_id (required)
     # mission_id (required)
-    # mission_status_type_id (required)
+    # mission_action_type_id (required)
 
     date { Faker::Time.forward(Random.rand(0..3)).strftime('%FT%T.%L%:z') }
-    description { Faker::Lorem.sentence(3) }
+    comment { Faker::Lorem.sentence(3) }
   end
 
 end

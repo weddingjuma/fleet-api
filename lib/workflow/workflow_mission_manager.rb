@@ -1,5 +1,5 @@
 class WorkflowMissionManager
-  def initialize(mission)
+  def self.init_workflow(mission)
     unless mission.mission_status_type_id
       case mission.mission_type
         when 'mission'

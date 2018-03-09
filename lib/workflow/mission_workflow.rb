@@ -10,21 +10,21 @@ class MissionWorkflow < Workflow
   protected
 
   def create_workflow(company, status_types)
-    # Mission status actions
+    # Mission action types
     # to do => in progress
     # to do => uncompleted
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:in_progress_status_type])
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:uncompleted_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:in_progress_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:todo_status_type], next_mission_status_type: status_types[:uncompleted_status_type])
     # in progress => to do
     # in progress => completed
     # in progress => uncompleted
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:in_progress_status_type], next_mission_status_type: status_types[:completed_status_type])
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:in_progress_status_type], next_mission_status_type: status_types[:todo_status_type])
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:in_progress_status_type], next_mission_status_type: status_types[:uncompleted_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:in_progress_status_type], next_mission_status_type: status_types[:completed_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:in_progress_status_type], next_mission_status_type: status_types[:todo_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:in_progress_status_type], next_mission_status_type: status_types[:uncompleted_status_type])
     # completed => in progress
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:completed_status_type], next_mission_status_type: status_types[:in_progress_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:completed_status_type], next_mission_status_type: status_types[:in_progress_status_type])
     # uncompleted => to do
-    MissionStatusAction.create(company: company, label: nil, previous_mission_status_type: status_types[:uncompleted_status_type], next_mission_status_type: status_types[:todo_status_type])
+    MissionActionType.create(company: company, label: nil, previous_mission_status_type: status_types[:uncompleted_status_type], next_mission_status_type: status_types[:todo_status_type])
   end
 
   def create_mission_status_types(company)
