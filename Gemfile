@@ -33,6 +33,11 @@ gem 'rswag'
 gem 'factory_bot_rails'
 gem 'faker'
 
+# SMS
+gem 'iso_country_codes'
+gem 'phonelib'
+gem 'nexmo'
+
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> in views
   gem 'web-console'

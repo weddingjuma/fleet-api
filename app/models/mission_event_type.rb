@@ -1,4 +1,4 @@
-# Copyright © Mapotempo, 2017
+# Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #
@@ -14,6 +14,23 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
+#
 
-SERVER_VERSION = 1
-MINIMAL_CLIENT_VERSION = 2
+# == Schema Information
+#
+# {
+#   "type": "mission_event_type",
+#   "_id": "mission_event_type-XXXX"
+#   "company_id": "company-XXXXX_XXXXX_XXXX_XXXXX",
+#   "mission_action_type_id": "mission_action-type-XXXX"
+#   "group": "default"
+# }
+#
+
+class MissionEventType < ApplicationRecord
+  include MissionEventTypeConcern
+
+  def initialize(model = nil, ignore_doc_type: false, **attributes)
+    super(model, ignore_doc_type: true, **attributes)
+  end
+end

@@ -25,6 +25,8 @@ fr:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
         mission_status_type:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
+        mission_event_type:
+          company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
         user_current_location:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
         user_settings:

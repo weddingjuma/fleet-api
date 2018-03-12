@@ -28,4 +28,8 @@ Rails.application.routes.draw do
       resources :user_current_locations, only: [:index]
     end
   end
+
+  namespace :webhook do
+    post 'mission_action_changes' => 'mission_action_changes#events'
+  end
 end

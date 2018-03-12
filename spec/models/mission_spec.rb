@@ -94,9 +94,9 @@ RSpec.describe Mission, type: :model do
     end
 
     it 'filters missions by date' do
-      expect(Mission.filter_by_date(@user.id, 1.day.ago.strftime('%Y-%m-%d')).size).to eq(1)
-      expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).strftime('%Y-%m-%d')).size).to eq(6)
-      expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).strftime('%Y-%m-%d'), Time.now.strftime('%Y-%m-%d')).size).to eq(5)
+      expect(Mission.filter_by_date(@user.id, 1.day.ago.to_date).size).to eq(1)
+      expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).to_date).size).to eq(6)
+      expect(Mission.filter_by_date(@user.id, Time.now.advance(days: 10).to_date, Time.now.to_date).size).to eq(5)
     end
 
     it 'returns the first mission' do

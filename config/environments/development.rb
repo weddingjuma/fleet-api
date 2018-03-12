@@ -43,4 +43,6 @@ Rails.application.configure do
 
   # Application config
   config.x.sync_gateway_url = 'http://localhost:4985/db/'
+
+  config.logger_sms = Rails.logger
 end

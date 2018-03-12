@@ -117,7 +117,7 @@ module Api::V01
     def destroy_multiples
       if params['end_date']
         user = User.find_by(params['user_id'])
-        ids = Mission.filter_by_date(user.id, params['end_date'], params['start_date'])
+        ids = Mission.filter_by_date(user.id, Date.parse(params['end_date']), Date.parse(params['start_date'])).map(&:id)
       elsif params['ids']
         ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
       else
@@ -149,6 +149,8 @@ module Api::V01
         :phone,
         :reference,
         :duration,
+        :planned_travel_time,
+        :planned_distance,
         location: [
           :lat,
           :lon
@@ -185,6 +187,8 @@ module Api::V01
         :phone,
         :reference,
         :duration,
+        :planned_travel_time,
+        :planned_distance,
         location: [
           :lat,
           :lon

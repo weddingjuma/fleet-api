@@ -14,6 +14,8 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
-
-SERVER_VERSION = 1
-MINIMAL_CLIENT_VERSION = 2
+#
+module Webhook
+  class WebhookController < ApplicationController
+  end
+end
