@@ -1,4 +1,4 @@
-# Copyright © Mapotempo, 2017
+# Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #
@@ -19,45 +19,26 @@
 # == Schema Information
 #
 # {
-#   "type": "mission_action_type",
-#   "_id": "mission_action_type-XXXX"
+#   "type": "mission_event_type_send_sms_departure",
+#   "_id": "mission_event_type_send_sms_departure-XXXX"
 #   "company_id": "company-XXXXX_XXXXX_XXXX_XXXXX",
-#   "previous_mission_status_type_id": "status_pending"
-#   "next_mission_status_type_id": "status_completed"
-#   "label": "To pending",
+#   "mission_action_type_id": "mission_status_action-XXXX",
+#   "template": "",
 #   "group": "default"
 # }
 #
 
-class MissionActionType < ApplicationRecord
+class MissionEventTypeSendSMSDeparture < MissionEventTypeSendSMS
 
   # == Attributes ===========================================================
-  attribute :group, type: String
-  attribute :label, type: String
 
   # == Extensions ===========================================================
 
   # == Relationships ========================================================
-  belongs_to :company
-
-  belongs_to :previous_mission_status_type,
-             class_name: MissionStatusType
-  belongs_to :next_mission_status_type,
-             class_name: MissionStatusType
-
-  # Send SMS, signature, etc...
-  has_many :mission_event_types
 
   # == Validations ==========================================================
-  validates_presence_of :company_id
-  validate :company_id_immutable, on: :update
-
-  validates_presence_of :previous_mission_status_type_id
-  validates_presence_of :next_mission_status_type_id
 
   # == Views ===============================================================
-  view :all
-  view :by_company, emit_key: :company_id
 
   # == Callbacks ============================================================
 
@@ -65,11 +46,22 @@ class MissionActionType < ApplicationRecord
 
   # == Instance Methods =====================================================
 
-  private
+  def exec(mission)
+    if mission.mission_type == 'departure'
+      if mission_action_type.previous_mission_status_type.reference == 'departure_to_do' && mission_action_type.next_mission_status_type.reference == 'departure_loading' && !mission.mission_actions.find{ |ma| ma.next_mission_status_type.reference == 'departure_loading' }
+        Time.use_zone(mission.date.zone) do
+          missions_by_date = Missions.filter_by_date(mission.user_id, mission.date + 12.hours, Time.zone.now)
+          time_shift = Time.zone.now - mission.date
 
-  def company_id_immutable
-    if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.mission_status_type.company_id_immutable'))
+          missions_by_date.each do |m|
+            # Shift time
+            m.date += time_shift
+
+            send_sms(m)
+          end
+        end
+      end
     end
   end
+
 end

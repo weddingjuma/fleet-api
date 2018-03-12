@@ -78,6 +78,8 @@ class Mission < ApplicationRecord
   attribute :reference, type: String
   attribute :duration, type: Integer
   attribute :time_windows, type: Array
+  attribute :planned_travel_time, type: Integer
+  attribute :planned_distance, type: Integer
 
   # == Extensions ===========================================================
 
@@ -142,11 +144,11 @@ class Mission < ApplicationRecord
       mission_date = mission.date.to_date
 
       if start_date
-        mission_date >= Date.parse(start_date) && mission_date <= Date.parse(end_date)
+        mission_date >= start_date && mission_date <= end_date
       else
-        mission_date <= Date.parse(end_date)
+        mission_date <= end_date
       end
-    end.map(&:id)
+    end
   end
 
   # == Instance Methods =====================================================

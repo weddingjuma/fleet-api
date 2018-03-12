@@ -36,6 +36,7 @@ namespace :mapotempo_fleet do
     MissionAction.ensure_design_document!
     MissionStatusType.ensure_design_document!
     MissionActionType.ensure_design_document!
+    MissionEventType.ensure_design_document!
     MissionsPlaceholder.ensure_design_document!
     UserCurrentLocation.ensure_design_document!
     UserSettings.ensure_design_document!

@@ -25,6 +25,8 @@ en:
           company_id_immutable: "Company id cannot be updated"
         mission_status_type:
           company_id_immutable: "Company id cannot be updated"
+        mission_event_type:
+          company_id_immutable: "Company id cannot be updated"
         user_current_location:
           company_id_immutable: "Company id cannot be updated"
         user_settings:

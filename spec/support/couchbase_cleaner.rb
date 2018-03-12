@@ -7,6 +7,7 @@ RSpec.configure do |config|
     MissionAction.ensure_design_document!
     MissionStatusType.ensure_design_document!
     MissionActionType.ensure_design_document!
+    MissionEventType.ensure_design_document!
     MissionsPlaceholder.ensure_design_document!
     UserCurrentLocation.ensure_design_document!
     UserSettings.ensure_design_document!
@@ -23,6 +24,7 @@ RSpec.configure do |config|
     MissionAction.all.stream { |ob| ob.delete }
     MissionStatusType.all.stream { |ob| ob.delete }
     MissionActionType.all.stream { |ob| ob.delete }
+    MissionEventType.all.stream { |ob| ob.delete }
     MissionsPlaceholder.all.stream { |ob| ob.delete }
     UserCurrentLocation.all.stream { |ob| ob.delete }
     UserSettings.all.stream { |ob| ob.delete }

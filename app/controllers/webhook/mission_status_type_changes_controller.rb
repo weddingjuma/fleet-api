@@ -1,4 +1,4 @@
-# Copyright © Mapotempo, 2017
+# Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #
@@ -14,6 +14,18 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
+#
+module Webhook
+  class MissionStatusTypeChangesController < WebhookController
+    skip_before_action :authenticate
+    # after_action :verify_authorized
 
-SERVER_VERSION = 1
-MINIMAL_CLIENT_VERSION = 2
+    def update
+      mission = Mission.find_by(params[:_id], @current_user&.company_id)
+      mission.mission_actions.to_a.last.mission_action_type.mission_event_types.each do |mission_event_type|
+        mission_event_type.exec(mission)
+      end unless mission.mission_actions.to_a.empty?
+    end
+
+  end
+end

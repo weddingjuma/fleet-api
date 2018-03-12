@@ -272,8 +272,11 @@ function sync_func(doc, oldDoc) {
     var date = checkDate(doc, oldDoc);
     var syncUserChannels = makeMissionChannels(sync_user, date);
     switch (params.action) {
-      case CREATING:
       case UPDATING:
+        // For webhook
+        if (oldDoc && doc.mission_status != oldDoc.mission_status)
+          doc.mission_status_was = oldDoc.mission_status;
+      case CREATING:
         checkName(doc, oldDoc);
         access([sync_user], [syncUserChannels]);
         break;

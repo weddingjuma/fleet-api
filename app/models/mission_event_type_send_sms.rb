@@ -1,4 +1,4 @@
-# Copyright © Mapotempo, 2017
+# Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #
@@ -19,45 +19,29 @@
 # == Schema Information
 #
 # {
-#   "type": "mission_action_type",
-#   "_id": "mission_action_type-XXXX"
+#   "type": "mission_event_type_send_sms",
+#   "_id": "mission_event_type_send_sms-XXXX"
 #   "company_id": "company-XXXXX_XXXXX_XXXX_XXXXX",
-#   "previous_mission_status_type_id": "status_pending"
-#   "next_mission_status_type_id": "status_completed"
-#   "label": "To pending",
+#   "mission_action_type_id": "mission_action_type-XXXX",
+#   "template": "",
 #   "group": "default"
 # }
 #
 
-class MissionActionType < ApplicationRecord
+class MissionEventTypeSendSMS < MissionEventType
 
   # == Attributes ===========================================================
-  attribute :group, type: String
-  attribute :label, type: String
+  attribute :template, type: String
+  attribute :concat, type: Boolean
 
   # == Extensions ===========================================================
 
   # == Relationships ========================================================
-  belongs_to :company
-
-  belongs_to :previous_mission_status_type,
-             class_name: MissionStatusType
-  belongs_to :next_mission_status_type,
-             class_name: MissionStatusType
-
-  # Send SMS, signature, etc...
-  has_many :mission_event_types
 
   # == Validations ==========================================================
-  validates_presence_of :company_id
-  validate :company_id_immutable, on: :update
-
-  validates_presence_of :previous_mission_status_type_id
-  validates_presence_of :next_mission_status_type_id
+  validates_presence_of :template
 
   # == Views ===============================================================
-  view :all
-  view :by_company, emit_key: :company_id
 
   # == Callbacks ============================================================
 
@@ -65,11 +49,29 @@ class MissionActionType < ApplicationRecord
 
   # == Instance Methods =====================================================
 
-  private
+  def send_sms(mission)
+    notif = Notifications.new(
+      api_key: Rails.application.config.sms_api_key,
+      api_secret: Rails.application.config.sms_api_secret,
+      from: company.name,
+      logger: Rails.application.config.logger_sms)
 
-  def company_id_immutable
-    if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.mission_status_type.company_id_immutable'))
-    end
+    date = mission.date.to_date
+    repl = {
+      date: I18n.l(date),
+      time: mission.date,
+      ref: mission.reference,
+      comment: mission.comment,
+      name: mission.name,
+      street: mission.address.street,
+      city: mission.address.city
+    }
+
+    notif.send_sms(
+      mission.phone,
+      mission.address.country,
+      notif.content(template, repl, !concat),
+      "SMc#{mission.company_id}t#{mission.date.to_i}"
+    )
   end
 end

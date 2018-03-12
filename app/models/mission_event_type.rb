@@ -1,4 +1,4 @@
-# Copyright © Mapotempo, 2017
+# Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #
@@ -19,41 +19,31 @@
 # == Schema Information
 #
 # {
-#   "type": "mission_action_type",
-#   "_id": "mission_action_type-XXXX"
+#   "type": "mission_event_type",
+#   "_id": "mission_event_type-XXXX"
 #   "company_id": "company-XXXXX_XXXXX_XXXX_XXXXX",
-#   "previous_mission_status_type_id": "status_pending"
-#   "next_mission_status_type_id": "status_completed"
-#   "label": "To pending",
+#   "mission_action_type_id": "mission_action-type-XXXX"
 #   "group": "default"
 # }
 #
 
-class MissionActionType < ApplicationRecord
+class MissionEventType < ApplicationRecord
 
   # == Attributes ===========================================================
   attribute :group, type: String
-  attribute :label, type: String
+  attribute :context # server | client (mobile)
 
   # == Extensions ===========================================================
 
   # == Relationships ========================================================
   belongs_to :company
-
-  belongs_to :previous_mission_status_type,
-             class_name: MissionStatusType
-  belongs_to :next_mission_status_type,
-             class_name: MissionStatusType
-
-  # Send SMS, signature, etc...
-  has_many :mission_event_types
+  belongs_to :mission_action_type
 
   # == Validations ==========================================================
   validates_presence_of :company_id
   validate :company_id_immutable, on: :update
 
-  validates_presence_of :previous_mission_status_type_id
-  validates_presence_of :next_mission_status_type_id
+  validates_presence_of :mission_action_type_id
 
   # == Views ===============================================================
   view :all
@@ -69,7 +59,7 @@ class MissionActionType < ApplicationRecord
 
   def company_id_immutable
     if company_id_changed?
-      errors.add(:company_id, I18n.t('couchbase.errors.models.mission_status_type.company_id_immutable'))
+      errors.add(:company_id, I18n.t('couchbase.errors.models.mission_event_type.company_id_immutable'))
     end
   end
 end
