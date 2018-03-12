@@ -46,11 +46,11 @@ RSpec.describe MissionAction, type: :model do
   end
 
   context 'Views' do
-    it 'returns all mission status type' do
+    it 'returns all mission actions' do
       expect(MissionAction.all.to_a.size).to eq(6)
     end
 
-    it 'returns all users having the company id' do
+    it 'returns all mission actions having the company id' do
       expect(MissionAction.by_company(key: @company.id).to_a.size).to eq(6)
     end
   end

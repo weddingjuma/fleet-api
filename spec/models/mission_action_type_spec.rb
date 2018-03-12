@@ -47,7 +47,7 @@ RSpec.describe MissionActionType, type: :model do
       expect(@mission_action_type.company.name).to eq('mapo-user')
     end
 
-    it 'returns the related missions status types' do
+    it 'returns the related missions action types' do
       expect(@mission_action_type.previous_mission_status_type).to eq(@previous_mission_status_type)
       expect(@mission_action_type.next_mission_status_type).to eq(@next_mission_status_type)
     end
