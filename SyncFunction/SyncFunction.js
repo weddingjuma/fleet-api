@@ -556,7 +556,7 @@ function sync_func(doc, oldDoc) {
   }
 
   function checkCompanyID(doc, oldDoc, type) {
-    if (type === 'company' || type === 'meta_data')
+    if (type === 'company' || type === 'meta_info')
       return;
     var company_id = oldDoc ? oldDoc.company_id : doc.company_id;
 
