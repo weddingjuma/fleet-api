@@ -1,0 +1,22 @@
+version: '3.3'
+services:
+  couchbaseserver:
+    image: couchbase/server:5.0.1
+    ports:
+      - "127.0.0.1:8091:8091" # Admin Web & API, internal access
+      - "8092:8092" # , internal access
+      - "11210:11210" # DB connection, internal access
+    volumes:
+      - ./couchbase-db:/opt/couchbase/var
+
+  sync-gateway:
+    build:
+      context: sync-gateway
+      dockerfile: Dockerfile
+    image: sync-gateway:1.5.1
+    ports:
+      - "4984:4984" # API Rest for Users, open to Web
+      - "127.0.0.1:4985:4985" # API Rest Admin, internal access : http://127.0.0.1:4985/_admin/db
+    volumes:
+      - ./sync-gateway-config.json:/etc/sync_gateway/config.json
+    command: -adminInterface :4985 /etc/sync_gateway/config.json
