@@ -18,7 +18,7 @@
         "document_changed": [
           {
             "handler": "webhook",
-            "url": "http://192.168.1.126:8084/webhook/mission_action_changes",
+            "url": "http://wrapper/webhook/mission_action_changes",
             "filter": "function(doc) { if (doc.type == 'mission_action') { return true; } return false; }"
           }
         ]
