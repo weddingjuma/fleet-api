@@ -33,3 +33,15 @@ en:
           company_id_immutable: "Company id cannot be updated"
         user_track:
           company_id_immutable: "Company id cannot be updated"
+  time:
+    hour: Hour
+    minute: Minute
+    formats:
+      default: '%B %d, %Y (%H:%M:%S)'
+      long: '%A %d %B %Y %H:%M'
+      short: '%d %b %H:%M'
+      hour_minute: '%H:%M'
+      hour_minute_second: '%H:%M:%S'
+      complete: '%m-%d-%Y %H:%M:%S'
+      date: '%Y-%m-%d'
+      datepicker: '%m-%d-%Y'

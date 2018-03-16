@@ -33,3 +33,15 @@ fr:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
         user_track:
           company_id_immutable: "L'identifiant de la compagnie ne peut pas changer"
+  time:
+    hour: Heure
+    minute: Minute
+    formats:
+      default: '%d %B %Y %H:%M:%S'
+      long: '%A %d %B %Y %H:%M'
+      short: '%d %b %H:%M'
+      hour_minute: '%H:%M'
+      hour_minute_second: '%H:%M:%S'
+      complete: '%d-%m-%Y %H:%M:%S'
+      date: '%d/%m/%Y'
+      datepicker: '%d-%m-%Y'
