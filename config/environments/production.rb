@@ -77,5 +77,8 @@ Rails.application.configure do
   end
 
   # Application config
+
   config.x.sync_gateway_url = 'http://sync-gateway:4985/db/'
+
+  config.logger_sms = Rails.logger
 end
