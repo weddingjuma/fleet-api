@@ -19,4 +19,6 @@ services:
       - "127.0.0.1:4985:4985" # API Rest Admin, internal access : http://127.0.0.1:4985/_admin/db
     volumes:
       - ./sync-gateway-config.json:/etc/sync_gateway/config.json
+    extra_hosts:
+      - "wrapper:${HOSTNAME}"
     command: -adminInterface :4985 /etc/sync_gateway/config.json
