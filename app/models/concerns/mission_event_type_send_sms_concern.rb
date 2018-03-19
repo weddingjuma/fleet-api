@@ -31,7 +31,7 @@ module MissionEventTypeSendSmsConcern
     notif = Notifications.new(
       api_key: Rails.application.config.sms_api_key,
       api_secret: Rails.application.config.sms_api_secret,
-      from: from_company_name && company.name,
+      from: from_company_name ? company.name : nil,
       logger: Rails.application.config.logger_sms)
 
     # TODO: FIXME mission.date could be a Time in couchbase orm

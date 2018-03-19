@@ -39,7 +39,7 @@ class MissionEventTypeSendSmsDeparture < ApplicationRecord
         # TODO: FIXME mission.date could be a Time in couchbase orm
         mission_date = Time.parse(mission.date)
         Time.use_zone(mission_date.zone) do
-          missions_by_date = Mission.filter_by_date(mission.user_id, mission_date + 12.hours, Time.zone.now)
+          missions_by_date = Mission.filter_by_date(mission.user_id, mission_date + 12.hours, mission_date)
           time_shift = Time.zone.now - mission_date
 
           sms_count = 0
