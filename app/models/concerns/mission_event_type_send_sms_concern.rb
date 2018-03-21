@@ -37,7 +37,7 @@ module MissionEventTypeSendSmsConcern
     # TODO: FIXME mission.date could be a Time in couchbase orm
     date = (mission.date.is_a?(String) ? Time.parse(mission.date) : mission.date).to_date
     repl = {
-      date: I18n.l(date),
+      date: I18n.l(date, format: :weekday),
       time: mission.date,
       ref: mission.reference,
       comment: mission.comment,
