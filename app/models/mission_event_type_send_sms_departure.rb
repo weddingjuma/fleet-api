@@ -47,7 +47,7 @@ class MissionEventTypeSendSmsDeparture < ApplicationRecord
             # Shift time
             m.date = Time.parse(m.date) + time_shift
 
-            send_sms(m) && sms_count += 1 if m.date > Time.zone.now
+            sms_count += send_sms(m).count{ |v| v } if m.date > Time.zone.now
           end
           Rails.logger.info("SMS departure sent: #{sms_count}")
         end

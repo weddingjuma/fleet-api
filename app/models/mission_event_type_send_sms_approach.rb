@@ -42,7 +42,7 @@ class MissionEventTypeSendSmsApproach < ApplicationRecord
           # Shift time
           mission.date = Time.zone.now + mission.planned_travel_time
 
-          send_sms(mission) && Rails.logger.info('SMS approach sent')
+          send_sms(mission).any?{ |v| v } && Rails.logger.info('SMS approach sent')
         end
       else
         Rails.logger.info 'Event sms approach already performed'
