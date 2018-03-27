@@ -32,6 +32,7 @@ services:
 #      - "11210:11210" # DB connection, internal access
     volumes:
       - ./couchbase-db:/opt/couchbase/var
+      - ./couchebase-dump:/couchebase-dump
     healthcheck:
       test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup | grep -q complete"] # Same password in wrapper > environment > COUCHBASE_PASSWORD and in initialize-db.sh --rbac-password
       interval: 30s
