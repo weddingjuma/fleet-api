@@ -70,6 +70,9 @@ class Mission < ApplicationRecord
   attribute :sync_user, type: String
   attribute :name, type: String
   attribute :date
+  attribute :eta
+  attribute :eta_compute_time
+  attribute :eta_compute_mode, type: String
   attribute :location, type: Hash
   attribute :picked_location, type: Hash
   attribute :address, type: Hash

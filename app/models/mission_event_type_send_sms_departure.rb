@@ -38,16 +38,21 @@ class MissionEventTypeSendSmsDeparture < ApplicationRecord
       if mission.mission_actions.take(mission.mission_actions.to_a.size - 1).none?{ |ma| ma.mission_action_type.next_mission_status_type.reference == next_status_ref }
         # TODO: FIXME mission.date could be a Time in couchbase orm
         mission_date = Time.parse(mission.date)
-        Time.use_zone(mission_date.zone) do
+        # TODO: FIXME time_zone should set on mission
+        Time.use_zone('Paris') do
           missions_by_date = Mission.filter_by_date(mission.user_id, mission_date + 12.hours, mission_date)
-          time_shift = Time.zone.now - mission_date
+          time_shift = Time.zone.parse(mission.mission_actions.to_a.last.date) - mission_date
 
           sms_count = 0
-          missions_by_date.select(&:phone).each do |m|
+          missions_by_date.each do |m|
             # Shift time
-            m.date = Time.parse(m.date) + time_shift
+            m.eta = Time.zone.parse(m.date) + time_shift
+            m.eta_compute_time = Time.now.utc
+            m.eta_compute_mode = 'shift'
+            m.save!
+            m.date = m.eta
 
-            sms_count += send_sms(m).count{ |v| v } if m.date > Time.zone.now
+            sms_count += send_sms(m).count{ |v| v } if m.phone && m.date > Time.zone.now
           end
           Rails.logger.info("SMS departure sent: #{sms_count}")
         end

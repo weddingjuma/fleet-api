@@ -54,5 +54,14 @@ module MapotempoFleet
 
     config.sms_api_key = 'my_api_key'
     config.sms_api_secret = 'my_api_secret'
+
+    def cache_factory(namespace, expires_in)
+      ActiveSupport::Cache::FileStore.new(File.join(Dir.tmpdir, namespace), namespace: namespace, expires_in: expires_in)
+    end
+    require './lib/routers/router_wrapper.rb'
+
+    config.router_api_key = 'demo'
+    config.router_url = 'http://localhost:4899'
+    config.router = Routers::RouterWrapper.new(cache_factory('router_wrapper_request', 60*60*24*1), cache_factory('router_wrapper_result', 60*60*24*1), config.router_api_key)
   end
 end

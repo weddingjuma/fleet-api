@@ -21,6 +21,7 @@ gem 'active_model_serializers'
 
 # HTTP requests
 gem 'http'
+gem 'rest-client'
 
 # Permission
 gem 'pundit'
