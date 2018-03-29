@@ -32,6 +32,7 @@ class MetaInfo < ApplicationRecord
   attribute :minimal_client_version, type: Integer
 
   # == Extensions ===========================================================
+  include TouchableConcern
 
   # == Relationships ========================================================
 

@@ -34,6 +34,7 @@ class MissionAction < ApplicationRecord
   attribute :comment
 
   # == Extensions ===========================================================
+  include TouchableConcern
 
   # == Relationships ========================================================
   belongs_to :company

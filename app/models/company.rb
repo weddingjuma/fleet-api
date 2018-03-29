@@ -33,6 +33,7 @@ class Company < ApplicationRecord
   attribute :default_mission_status_type_id, type: String
 
   # == Extensions ===========================================================
+  include TouchableConcern
 
   # == Relationships ========================================================
   has_many :users, dependent: :destroy

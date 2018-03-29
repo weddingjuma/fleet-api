@@ -85,6 +85,7 @@ class Mission < ApplicationRecord
   attribute :planned_distance, type: Integer
 
   # == Extensions ===========================================================
+  include TouchableConcern
 
   # == Relationships ========================================================
   belongs_to :company

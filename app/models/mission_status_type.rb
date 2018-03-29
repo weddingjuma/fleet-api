@@ -37,6 +37,7 @@ class MissionStatusType < ApplicationRecord
   attribute :svg_path, type: String
 
   # == Extensions ===========================================================
+  include TouchableConcern
 
   # == Relationships ========================================================
   belongs_to :company

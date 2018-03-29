@@ -36,6 +36,7 @@ class MissionActionType < ApplicationRecord
   attribute :label, type: String
 
   # == Extensions ===========================================================
+  include TouchableConcern
 
   # == Relationships ========================================================
   belongs_to :company

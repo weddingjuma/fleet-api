@@ -36,6 +36,7 @@ class MissionsPlaceholder < ApplicationRecord
   attribute :revision
 
   # == Extensions ===========================================================
+  include TouchableConcern
 
   # == Relationships ========================================================
   belongs_to :company
