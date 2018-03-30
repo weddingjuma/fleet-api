@@ -16,4 +16,4 @@
 # <http://www.gnu.org/licenses/agpl.html>
 
 SERVER_VERSION = 1
-MINIMAL_CLIENT_VERSION = 2
+MINIMAL_CLIENT_VERSION = 3

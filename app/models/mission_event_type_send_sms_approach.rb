@@ -49,7 +49,7 @@ class MissionEventTypeSendSmsApproach < ApplicationRecord
 
           if !last_locations.empty? && mission.location['lat'] && mission.location['lon']
             loc = last_locations.max_by{ |l| Time.parse(l['date']) }
-            lag = 0 # TODO: Time.zone.now - Time.zone.parse(loc['date'])
+            lag = Time.zone.now - Time.zone.parse(loc['date'])
             mode = %w[car time]
             route = Rails.application.config.router.compute_batch(
               Rails.application.config.router_url,
