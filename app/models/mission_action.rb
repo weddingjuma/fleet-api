@@ -32,6 +32,7 @@ class MissionAction < ApplicationRecord
   # == Attributes ===========================================================
   attribute :date
   attribute :comment
+  attribute :action_location
 
   # == Extensions ===========================================================
   include TouchableConcern

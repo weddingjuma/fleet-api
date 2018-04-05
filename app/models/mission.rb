@@ -74,7 +74,6 @@ class Mission < ApplicationRecord
   attribute :eta_compute_time
   attribute :eta_compute_mode, type: String
   attribute :location, type: Hash
-  attribute :picked_location, type: Hash
   attribute :address, type: Hash
   attribute :comment, type: String
   attribute :phone, type: String
@@ -83,6 +82,8 @@ class Mission < ApplicationRecord
   attribute :time_windows, type: Array
   attribute :planned_travel_time, type: Integer
   attribute :planned_distance, type: Integer
+  attribute :survey_location, type: Hash
+  attribute :survey_address, type: Hash
 
   # == Extensions ===========================================================
   include TouchableConcern
