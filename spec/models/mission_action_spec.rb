@@ -24,7 +24,8 @@ RSpec.describe MissionAction, type: :model do
       company: @company,
       mission_id: @mission,
       mission_action_type: @mission_action_type,
-      date: @date
+      date: @date,
+      action_location: { lat: 47.2, lon: 3.5}
     )
 
     @mission_actions = create_list(:mission_action, 5, company: @company,

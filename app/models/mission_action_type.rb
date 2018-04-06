@@ -63,6 +63,8 @@ class MissionActionType < ApplicationRecord
 
   # == Instance Methods =====================================================
 
+  include TouchableConcern
+
   private
 
   def company_id_immutable

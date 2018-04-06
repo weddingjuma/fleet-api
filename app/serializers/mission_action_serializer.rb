@@ -21,5 +21,6 @@ class MissionActionSerializer < ActiveModel::Serializer
              :mission_id,
              :mission_action_type_id,
              :date,
-             :comment
+             :comment,
+             :action_location
 end

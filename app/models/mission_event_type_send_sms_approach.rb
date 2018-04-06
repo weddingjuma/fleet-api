@@ -45,7 +45,11 @@ class MissionEventTypeSendSmsApproach < ApplicationRecord
           last_locations << mission.user.current_location.location_detail if mission.user.current_location.location_detail['date'] && mission.user.current_location.location_detail['lat'] && mission.user.current_location.location_detail['lon']
           # 2nd case: Compute ETA from last action location
           last_action = mission.mission_actions.to_a.last
-          last_locations << last_action if last_action['date'] && last_action['lat'] && last_action['lon']
+          last_locations << {
+            'date' => last_action['date'],
+            'lat' => last_action.action_location['lat'],
+            'lon' => last_action.action_location['lon']
+          } if last_action['date'] && last_action.action_location['lat'] && last_action.action_location['lon']
 
           if !last_locations.empty? && mission.location['lat'] && mission.location['lon']
             loc = last_locations.max_by{ |l| Time.parse(l['date']) }

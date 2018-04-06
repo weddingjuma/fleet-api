@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-describe 'Mission status actions API', type: :request do
+describe 'Mission action types API', type: :request do
 
   before(:all) do
     @company = create(:company, name: 'mapo-company')
