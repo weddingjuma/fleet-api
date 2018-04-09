@@ -12,9 +12,9 @@ RUN apt-get update && apt-get install -y apt-transport-https curl
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN apt-get update && \
     apt-get install -y git build-essential zlib1g zlib1g-dev \
-                       cmake libevent-dev python-minimal && \
-                       curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
-                       apt-get install -y nodejs && \
+        cmake libevent-dev python-minimal && \
+    curl -sL https://deb.nodesource.com/setup_8.x | bash - && \
+    apt-get install -y nodejs && \
     cd /srv/app && \
     bundle install --full-index --without test development && \
     \
