@@ -7,6 +7,7 @@ services:
     image: mapotempo/fleet-api:${MAPOTEMPO_VERSION:-56.0.0}
     ports:
       - "8084:80" # HOST:CONTAINER, edit only HOST part
+      #- "8093:8093" # user for n1ql query
     volumes:
       - ./sync-gateway-config.json:/srv/app/docker/sync-gateway-config.json
       - ./production.rb:/srv/app/config/environments/production.rb

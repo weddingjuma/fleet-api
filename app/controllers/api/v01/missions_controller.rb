@@ -57,6 +57,48 @@ module Api::V01
 
     def create_multiples
       user = User.find_by(params[:user_id])
+      valid_missions = []
+
+      # 1) - Retrive existing mission
+      external_refs = []
+      # SELECT META(mission).id as id, external_ref from `fleet-dev` as mission where type = "mission" and external_ref in ["mission-v245-2018_05_07", "mission-v250-2018_05_07"]
+      missions_params.map do |mission_params|
+        external_refs.append(mission_params['external_ref'])
+      end
+      r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and external_ref in ' + external_refs.to_s).results.to_a
+      existing_missions = Hash[r.collect{|e| [e[:external_ref], e] }]
+
+      # 2) - Exec upsert query (update or insert)
+      string_query = '`fleet-dev` as mission (KEY, VALUE) VALUES '
+      string_query =  string_query + missions_params.map do |mission_params|
+          mission = Mission.new
+          mission.assign_attributes(mission_params)
+          mission.user = user
+          mission.company = user.company
+          authorize mission, :create?
+          id = existing_missions[mission_params['external_ref']] ? existing_missions[mission_params['external_ref']][:id] : 'mission-' + SecureRandom.hex[0,9]
+          if mission.validate
+            valid_missions.append(mission)
+            a = mission.attributes.except('id')
+            a[:type] = 'mission'
+            '("' + id.to_s + '",' + a.to_json + ')'
+          end
+      end.compact.join(',')
+      Mission.bucket.n1ql.upsert_into(string_query).results.to_a
+
+      # 3) - Render
+      if valid_missions.present?
+        render json: valid_missions,
+               each_serializer: MissionSerializer
+      else
+        render json: [], status: :unprocessable_entity,
+               root: 'missions'
+      end
+    end
+
+    # Reserve : use this function if the new create_multiples function cause bug
+    def create_multiples_old
+      user = User.find_by(params[:user_id])
 
       missions = missions_params.map do |mission_params|
         existing_mission = Mission.by_external_ref(key: [user.company_id, mission_params['external_ref']]).to_a

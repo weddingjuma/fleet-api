@@ -5,6 +5,7 @@ services:
     ports:
       - "127.0.0.1:8091:8091" # Admin Web & API, internal access
       - "8092:8092" # , internal access
+      - "8093:8093" # user for n1ql query
       - "11210:11210" # DB connection, internal access
     volumes:
       - ./couchbase-db:/opt/couchbase/var
