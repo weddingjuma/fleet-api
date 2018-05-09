@@ -58,6 +58,7 @@ module Api::V01
     def create_multiples
       user = User.find_by(params[:user_id])
       valid_missions = []
+      dates = []
 
       # 1) - Retrive existing mission
       external_refs = []
@@ -65,7 +66,7 @@ module Api::V01
       missions_params.map do |mission_params|
         external_refs.append(mission_params['external_ref'])
       end
-      r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and external_ref in ' + external_refs.to_s).results.to_a
+      r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and external_ref in ' + external_refs.to_s).results.to_a
       existing_missions = Hash[r.collect{|e| [e[:external_ref], e] }]
 
       # 2) - Exec upsert query (update or insert)
@@ -78,6 +79,9 @@ module Api::V01
           authorize mission, :create?
           id = existing_missions[mission_params['external_ref']] ? existing_missions[mission_params['external_ref']][:id] : 'mission-' + SecureRandom.hex[0,9]
           if mission.validate
+            if !dates.include?(mission.date.to_date)
+              dates.append(mission.date.to_date)
+            end
             valid_missions.append(mission)
             a = mission.attributes.except('id')
             a[:type] = 'mission'
@@ -86,7 +90,15 @@ module Api::V01
       end.compact.join(',')
       Mission.bucket.n1ql.upsert_into(string_query).results.to_a
 
-      # 3) - Render
+      # 3) - Update create placeholder
+      dates.map do |date|
+        placeholder = MissionsPlaceholder.by_date(key: [user.company_id, user.sync_user, date.strftime('%F')]).to_a.first
+        placeholder = MissionsPlaceholder.new if !placeholder
+        placeholder.assign_attributes(company_id: user.company_id, sync_user: user.sync_user, date: date.strftime('%F'), revision: placeholder.revision ? placeholder.revision + 1 : 0)
+        placeholder.save!
+      end
+
+      # 4) - Render
       if valid_missions.present?
         render json: valid_missions,
                each_serializer: MissionSerializer
@@ -157,6 +169,21 @@ module Api::V01
     end
 
     def destroy_multiples
+      user = User.find_by(params['user_id'])
+      if params['end_date']
+        Mission.bucket.n1ql.delete_from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and date>"' + params['start_date'] + '" and date<"' + params['end_date'] + '"').results.to_a
+        skip_authorization
+      elsif params['ids']
+        ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
+        Mission.bucket.n1ql.delete_from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and ids in ' + external_refs.to_s).results.to_a
+        skip_authorization
+      else
+        skip_authorization
+      end
+      head :no_content
+    end
+
+    def destroy_multiples_old
       if params['end_date']
         user = User.find_by(params['user_id'])
         ids = Mission.filter_by_date(user.id, Date.parse(params['end_date']), Date.parse(params['start_date'])).map(&:id)
@@ -251,4 +278,5 @@ module Api::V01
     end
 
   end
+
 end
