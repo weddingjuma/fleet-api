@@ -56,22 +56,23 @@ module Api::V01
     end
 
     def create_multiples
+      bucket_name = Mission.bucket.bucket
       user = User.find_by(params[:user_id])
       valid_missions = []
-      dates = []
+      dates = Set.new
 
       # 1) - Retrive existing mission
-      external_refs = []
       # SELECT META(mission).id as id, external_ref from `fleet-dev` as mission where type = "mission" and external_ref in ["mission-v245-2018_05_07", "mission-v250-2018_05_07"]
-      missions_params.map do |mission_params|
-        external_refs.append(mission_params['external_ref'])
+      external_refs = missions_params.collect do |mission_params|
+        mission_params['external_ref']
       end
-      r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and external_ref in ' + external_refs.to_s).results.to_a
-      existing_missions = Hash[r.collect{|e| [e[:external_ref], e] }]
+      where_statement = "type = \"mission\" and company_id = \"#{user.company_id}\" and sync_user=\"#{user.sync_user}\" and external_ref in #{%Q(external_refs.to_s)}"
+      r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from("`#{bucket_name}` as mission").where(where_statement).results.to_a
+      existing_missions = Hash[r.collect{ |e| [e[:external_ref], e] }]
 
       # 2) - Exec upsert query (update or insert)
-      string_query = '`fleet-dev` as mission (KEY, VALUE) VALUES '
-      string_query =  string_query + missions_params.map do |mission_params|
+      string_query =  "`#{bucket_name}` as mission (KEY, VALUE) VALUES "
+      string_query += missions_params.map do |mission_params|
           mission = Mission.new
           mission.assign_attributes(mission_params)
           mission.user = user
@@ -79,9 +80,7 @@ module Api::V01
           authorize mission, :create?
           id = existing_missions[mission_params['external_ref']] ? existing_missions[mission_params['external_ref']][:id] : 'mission-' + SecureRandom.hex[0,9]
           if mission.validate
-            if !dates.include?(mission.date.to_date)
-              dates.append(mission.date.to_date)
-            end
+            dates.add(mission.date.to_date)
             valid_missions.append(mission)
             a = mission.attributes.except('id')
             a[:type] = 'mission'
@@ -91,7 +90,7 @@ module Api::V01
       Mission.bucket.n1ql.upsert_into(string_query).results.to_a
 
       # 3) - Update create placeholder
-      dates.map do |date|
+      dates.each do |date|
         placeholder = MissionsPlaceholder.by_date(key: [user.company_id, user.sync_user, date.strftime('%F')]).to_a.first
         placeholder = MissionsPlaceholder.new if !placeholder
         placeholder.assign_attributes(company_id: user.company_id, sync_user: user.sync_user, date: date.strftime('%F'), revision: placeholder.revision ? placeholder.revision + 1 : 0)
@@ -101,39 +100,6 @@ module Api::V01
       # 4) - Render
       if valid_missions.present?
         render json: valid_missions,
-               each_serializer: MissionSerializer
-      else
-        render json: [], status: :unprocessable_entity,
-               root: 'missions'
-      end
-    end
-
-    # Reserve : use this function if the new create_multiples function cause bug
-    def create_multiples_old
-      user = User.find_by(params[:user_id])
-
-      missions = missions_params.map do |mission_params|
-        existing_mission = Mission.by_external_ref(key: [user.company_id, mission_params['external_ref']]).to_a
-
-        # If several missions exists for the same uniq reference, delete all
-        if existing_mission.size > 1
-          existing_mission.map(&:destroy)
-          existing_mission = nil
-        else
-          existing_mission = existing_mission.first
-        end
-
-        # Override mission if already exists
-        mission = existing_mission || Mission.new
-        mission.assign_attributes(mission_params)
-        mission.user = user
-        mission.company = user.company
-        authorize mission, :create?
-        mission.save ? mission : nil
-      end.compact
-
-      if missions.present?
-        render json: missions,
                each_serializer: MissionSerializer
       else
         render json: [], status: :unprocessable_entity,
@@ -169,40 +135,16 @@ module Api::V01
     end
 
     def destroy_multiples
+      bucket_name = Mission.bucket.bucket
       user = User.find_by(params['user_id'])
       if params['end_date']
-        Mission.bucket.n1ql.delete_from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and date>"' + params['start_date'] + '" and date<"' + params['end_date'] + '"').results.to_a
-        skip_authorization
+        Mission.bucket.n1ql.delete_from("`#{bucket_name}` as mission").where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and date>"' + params['start_date'] + '" and date<"' + params['end_date'] + '"').results.to_a
       elsif params['ids']
         ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
-        Mission.bucket.n1ql.delete_from('`fleet-dev` as mission').where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and ids in ' + external_refs.to_s).results.to_a
-        skip_authorization
-      else
-        skip_authorization
+        Mission.bucket.n1ql.delete_from("`#{bucket_name}` as mission").where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and ids in ' + external_refs.to_s).results.to_a
       end
-      head :no_content
-    end
-
-    def destroy_multiples_old
-      if params['end_date']
-        user = User.find_by(params['user_id'])
-        ids = Mission.filter_by_date(user.id, Date.parse(params['end_date']), Date.parse(params['start_date'])).map(&:id)
-      elsif params['ids']
-        ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
-      else
-        ids = []
-      end
-
-      skip_authorization if ids.empty?
-
-      ids.map do |id|
-        mission = Mission.find(id) rescue nil
-        if mission
-          authorize mission, :destroy?
-          mission.destroy
-        end
-      end
-
+      # FIXME we should review how manage authorization for bulk delete
+      skip_authorization
       head :no_content
     end
 
