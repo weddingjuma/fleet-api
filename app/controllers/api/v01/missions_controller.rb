@@ -56,8 +56,8 @@ module Api::V01
     end
 
     def create_multiples
-      bucket_name = Mission.bucket.bucket
       user = User.find_by(params[:user_id])
+      bucket_name = Mission.bucket.bucket
       valid_missions = []
       dates = Set.new
 
@@ -70,7 +70,7 @@ module Api::V01
       r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from("`#{bucket_name}` as mission").where(where_statement).results.to_a
       existing_missions = Hash[r.collect{ |e| [e[:external_ref], e] }]
 
-      # 2) - Exec upsert query (update or insert)
+      # 2) - Prepare upsert query (update or insert)
       string_query =  "`#{bucket_name}` as mission (KEY, VALUE) VALUES "
       string_query += missions_params.map do |mission_params|
           mission = Mission.new
@@ -87,18 +87,16 @@ module Api::V01
             '("' + id.to_s + '",' + a.to_json + ')'
           end
       end.compact.join(',')
-      Mission.bucket.n1ql.upsert_into(string_query).results.to_a
 
-      # 3) - Update create placeholder
-      dates.each do |date|
-        placeholder = MissionsPlaceholder.by_date(key: [user.company_id, user.sync_user, date.strftime('%F')]).to_a.first
-        placeholder = MissionsPlaceholder.new if !placeholder
-        placeholder.assign_attributes(company_id: user.company_id, sync_user: user.sync_user, date: date.strftime('%F'), revision: placeholder.revision ? placeholder.revision + 1 : 0)
-        placeholder.save!
-      end
-
-      # 4) - Render
+      # 3) Exec upsert query and update/create placeholder
       if valid_missions.present?
+        Mission.bucket.n1ql.upsert_into(string_query).results.to_a
+        dates.each do |date|
+          placeholder = MissionsPlaceholder.by_date(key: [user.company_id, user.sync_user, date.strftime('%F')]).to_a.first
+          placeholder = MissionsPlaceholder.new if !placeholder
+          placeholder.assign_attributes(company_id: user.company_id, sync_user: user.sync_user, date: date.strftime('%F'), revision: placeholder.revision ? placeholder.revision + 1 : 0)
+          placeholder.save!
+        end
         render json: valid_missions,
                each_serializer: MissionSerializer
       else
@@ -141,7 +139,7 @@ module Api::V01
         Mission.bucket.n1ql.delete_from("`#{bucket_name}` as mission").where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and date>"' + params['start_date'] + '" and date<"' + params['end_date'] + '"').results.to_a
       elsif params['ids']
         ids = params['ids'].is_a?(String) ? params['ids'].split(',') : params['ids']
-        Mission.bucket.n1ql.delete_from("`#{bucket_name}` as mission").where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and ids in ' + external_refs.to_s).results.to_a
+        Mission.bucket.n1ql.delete_from("`#{bucket_name}` as mission").where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and META(mission).id in ' + ids.to_s).results.to_a
       end
       # FIXME we should review how manage authorization for bulk delete
       skip_authorization
