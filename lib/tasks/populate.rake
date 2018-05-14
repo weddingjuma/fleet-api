@@ -46,6 +46,13 @@ namespace :mapotempo_fleet do
     SchemaMigration.ensure_design_document!
     MetaInfo.ensure_design_document!
 
+    # Check and create index type if necessary
+    bucket_name = Mission.bucket.bucket
+    index_type = Mission.bucket.n1ql.select('*').from("system:indexes").where("name=\"#{bucket_name}_mission\"").results.first
+    if(!index_type)
+      Mission.bucket.n1ql.create_index("`#{bucket_name}_mission` ON `#{bucket_name}`(`company_id`, `sync_user`) WHERE type='mission'").results.to_a
+    end
+
     if SchemaMigration.all.to_a.empty?
       puts ' - apply task: initialize schema migration'
       Rake.application.invoke_task('mapotempo_fleet:init_schema_migration')
@@ -62,39 +69,6 @@ namespace :mapotempo_fleet do
     # Admin
     admin = FactoryBot.create(:admin, name: 'Admin', email: 'admin@mapotempo.com', password: '123456')
 
-    # Company
-    company = FactoryBot.create(:company, name: 'default')
-
-    # Users for connexion
-    FactoryBot.create(:user, company: company, name: 'default', password: '123456', email: 'fleet@mapotempo.com', vehicle: false)
-
-    # Driver users for testing purpose
-    driver_roles = %w[mission.updating mission_action.creating mission_action.updating user_settings.creating user_settings.updating user_current_location.creating user_current_location.updating user_track.creating user_track.updating]
-    driver_1 = FactoryBot.create(:user, company: company, name: 'driver1', password: '123456', email: 'driver1@mapotempo.com', vehicle: true, roles: driver_roles)
-    driver_2 = FactoryBot.create(:user, company: company, name: 'driver2', password: '123456', email: 'driver2@mapotempo.com', vehicle: true, roles: driver_roles)
-    driver_3 = FactoryBot.create(:user, company: company, name: 'driver3', password: '123456', email: 'driver3@mapotempo.com', vehicle: true, roles: driver_roles)
-
-    # Create default workflow
-    company.set_workflow
-
-    if Rails.env.development?
-      # Add current location for all drivers (in Bordeaux city)
-      driver_1.current_location.update_attribute(:location_detail, {
-        lat: 44.854895,
-        lon: -0.568097,
-        date: Time.now.strftime('%FT%T.%L%:z')
-      })
-      driver_2.current_location.update_attribute(:location_detail, {
-        lat: 44.837943,
-        lon: -0.568221,
-        date: Time.now.strftime('%FT%T.%L%:z')
-      })
-      driver_3.current_location.update_attribute(:location_detail, {
-        lat: 44.861618,
-        lon: -0.562277,
-        date: Time.now.strftime('%FT%T.%L%:z')
-      })
-    end
   end
 
 end
