@@ -57,13 +57,20 @@
 #       "end" : "2017-08-23T17:00:00.000Z"
 #     }
 #   ],
-#   mission_type: mission
+#   mission_type: mission,
+#   planned_travel_time, 500,
+#   planned_distance: 510
 # }
 #
 
 class Mission < ApplicationRecord
 
   # == Attributes ===========================================================
+  # == WARNING
+  # == In missions_controller class, the create_multiples method update itself
+  # == missions document without using Mission ApplicationRecord's model.
+  # == When someone add some attributes in the Mission model it should also
+  # == update the create_multiples method.
   attribute :external_ref, type: String
   attribute :mission_type, type: String
   # This value is automatically set by set_sync_user callback

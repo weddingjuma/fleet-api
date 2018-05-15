@@ -71,27 +71,71 @@ module Api::V01
       r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from("`#{bucket_name}` as mission").where(where_statement).results.to_a
       existing_missions = Hash[r.collect{ |e| [e[:external_ref], e] }]
 
-      # 2) - Prepare upsert query (update or insert)
-      string_query =  "`#{bucket_name}` as mission (KEY, VALUE) VALUES "
-      string_query += missions_params.map do |mission_params|
-          mission = Mission.new
-          mission.assign_attributes(mission_params)
-          mission.user = user
-          mission.company = user.company
-          authorize mission, :create?
-          id = existing_missions[mission_params['external_ref']] ? existing_missions[mission_params['external_ref']][:id] : 'mission-' + SecureRandom.hex[0,9]
-          if mission.validate
-            dates.add(mission.date.to_date)
-            valid_missions.append(mission)
-            a = mission.attributes.except('id')
-            a[:type] = 'mission'
-            '("' + id.to_s + '",' + a.to_json + ')'
-          end
-      end.compact.join(',')
+      valid_missions = missions_params.collect do |mission_params|
+        mission = Mission.new
+        mission.assign_attributes(mission_params)
+        mission.user = user
+        mission.company = user.company
+        mission.id = existing_missions[mission_params['external_ref']] ? existing_missions[mission_params['external_ref']][:id] : 'mission-' + SecureRandom.hex[0,9]
+        authorize mission, :create?
+        if mission.validate
+          dates.add(mission.date.to_date)
+          mission
+        end
+      end.compact
 
-      # 3) Exec upsert query and update/create placeholder
+      # 2) - Prepare and exec merge query
       if valid_missions.present?
-        Mission.bucket.n1ql.upsert_into(string_query).results.to_a
+        # 2.1) - Prepare merge query
+        string_query =
+        "`#{bucket_name}` as mission" +
+        ' USING ' + valid_missions.to_json + ' as source' +
+        '  ON KEY source.id' +
+        '  WHEN MATCHED THEN' +
+        '    UPDATE SET' +
+#       '      mission.type=mission,' +
+#       '      mission.company_id=source.company_id,' +
+#       '      mission.external_ref=source.external_ref,'+
+#       '      mission.user_id=source.user_id,'+
+#       '      mission.sync_user=source.sync_user,'+
+#       '      mission.mission_status_type_id=source.mission_status_type_id,' +
+        '      mission.name=source.name,' +
+        '      mission.date=source.date,' +
+        '      mission.location=source.location,' +
+        '      mission.address=source.address,' +
+        '      mission.comment=source.comment,' +
+        '      mission.phone=source.phone,' +
+        '      mission.reference=source.reference,' +
+        '      mission.duration=source.duration,' +
+        '      mission.time_windows=source.time_windows,' +
+        '      mission.eta=source.eta,' +
+        '      mission.mission_type=source.mission_type' +
+        '  WHEN NOT MATCHED THEN' +
+        '    INSERT {' +
+        '      "type": "mission",' +
+        '      "company_id": source.company_id,' +
+        '      "external_ref": source.external_ref,'+
+        '      "user_id": source.user_id,'+
+        '      "sync_user": source.sync_user,'+
+        '      "mission_status_type_id": source.mission_status_type_id,' +
+        '      "name": source.name,' +
+        '      "date": source.date,' +
+        '      "location": source.location,' +
+        '      "address": source.address,' +
+        '      "comment": source.comment,' +
+        '      "phone": source.phone,' +
+        '      "reference": source.reference,' +
+        '      "duration": source.duration,' +
+        '      "time_windows": source.time_windows,' +
+        '      "mission_type": source.mission_type,' +
+        '      "planned_travel_time": source.planned_travel_time,' +
+        '      "planned_distance": source.planned_distance' +
+        '    }'
+
+        # 2.2) - Exec merge query
+        Mission.bucket.n1ql.merge_into(string_query).results.to_a
+
+        # 2.3) - Update placeholder (see after_save update_placeholder method on mission model)
         dates.each do |date|
           placeholder = MissionsPlaceholder.by_date(key: [user.company_id, user.sync_user, date.strftime('%F')]).to_a.first
           placeholder = MissionsPlaceholder.new if !placeholder
