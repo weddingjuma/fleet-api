@@ -64,9 +64,10 @@ module Api::V01
       # 1) - Retrive existing mission
       # SELECT META(mission).id as id, external_ref from `fleet-dev` as mission where type = "mission" and external_ref in ["mission-v245-2018_05_07", "mission-v250-2018_05_07"]
       external_refs = missions_params.collect do |mission_params|
-        mission_params['external_ref']
+        # Escape " char to prevent sql injection
+        %Q(#{mission_params['external_ref']})
       end
-      where_statement = "type = \"mission\" and company_id = \"#{user.company_id}\" and sync_user=\"#{user.sync_user}\" and external_ref in #{%Q(external_refs.to_s)}"
+      where_statement = "type = \"mission\" and company_id = \"#{user.company_id}\" and sync_user=\"#{user.sync_user}\" and external_ref in #{external_refs.to_s}"
       r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from("`#{bucket_name}` as mission").where(where_statement).results.to_a
       existing_missions = Hash[r.collect{ |e| [e[:external_ref], e] }]
 
