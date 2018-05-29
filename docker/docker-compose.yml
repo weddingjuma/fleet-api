@@ -5,6 +5,8 @@ services:
       context: ..
       dockerfile: docker/Dockerfile
     image: mapotempo/fleet-api:${MAPOTEMPO_VERSION:-56.0.0}
+    networks:
+      couchbase:
     ports:
       - "8084:80" # HOST:CONTAINER, edit only HOST part
       #- "8093:8093" # user for n1ql query
@@ -15,7 +17,7 @@ services:
     restart: always
     links:
       - redis-cache
-      - couchbaseserver
+      - couchbase
       - sync-gateway
     environment:
       - APP_ENV=production # Switch to "development" for more traces
@@ -27,15 +29,19 @@ services:
     image: redis:${REDIS_VERSION:-3.2-alpine}
     command: redis-server --save ""
 
-  couchbaseserver:
-    image: couchbase/server:5.0.0
+  couchbase:
+    image: couchbase/server:5.1.0
+    networks:
+      couchbase:
+        aliases:
+          - "couchbase.${HOSTNAME}"
     ports:
       - "127.0.0.1:8091:8091" # Admin Web & API, internal access
 #      - "8092:8092" # , internal access
 #      - "11210:11210" # DB connection, internal access
     volumes:
       - ./couchbase-db:/opt/couchbase/var
-      - ./couchebase-dump:/couchebase-dump
+      - ./couchbase-dump:/couchbase-dump
     healthcheck:
       test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-prod -p 123456 raw warmup | grep -q complete"] # Same password in wrapper > environment > COUCHBASE_PASSWORD and in initialize-db.sh --rbac-password
       interval: 30s
@@ -47,6 +53,8 @@ services:
       context: sync-gateway
       dockerfile: Dockerfile
     image: sync-gateway:2.0.0
+    networks:
+      couchbase:
     ports:
       - "4984:4984" # API Rest for Users, open to Web
       - "127.0.0.1:4985:4985" # API Rest Admin, internal access : http://127.0.0.1:4985/_admin/db
@@ -54,4 +62,8 @@ services:
       - ./sync-gateway-config.json:/etc/sync_gateway/config.json
     command: -adminInterface :4985 /etc/sync_gateway/config.json
     depends_on:
-      - couchbaseserver
+      - couchbase
+
+networks:
+  couchbase:
+    external: true

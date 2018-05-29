@@ -14,6 +14,6 @@ test:
 
 # set these environment variables on your production server
 production:
-  hosts: '<%= ENV['COUCHBASE_HOST'] || ENV['COUCHBASE_HOSTS'] || 'couchbaseserver' %>'
+  hosts: '<%= ENV['COUCHBASE_HOST'] || ENV['COUCHBASE_HOSTS'] || 'couchbase' %>'
   bucket: '<%= ENV['COUCHBASE_BUCKET'] || 'fleet-prod' %>'
   password: '<%= ENV['COUCHBASE_PASSWORD'] || '123456' %>'

@@ -1,7 +1,7 @@
 version: '3.3'
 services:
-  couchbaseserver:
-    image: couchbase/server:5.0.1
+  couchbase:
+    image: couchbase/server:5.1.0
     ports:
       - "127.0.0.1:8091:8091" # Admin Web & API, internal access
       - "8092:8092" # , internal access

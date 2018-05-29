@@ -31,4 +31,3 @@ CMD ["/etc/sync_gateway/config.json"]
 # Expose ports
 #  port 4984: public port
 EXPOSE 4984
-
