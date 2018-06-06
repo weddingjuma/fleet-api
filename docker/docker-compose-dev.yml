@@ -9,6 +9,11 @@ services:
       - "11210:11210" # DB connection, internal access
     volumes:
       - ./couchbase-db:/opt/couchbase/var
+    healthcheck:
+      test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-dev -p 123456 raw warmup | grep -q complete"] # Same password in wrapper > environment > COUCHBASE_PASSWORD and in initialize-db.sh --rbac-password
+      interval: 30s
+      timeout: 10s
+      retries: 50
 
   sync-gateway:
     build:
@@ -20,6 +25,6 @@ services:
       - "127.0.0.1:4985:4985" # API Rest Admin, internal access : http://127.0.0.1:4985/_admin/db
     volumes:
       - ./sync-gateway-config.json:/etc/sync_gateway/config.json
-    extra_hosts:
-      - "wrapper:${HOSTNAME}"
     command: -adminInterface :4985 /etc/sync_gateway/config.json
+    depends_on:
+      - couchbase
