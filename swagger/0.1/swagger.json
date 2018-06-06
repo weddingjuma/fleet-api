@@ -125,6 +125,9 @@
     "mission_required": {
       "type": "object",
       "properties": {
+        "user_id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -211,11 +214,48 @@
     }
   },
   "paths": {
-    "/companies": {
+    "/admin/companies/{id}": {
+      "get": {
+        "summary": "Get a company",
+        "tags": [
+          "Admin"
+        ],
+        "operationId": "getCompanies",
+        "description": "Return a specific companiy (admin account required)",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all companies"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/admin/companies": {
       "get": {
         "summary": "Get all companies",
         "tags": [
-          "Companies"
+          "Admin"
         ],
         "operationId": "getCompanies",
         "description": "Return all companies (admin account required)",
@@ -242,7 +282,7 @@
       "post": {
         "summary": "Creates a company",
         "tags": [
-          "Companies"
+          "Admin"
         ],
         "operationId": "createCompanies",
         "security": [
@@ -271,6 +311,43 @@
           },
           "422": {
             "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/companies/{company_id}": {
+      "get": {
+        "summary": "Get the user company",
+        "tags": [
+          "Companies"
+        ],
+        "operationId": "getCompanies",
+        "description": "Return the current logged user company's",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "company_id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "company"
           },
           "401": {
             "description": "bad token"
@@ -707,9 +784,245 @@
           "application/json",
           "application/xml"
         ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "type": "string",
+            "required": false
+          }
+        ],
         "responses": {
           "200": {
             "description": "all missions"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a mission for a user",
+        "tags": [
+          "Missions"
+        ],
+        "operationId": "createUserMission",
+        "description": "Creates a mission for the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "mission",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/mission_required"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission created"
+          },
+          "404": {
+            "description": "without user_id"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "put": {
+        "summary": "Create / Update a list of missions for a user",
+        "tags": [
+          "Missions"
+        ],
+        "operationId": "createUserMissions",
+        "description": "Creates a set of missions for the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission",
+            "in": "body",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/mission_required"
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission created"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a list of missions for a user",
+        "tags": [
+          "Missions"
+        ],
+        "operationId": "destroyUserMissions",
+        "description": "Deletes a set of missions for the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "ids",
+            "in": "query",
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "name": "start_date",
+            "in": "query",
+            "type": "string",
+            "required": false
+          },
+          {
+            "name": "end_date",
+            "in": "query",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "user missions deleted"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/missions/{id}": {
+      "put": {
+        "summary": "Updates a mission of a user",
+        "tags": [
+          "Missions"
+        ],
+        "operationId": "updateUserMission",
+        "description": "Updates a mission belonging to the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "mission",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/mission"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission updated"
+          },
+          "422": {
+            "description": "invalid request"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "delete": {
+        "summary": "Deletes a mission",
+        "tags": [
+          "Missions"
+        ],
+        "operationId": "deleteUserMission",
+        "description": "Deletes a mission belonging to the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user mission deleted"
           },
           "401": {
             "description": "bad token"
@@ -942,46 +1255,6 @@
         }
       }
     },
-    "/users/{sync_user}/company": {
-      "get": {
-        "summary": "Retrieves a company of a user",
-        "tags": [
-          "Users"
-        ],
-        "operationId": "getUserCompany",
-        "description": "Retrieves the company of the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "sync_user",
-            "in": "path",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "user company found"
-          },
-          "404": {
-            "description": "user not found"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      }
-    },
     "/users/{sync_user}/current_location": {
       "get": {
         "summary": "Retrieves the current location of a user",
@@ -1015,293 +1288,6 @@
           },
           "404": {
             "description": "user current location not found"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      }
-    },
-    "/users/{sync_user}/missions": {
-      "get": {
-        "summary": "Retrieves all missions of a user",
-        "tags": [
-          "Users"
-        ],
-        "operationId": "getUserMissions",
-        "description": "Retrieves all missions of the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "produces": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "sync_user",
-            "in": "path",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "user missions found"
-          },
-          "404": {
-            "description": "user not found"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      },
-      "post": {
-        "summary": "Creates a mission for a user",
-        "tags": [
-          "Users"
-        ],
-        "operationId": "createUserMission",
-        "description": "Creates a mission for the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "sync_user",
-            "in": "path",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "mission",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/mission_required"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "user mission created"
-          },
-          "422": {
-            "description": "invalid request"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      }
-    },
-    "/users/{sync_user}/missions/create_multiples": {
-      "post": {
-        "summary": "Creates a list of missions for a user",
-        "tags": [
-          "Users"
-        ],
-        "operationId": "createUserMissions",
-        "description": "Creates a set of missions for the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "sync_user",
-            "in": "path",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "mission",
-            "in": "body",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/mission_required"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "user mission created"
-          },
-          "422": {
-            "description": "invalid request"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      }
-    },
-    "/users/{sync_user}/missions/destroy_multiples": {
-      "delete": {
-        "summary": "Deletes a list of missions for a user",
-        "tags": [
-          "Users"
-        ],
-        "operationId": "destroyUserMissions",
-        "description": "Deletes a set of missions for the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "sync_user",
-            "in": "path",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "ids",
-            "in": "query",
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "required": false
-          },
-          {
-            "name": "start_date",
-            "in": "query",
-            "type": "string",
-            "required": false
-          },
-          {
-            "name": "end_date",
-            "in": "query",
-            "type": "string",
-            "required": false
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "user missions deleted"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      }
-    },
-    "/users/{sync_user}/missions/{id}": {
-      "put": {
-        "summary": "Updates a mission of a user",
-        "tags": [
-          "Users"
-        ],
-        "operationId": "updateUserMission",
-        "description": "Updates a mission belonging to the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "sync_user",
-            "in": "path",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "mission",
-            "in": "body",
-            "schema": {
-              "$ref": "#/definitions/mission"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "user mission updated"
-          },
-          "422": {
-            "description": "invalid request"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      },
-      "delete": {
-        "summary": "Deletes a mission of a user",
-        "tags": [
-          "Users"
-        ],
-        "operationId": "deleteUserMission",
-        "description": "Deletes a mission belonging to the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "sync_user",
-            "in": "path",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "id",
-            "in": "path",
-            "type": "string",
-            "required": true
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "user mission deleted"
           },
           "401": {
             "description": "bad token"

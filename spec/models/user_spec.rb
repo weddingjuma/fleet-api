@@ -11,7 +11,7 @@ RSpec.describe User, type: :model do
       company: @company,
       name: 'mapotempo-user',
       email: 'test@mapotempo.com',
-      phone: '0000000001'
+      phone: '0000000001',
       password: 'password'
     )
 
