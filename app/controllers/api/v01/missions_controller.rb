@@ -40,6 +40,10 @@ module Api::V01
 
     # set_mission
     def create
+      if !params[:user_id]
+        return render body: nil, status: :not_found
+      end
+
       user = User.find_by(params[:user_id])
       mission = Mission.new
       mission.assign_attributes(mission_params)
@@ -56,6 +60,10 @@ module Api::V01
     end
 
     def create_multiples
+      if !params[:user_id]
+        return
+      end
+
       user = User.find_by(params[:user_id])
       bucket_name = Mission.bucket.bucket
       valid_missions = []

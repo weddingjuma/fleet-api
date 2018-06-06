@@ -4,22 +4,23 @@ Rails.application.routes.draw do
 
   namespace :api do
     namespace :v01, path: '0.1' do
+
+      namespace :admin do
+        resources :companies, only: [:index, :create, :show]
+      end
+
+      resources :companies, only: [:show]
+
       resources :users, only: [:index, :show, :create, :update, :destroy] do
-        resource :company, only: [:show]
-
-        resources :missions, only: [:index, :create, :update, :destroy] do
-          collection do
-            post 'create_multiples'
-            delete 'destroy_multiples'
-          end
-        end
-
         resource :current_location, only: [:show], controller: 'user_current_locations'
       end
 
-      resources :companies, only: [:index, :create]
-
-      resources :missions, only: [:index]
+      resources :missions, only: [:index, :create, :update, :destroy] do
+        collection do
+          put '' => 'missions#create_multiples'
+          delete '' => 'missions#destroy_multiples'
+        end
+      end
 
       resources :mission_status_types, only: [:index, :create, :update, :destroy]
 

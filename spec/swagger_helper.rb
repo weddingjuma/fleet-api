@@ -124,6 +124,7 @@ The API supports one return format: `json`.
         mission_required: {
           type: :object,
           properties: {
+            user_id: { type: :string },
             name: { type: :string },
             date: { type: :string },
             location: { '$ref': '#/definitions/location' },

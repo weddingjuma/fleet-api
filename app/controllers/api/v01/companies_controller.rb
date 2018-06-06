@@ -17,61 +17,15 @@
 #
 module Api::V01
   class CompaniesController < ApiController
-    before_action :authenticate_admin, only: [:index, :create]
-    skip_before_action :authenticate, only: [:index, :create]
-
     after_action :verify_authorized
 
-    def index
-      authorize Company
-
-      render json: Company.all.to_a,
+    def show
+      authorize @current_user.company
+      render json: @current_user.company,
              each_serializer: CompanySerializer
     end
 
-    def show
-      company = nil
-      if params[:user_id]
-        user = User.find_by(params[:user_id])
-        authorize user
-        company = user&.company
-      elsif params[:id]
-        company = Company.find(params[:id])
-        authorize company
-      end
-
-      if company
-        render json: company,
-               serializer: CompanySerializer
-      else
-        render body: nil, status: :not_found
-      end
-    end
-
-    def create
-      company = Company.new
-      company.assign_attributes(company_params)
-      authorize company
-
-      if company.save
-        company.set_workflow
-        admin_user = company.create_admin_user(params[:user_email]) if params[:user_email]
-
-        render json: company,
-               serializer: CompanySerializer,
-               with_admin: admin_user
-      else
-        render json: company.errors, status: :unprocessable_entity
-      end
-    end
-
     private
-
-    def company_params
-      params.permit(
-        :name
-      )
-    end
 
   end
 end
