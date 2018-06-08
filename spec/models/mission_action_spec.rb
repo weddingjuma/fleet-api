@@ -8,9 +8,16 @@ RSpec.describe MissionAction, type: :model do
     @user = create(:user,
                    company: @company,
                    name: 'mapo-user')
+    @route = create(
+      :route,
+      company: @company,
+      user: @user,
+      name: 'mapo-route')
+
     @mission = create(:mission,
                       company: @company,
-                      user: @user)
+                      user: @user,
+                      route: @route)
     @date = 2.days.ago.strftime('%FT%T.%L%:z')
 
     @mission_action_type = MissionActionType.create(

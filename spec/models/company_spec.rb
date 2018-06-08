@@ -12,7 +12,8 @@ RSpec.describe Company, type: :model do
     @companies = create_list(:company, 5)
 
     @users = create_list(:user, 3, company: @company)
-    @missions = create_list(:mission, 3, company: @company, user: @users.first)
+    @route = create(:route, company: @company, user: @users.first, name: 'mapo-route')
+    @missions = create_list(:mission, 3, company: @company, user: @users.first, route: @route)
   end
 
   subject { @company }
