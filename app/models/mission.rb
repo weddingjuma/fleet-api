@@ -24,6 +24,7 @@
 #   "company_id" : "company-XXXXX_XXXXX_XXXX_XXXXX",
 #   "external_ref" : "XXXXX_XXXXX_XXXX_XXXXX",
 #   "user_id" : "user-XXXX_XXXX",
+#   "route_id" : "route-XXXX_XXXX",
 #   "sync_user" : "chauffeur_1",
 #   "mission_status_type_id" : "mission_status_type_id",
 #   "name" : "Mission-48",
@@ -98,6 +99,7 @@ class Mission < ApplicationRecord
   # == Relationships ========================================================
   belongs_to :company
   belongs_to :user
+  belongs_to :route
 
   # optional : current mission status type
   belongs_to :mission_status_type
@@ -119,6 +121,8 @@ class Mission < ApplicationRecord
   validates_presence_of :name
   validates_presence_of :date
   validates_presence_of :location
+
+  validates_presence_of :route_id
 
   validates :mission_type, presence: true
 

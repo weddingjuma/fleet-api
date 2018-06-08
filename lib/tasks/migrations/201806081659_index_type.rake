@@ -17,8 +17,8 @@
 #
 namespace :mapotempo_fleet do
 
-  desc 'Index type field match to mission'
-  task :migration_201805111520_index_mission, [] => :environment do |_task, _args|
+  desc 'Index type field'
+  task :migration_201806081659_index_type, [] => :environment do |_task, _args|
 
     #Verify migration execution
     migration_name = _task.name.split(':').last.freeze
@@ -29,10 +29,11 @@ namespace :mapotempo_fleet do
 
     # Check and create index type if necessary (iso : populate)
     bucket_name = Mission.bucket.bucket
-    index_type = Mission.bucket.n1ql.select('*').from("system:indexes").where("name=\"#{bucket_name}_mission\"").results.first
+    index_name = bucket_name + "-type"
+    index_type = Mission.bucket.n1ql.select('*').from("system:indexes").where("name=\"#{index_name}\"").results.first
     if(!index_type)
-      # Query type : CREATE INDEX `fleet-dev_mission` ON `fleet-dev`(`company_id`, `sync_user`) WHERE type='mission'
-      Mission.bucket.n1ql.create_index("`#{bucket_name}_mission` ON `#{bucket_name}`(`company_id`, `sync_user`) WHERE type='mission'").results.to_a
+      # CREATE INDEX `fleet-dev-type` ON `fleet-dev`(`type`)
+      Mission.bucket.n1ql.create_index("`#{index_name}` ON `#{bucket_name}`(`type`)").results.to_a
     end
 
     #Save migration execution

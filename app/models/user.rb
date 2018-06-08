@@ -62,6 +62,7 @@ class User < ApplicationRecord
   belongs_to :company
 
   has_many :missions
+  has_many :routes
 
   # == Validations ==========================================================
   validates_presence_of :company_id

@@ -9,6 +9,11 @@ RSpec.describe Mission, type: :model do
     @user = create(:user,
                    company: @company,
                    name: 'mapo-user')
+    @route = create(
+      :route,
+      company: @company,
+      user: @user,
+      name: 'mapo-route')
 
     @todo_status_type = create(:mission_status_type, company: @company, label: 'To do', color: '#ff0000')
     @company.update_attribute(:default_mission_status_type_id, @todo_status_type.id)
@@ -18,6 +23,7 @@ RSpec.describe Mission, type: :model do
       company: @company,
       external_ref: 'uniq_ref_by_company',
       user: @user,
+      route: @route,
       mission_type: 'mission',
       name: 'mission name',
       date: @date,
@@ -28,7 +34,7 @@ RSpec.describe Mission, type: :model do
       mission_status_type: @todo_status_type
     )
 
-    @missions = create_list(:mission, 5, company: @company, user: @user)
+    @missions = create_list(:mission, 5, company: @company, user: @user, route: @route)
   end
 
   subject { @mission }

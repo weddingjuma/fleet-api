@@ -3,6 +3,7 @@ RSpec.configure do |config|
     Admin.ensure_design_document!
     Company.ensure_design_document!
     User.ensure_design_document!
+    Route.ensure_design_document!
     Mission.ensure_design_document!
     MissionAction.ensure_design_document!
     MissionStatusType.ensure_design_document!
@@ -16,12 +17,14 @@ RSpec.configure do |config|
     UserTrack.ensure_design_document!
     SchemaMigration.ensure_design_document!
     MetaInfo.ensure_design_document!
+
   end
 
   config.after(:all) do
     Admin.all.stream { |ob| ob.delete }
     Company.all.stream { |ob| ob.delete }
     User.all.stream { |ob| ob.delete }
+    Route.all.stream { |ob| ob.delete }
     Mission.all.stream { |ob| ob.delete }
     MissionAction.all.stream { |ob| ob.delete }
     MissionStatusType.all.stream { |ob| ob.delete }

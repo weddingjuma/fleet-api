@@ -9,7 +9,7 @@ RSpec.describe MissionsPlaceholder, type: :model do
     @user = create(:user,
                    company: @company,
                    name: 'mapo-user')
-
+    @route = create(:route, company: @company, user: @user, name: 'mapo-route')
     @date = 2.days.ago.strftime('%F')
     @missions_placeholder = MissionsPlaceholder.create(
       company: @company,
@@ -17,7 +17,7 @@ RSpec.describe MissionsPlaceholder, type: :model do
       date: @date
     )
 
-    @mission = create(:mission, company: @company, user: @user)
+    @mission = create(:mission, company: @company, user: @user, route: @route)
   end
 
   subject { @missions_placeholder }
