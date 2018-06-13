@@ -11,7 +11,7 @@ gem 'rails', '~> 5.1.4'
 gem 'rack-cors'
 
 # Database interface
-gem 'libcouchbase', github: 'Mapotempo/libcouchbase', tag: '1.2.8-mapo.1'
+gem 'libuv', '= 4.0.2' # Force libuv 4.0.2 to build libcouchbase
 gem 'couchbase-orm'
 
 # Encrypt password
