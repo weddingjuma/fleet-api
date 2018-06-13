@@ -80,6 +80,9 @@
         "email": {
           "type": "string"
         },
+        "phone": {
+          "type": "string"
+        },
         "password": {
           "type": "string"
         },
@@ -103,6 +106,9 @@
           "type": "string"
         },
         "email": {
+          "type": "string"
+        },
+        "phone": {
           "type": "string"
         },
         "password": {
@@ -272,7 +278,7 @@
         }
       }
     },
-    "/mission_action_type": {
+    "/mission_action_types": {
       "get": {
         "summary": "Retrieves all mission status actions for a user",
         "tags": [

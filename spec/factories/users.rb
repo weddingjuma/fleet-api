@@ -6,6 +6,7 @@ FactoryBot.define do
     sequence(:name) { |n| "user_#{n + 1}" }
     sequence(:email) { |n| "user#{n + 1}@email.com" }
     password '123456'
+    phone '0000000001'
     vehicle true
     color { Faker::Color.hex_color }
   end

@@ -105,6 +105,7 @@ The API supports one return format: `json`.
           properties: {
             name: { type: :string },
             email: { type: :string },
+            phone: { type: :string },
             password: { type: :string },
             roles: { type: :array, items: { type: :string } }
           },
@@ -115,6 +116,7 @@ The API supports one return format: `json`.
           properties: {
             name: { type: :string },
             email: { type: :string },
+            phone: { type: :string },
             password: { type: :string },
             roles: { type: :array, items: { type: :string } }
           }
