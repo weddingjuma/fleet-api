@@ -43,7 +43,8 @@ module MissionEventTypeSendSmsConcern
       comment: mission.comment,
       name: mission.name,
       street: mission.address['street'],
-      city: mission.address['city']
+      city: mission.address['city'],
+      driver_phone: mission.user.phone
     }
 
     notif.send_sms(

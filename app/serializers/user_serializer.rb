@@ -24,5 +24,6 @@ class UserSerializer < ActiveModel::Serializer
              :email,
              :vehicle,
              :color,
+             :phone,
              :roles
 end

@@ -91,6 +91,7 @@ module Api::V01
         :email,
         :password,
         :vehicle,
+        :phone,
         roles: []
       )
     end

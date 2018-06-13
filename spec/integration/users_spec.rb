@@ -69,11 +69,12 @@ describe 'Users API', type: :request do
 
       response '200', 'user created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user) {  { name: 'user_name', email: 'user@mapotempo.com', password: 'password', roles: %w(mission.creating mission.updating mission.deleting) } }
+        let(:user) {  { name: 'user_name', phone: '0000000000', email: 'user@mapotempo.com', password: 'password', roles: %w(mission.creating mission.updating mission.deleting) } }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['user']['name']).not_to be_empty
           expect(json['user']['sync_user']).not_to be_empty
+          expect(json['user']['phone']) == '0000000000'
         end
       end
 

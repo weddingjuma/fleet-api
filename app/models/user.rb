@@ -47,6 +47,7 @@ class User < ApplicationRecord
   attribute :sync_user, type: String
   attribute :name, type: String
   attribute :email, type: String
+  attribute :phone, type: String
   attribute :vehicle, type: Boolean
   attribute :color, type: String
   attribute :roles, type: Array
