@@ -67,7 +67,7 @@ module Api::V01
         # Escape " char to prevent sql injection
         %Q(#{mission_params['external_ref']})
       end
-      where_statement = "type = \"mission\" and company_id = \"#{user.company_id}\" and sync_user=\"#{user.sync_user}\" and external_ref in #{external_refs.to_s}"
+      where_statement = "type = \"mission\" and company_id = \"#{user.company_id}\" and external_ref in #{external_refs.to_s}"
       r = Mission.bucket.n1ql.select('META(mission).id as id, external_ref').from("`#{bucket_name}` as mission").where(where_statement).results.to_a
       existing_missions = Hash[r.collect{ |e| [e[:external_ref], e] }]
 
@@ -81,6 +81,9 @@ module Api::V01
         if mission.validate
           dates.add(mission.date.to_date)
           mission
+        else
+          Rails.logger.info mission.errors.messages
+          nil
         end
       end.compact
 
@@ -96,8 +99,8 @@ module Api::V01
 #       '      mission.type=mission,' +
 #       '      mission.company_id=source.company_id,' +
 #       '      mission.external_ref=source.external_ref,'+
-#       '      mission.user_id=source.user_id,'+
-#       '      mission.sync_user=source.sync_user,'+
+        '      mission.user_id=source.user_id,' +
+        '      mission.sync_user=source.sync_user,' +
 #       '      mission.mission_status_type_id=source.mission_status_type_id,' +
         '      mission.name=source.name,' +
         '      mission.date=source.date,' +
