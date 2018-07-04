@@ -34,6 +34,7 @@ describe("Mission create update delete test", function() {
             "sync_user": "static",
             "phone": "0600010203",
             "reference": "ABCDEF",
+            "route_id": "route-12345",
             "time_windows": [{
                     "end": "2017-08-21T010:00:00Z",
                     "start": "2017-08-21T08:00:00Z"
@@ -54,7 +55,7 @@ describe("Mission create update delete test", function() {
                 expectedUsers: ["static"]
             }, [{
                 expectedType: "channel",
-                expectedChannels: ["mission:static:20170721"],
+                expectedChannels: ["mission:static:20170721", "mission:static"],
                 expectedUsers: ["static"]
             }]);
     });
@@ -83,6 +84,7 @@ describe("Mission create update delete test", function() {
             // "sync_user": "static",
             "phone": "0600010203",
             "reference": "ABCDEF",
+            "route_id": "route-12345",
             "time_windows": [{
                     "end": "2017-08-21T010:00:00Z",
                     "start": "2017-08-21T08:00:00Z"
@@ -129,6 +131,7 @@ describe("Mission create update delete test", function() {
             // "sync_user": "static",
             "phone": "0600010203",
             "reference": "ABCDEF",
+            "route_id": "route-12345",
             "time_windows": [{
                     "end": "2017-08-21T010:00:00Z",
                     "start": "2017-08-21T08:00:00Z"
@@ -176,6 +179,7 @@ describe("Mission create update delete test", function() {
             "sync_user": "static",
             "phone": "0600010203",
             "reference": "ABCDEF",
+            "route_id": "route-12345",
             "time_windows": [{
                     "end": "2017-08-21T010:00:00Z",
                     "start": "2017-08-21T08:00:00Z"
@@ -223,6 +227,7 @@ describe("Mission create update delete test", function() {
             "sync_user": "static",
             "phone": "0600010203",
             "reference": "ABCDEF",
+            "route_id": "route-12345",
             "time_windows": [{
                     "end": "2017-08-21T010:00:00Z",
                     "start": "2017-08-21T08:00:00Z"
@@ -270,6 +275,7 @@ describe("Mission create update delete test", function() {
             "sync_user": "static",
             "phone": "0600010203",
             "reference": "ABCDEF",
+            "route_id": "route-12345",
             "time_windows": [{
                     "end": "2017-08-21T010:00:00Z",
                     "start": "2017-08-21T08:00:00Z"
@@ -316,6 +322,7 @@ describe("Mission create update delete test", function() {
             "sync_user": "static",
             "phone": "0600010203",
             "reference": "ABCDEF",
+            "route_id": "route-12345",
             "time_windows": [{
                     "end": "2017-08-21T010:00:00Z",
                     "start": "2017-08-21T08:00:00Z"
@@ -350,6 +357,7 @@ describe("Mission create update delete test", function() {
             "mission_status_type_id": "Pending:7Cito9g5g5-defd-4b40-58g-9e33abg57185",
             "name": "test",
             "sync_user": "static",
+            "route_id": "route-12345",
             "type": "mission",
             "_rev": "74-5dafed6558915c015ac98f338382067a",
             "_id": "Mission_68g95ac3-da6d-4b40-973b-9e3341879085"
@@ -361,7 +369,7 @@ describe("Mission create update delete test", function() {
                 expectedUsers: ["static"]
             }, [{
                 expectedType: "channel",
-                expectedChannels: ["mission:static:20170721"],
+                expectedChannels: ["mission:static:20170721", "mission:static"],
                 expectedUsers: ["static"]
             }]);
     });
@@ -388,6 +396,7 @@ describe("Mission create update delete test", function() {
             },
             "name": "test",
             "sync_user": "static",
+            "route_id": "route-12345",
             "type": "mission",
             "_id": "Mission_1534a8de-b412-49bc-97a8-3b535d131406"
         }
@@ -403,7 +412,7 @@ describe("Mission create update delete test", function() {
             }, [{
                 expectedType: "channel",
                 expectedUsers: ["static"],
-                expectedChannels: ["mission:static:20170725"]
+                expectedChannels: ["mission:static:20170725", "mission:static"],
             }]);
     });
 
@@ -426,6 +435,7 @@ describe("Mission create update delete test", function() {
             "name": "test",
             "sync_user": "static",
             "type": "mission",
+            "route_id": "route-12345",
             "_id": "Mission_1534a8de-b412-49bc-97a8-3b535d131406"
         }
 
@@ -441,12 +451,13 @@ describe("Mission create update delete test", function() {
             }, [{
                 expectedType: "channel",
                 expectedUsers: ["static"],
-                expectedChannels: ["mission:static:20170721"]
+                expectedChannels: ["mission:static:20170721", "mission:static"],
             }]);
     });
 
     it("Update : 3- can update the name field mission document", function() {
         var oldDoc = {
+            "route_id": "route-12345",
             "date": "2017-07-21T16:22:27.348Z",
             "company_id": "mapotempo_company",
             "location": {
@@ -478,12 +489,13 @@ describe("Mission create update delete test", function() {
             }, [{
                 expectedType: "channel",
                 expectedUsers: ["static"],
-                expectedChannels: ["mission:static:20170721"]
+                expectedChannels: ["mission:static:20170721", "mission:static"],
             }]);
     });
 
     it("Update : 4- can't update the company_id mission field", function() {
         var oldDoc = {
+            "route_id": "route-12345",
             "date": "2017-07-21T16:22:27.348Z",
             "company_id": "mapotempo_company",
             "location": {
@@ -518,6 +530,7 @@ describe("Mission create update delete test", function() {
 
     it("Update : 5- can update the owners field mission document", function() {
         var oldDoc = {
+            "route_id": "route-12345",
             "date": "2017-07-21T16:22:27.348Z",
             "company_id": "mapotempo_company",
             "location": {
@@ -549,12 +562,13 @@ describe("Mission create update delete test", function() {
             }, [{
                 expectedType: "channel",
                 expectedUsers: ["static"],
-                expectedChannels: ["mission:static:20170721"]
+                expectedChannels: ["mission:static:20170721", "mission:static"],
             }]);
     });
 
     it("Update : 6- can update the address field mission document", function() {
         var oldDoc = {
+            "route_id": "route-12345",
             "date": "2017-07-21T16:22:27.348Z",
             "company_id": "mapotempo_company",
             "location": {
@@ -590,7 +604,46 @@ describe("Mission create update delete test", function() {
             }, [{
                 expectedType: "channel",
                 expectedUsers: ["static"],
-                expectedChannels: ["mission:static:20170721"]
+                expectedChannels: ["mission:static:20170721", "mission:static"],
+            }]);
+    });
+
+
+    it("Update : 7- set archived to true put mission from channel", function() {
+        var oldDoc = {
+            "route_id": "route-12345",
+            "date": "2017-07-21T16:22:27.348Z",
+            "company_id": "mapotempo_company",
+            "location": {
+                "lat": 45.0,
+                "lon": 2.0
+            },
+            "address":  {
+                "street": "9 Rue André Darbon",
+                "postalcode": "33000",
+                "city": "Bordeaux",
+                "state": "Gironde",
+                "country": "France",
+                "detail": "Pépinière éco-créative"
+            },
+            "name": "test",
+            "sync_user": "static",
+            "type": "mission",
+            "_id": "Mission_1534a8de-b412-49bc-97a8-3b535d131406"
+        }
+
+        var doc = Object.assign({}, oldDoc);
+        doc.archived = true
+
+        testHelper.verifyDocumentReplaced(
+            doc,
+            oldDoc, {
+                expectedRoles: ["mapotempo_company.mission.updating"],
+                expectedUsers: ["static"]
+            }, [{
+                expectedType: "channel",
+                expectedUsers: ["static"],
+                expectedChannels: ["mission:static:20170721"],
             }]);
     });
 
@@ -600,6 +653,7 @@ describe("Mission create update delete test", function() {
     // ######
     it("Delete : 1- can delete a mission document", function() {
         var oldDoc = {
+            "route_id": "route-12345",
             "date": "2017-07-21T16:22:27.348Z",
             "company_id": "mapotempo_company",
             "location": {

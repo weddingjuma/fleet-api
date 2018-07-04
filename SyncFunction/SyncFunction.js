@@ -91,6 +91,7 @@ function sync_func(doc, oldDoc) {
   var COMPANY = 'company';
   var USER = 'user';
   var USER_PREFERENCE = 'user_settings';
+  var ROUTE = 'route';
   var MISSION = 'mission';
   var MISSIONS_PLACEHOLDER = 'missions_placeholder';
   var MISSION_ACTION = 'mission_action';
@@ -107,6 +108,7 @@ function sync_func(doc, oldDoc) {
     user_settings: user_settings,
     user_current_location: user_current_location,
     user_track: user_track,
+    route: route,
     mission: mission,
     missions_placeholder: missions_placeholder,
     mission_action: mission_action,
@@ -261,6 +263,19 @@ function sync_func(doc, oldDoc) {
   function user_track(doc, oldDoc, params) {
   }
 
+  // #############
+  // ROUTE MANAGER
+  // #############
+  function route(doc, oldDoc, params) {
+    // Check owners
+    var sync_user = checkSyncUser(doc, oldDoc);
+    requireUser(sync_user);
+    if(!doc.archived) {
+      channel([makeUserChannel(sync_user)]);
+    } else
+      channel();
+  }
+
   // ###############
   // MISSION MANAGER
   // ###############
@@ -270,18 +285,25 @@ function sync_func(doc, oldDoc) {
     requireUser(sync_user);
     // Check date and make channels
     var date = checkDate(doc, oldDoc);
-    var syncUserChannels = makeMissionChannels(sync_user, date);
+
+    channels = [];
+
+    // The old mission channel (remove this when unsuport)
+    var missionChannel = makeMissionChannels(sync_user, date);
     switch (params.action) {
       case CREATING:
       case UPDATING:
         checkName(doc, oldDoc);
-        access([sync_user], [syncUserChannels]);
+        channels.push(missionChannel)
+        if(!doc.archived)
+          channels.push(makeMissionChannel(sync_user))
+        access([sync_user], channels);
         break;
       case DELETING:
       default:
     }
     // Add current doc in all channels
-    channel([syncUserChannels]);
+    channel(channels);
   }
 
   // ###########################
@@ -351,7 +373,7 @@ function sync_func(doc, oldDoc) {
   // DEFAULT MANAGER
   // ######################
   function default_manager(doc, oldDoc, params) {
-    // TODO
+    // DO NOTHING
   }
 
   // ###################################
@@ -507,6 +529,16 @@ function sync_func(doc, oldDoc) {
       ('0' + newDate.getDate()).slice(-2);
     // Create channel patern [type:owner:yyyyMMdd]
     var sync_user_channel = MISSION + CHANNEL_SEPARATOR + sync_user + CHANNEL_SEPARATOR + channel_date;
+    return sync_user_channel;
+  }
+
+  function makeMissionChannel(user) {
+    return MISSION + CHANNEL_SEPARATOR + user;
+  }
+
+  function makeMissionRouteChannel(route_id) {
+    // Create channel patern [type:route_id]
+    var sync_user_channel = MISSION + CHANNEL_SEPARATOR + route_id;
     return sync_user_channel;
   }
 
