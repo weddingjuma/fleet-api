@@ -15,9 +15,10 @@ Rails.application.routes.draw do
         resource :current_location, only: [:show], controller: 'user_current_locations'
       end
 
+      resources :routes
+
       resources :missions, only: [:index, :create, :update, :destroy] do
         collection do
-          put '' => 'missions#create_multiples'
           delete '' => 'missions#destroy_multiples'
         end
       end

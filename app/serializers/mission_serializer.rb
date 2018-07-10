@@ -18,6 +18,7 @@
 class MissionSerializer < ActiveModel::Serializer
   attributes :id,
              :company_id,
+             :route_id,
              :user_id,
              :mission_status_type_id,
              :sync_user,

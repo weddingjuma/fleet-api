@@ -3,6 +3,7 @@ FactoryBot.define do
   factory :mission do
     # company_id (required)
     # user_id (required)
+    # route_id (required)
     # sync_user (required - automatic)
 
     sequence(:name) { |n| "mission name #{n + 1}" }

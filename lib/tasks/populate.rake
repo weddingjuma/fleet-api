@@ -32,6 +32,7 @@ namespace :mapotempo_fleet do
     Admin.ensure_design_document!
     Company.ensure_design_document!
     User.ensure_design_document!
+    Route.ensure_design_document!
     Mission.ensure_design_document!
     MissionAction.ensure_design_document!
     MissionStatusType.ensure_design_document!

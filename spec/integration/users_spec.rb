@@ -13,14 +13,16 @@ describe 'Users API', type: :request do
     )
 
     @users = create_list(:user, 5, company: @company, vehicle: true)
-    @missions = create_list(:mission, 5, company: @company, user: @user)
+    @route = create(:route, company: @company, user: @user, name: 'mapo-route')
+    @missions = create_list(:mission, 5, company: @company, user: @user, route: @route)
 
     @todo_status_type = create(:mission_status_type, company: @company, label: 'To do', color: '#ff0000')
     @company.update_attribute(:default_mission_status_type_id, @todo_status_type.id)
 
     @other_company = create(:company, name: 'other')
     @other_user = create(:user, company: @other_company)
-    @other_missions = create_list(:mission, 3, company: @other_company, user: @other_user)
+    @other_route = create(:route, company: @other_company, user: @other_user, name: 'mapo-route')
+    @other_missions = create_list(:mission, 3, company: @other_company, user: @other_user, route: @other_route)
   end
 
   path '/users' do

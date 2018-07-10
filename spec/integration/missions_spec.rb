@@ -6,13 +6,15 @@ describe 'Missions API', type: :request do
     @company = create(:company, name: 'mapo-company')
     @user = create(:user, company: @company, vehicle: false)
     @user_2 = create(:user, company: @company, vehicle: true)
+    @route = create(:route, company: @company, user: @user, name: 'mapo-route')
 
-    @missions = create_list(:mission, 3, user: @user, company: @company)
-    @missions_2 = create_list(:mission, 2, user: @user_2, company: @company)
+    @missions = create_list(:mission, 3, user: @user, company: @company, route: @route)
+    @missions_2 = create_list(:mission, 2, user: @user_2, company: @company, route: @route)
 
     @other_company = create(:company, name: 'other')
     @other_user = create(:user, company: @other_company)
-    @other_missions = create_list(:mission, 2, user: @user, company: @other_company)
+    @other_route = create(:route, company: @other_company, user: @other_user, name: 'mapo-route-2')
+    @other_missions = create_list(:mission, 2, user: @user, company: @other_company, route: @route)
   end
 
   path '/missions' do
@@ -33,7 +35,7 @@ describe 'Missions API', type: :request do
         end
       end
 
-      response '200', 'all missions' do
+      response '200', 'all missions for a user' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:user_id) {@user_2.id.to_s}
         run_test! do |response|
@@ -62,7 +64,7 @@ describe 'Missions API', type: :request do
 
       response '200', 'user mission created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:mission) { build(:mission, external_ref: 'other_ref', user: @user).attributes }
+        let(:mission) { build(:mission, external_ref: 'other_ref', user: @user, route: @route).attributes }
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['mission']).not_to be_empty
@@ -72,19 +74,19 @@ describe 'Missions API', type: :request do
 
       response '404', 'can\'t created mission for another user company' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:mission) { build(:mission, external_ref: 'other_ref_2', user: @other_user).attributes }
+        let(:mission) { build(:mission, external_ref: 'other_ref_2', user: @other_user, route: @route).attributes }
         run_test!
       end
 
       response '404', 'without user_id' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:mission) { build(:mission, external_ref: 'another_ref').attributes }
+        let(:mission) { build(:mission, external_ref: 'another_ref', route: @route).attributes }
         run_test!
       end
 
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:mission) { build(:mission, name: nil, user: @user).attributes }
+        let(:mission) { build(:mission, name: nil, user: @user, route: @route).attributes }
         run_test!
       end
 
@@ -97,47 +99,47 @@ describe 'Missions API', type: :request do
     end
   end
 
-  path '/missions' do
-    put 'Create / Update a list of missions for a user' do
-      tags 'Missions'
-      operationId 'createUserMissions'
-      description 'Creates a set of missions for the current user'
-      security [apiKey: []]
-      consumes 'application/json', 'application/xml'
-      parameter name: :user_id, in: :query, type: :string, required: true
-      parameter name: :mission, in: :body, schema: {
-        type: :array,
-        items: {
-          '$ref': '#/definitions/mission_required'
-        }
-      }
+  # path '/missions' do
+  #   put 'Create / Update a list of missions for a user' do
+  #     tags 'Missions'
+  #     operationId 'createUserMissions'
+  #     description 'Creates a set of missions for the current user'
+  #     security [apiKey: []]
+  #     consumes 'application/json', 'application/xml'
+  #     parameter name: :user_id, in: :query, type: :string, required: true
+  #     parameter name: :mission, in: :body, schema: {
+  #       type: :array,
+  #       items: {
+  #         '$ref': '#/definitions/mission_required'
+  #       }
+  #     }
 
-      response '200', 'user mission created' do
-        let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.sync_user }
-        let(:mission) { build_list(:mission, 3, company: @company, user: @user) }
-        run_test! do |response|
-          json = JSON.parse(response.body)
-          expect(json['missions']).not_to be_empty
-          expect(json['missions'].size).to eq(3)
-        end
-      end
+  #     response '200', 'user mission created' do
+  #       let(:Authorization) { "Token token=#{@user.api_key}" }
+  #       let(:user_id) { @user.sync_user }
+  #       let(:mission) { build_list(:mission, 3, company: @company, user: @user) }
+  #       run_test! do |response|
+  #         json = JSON.parse(response.body)
+  #         expect(json['missions']).not_to be_empty
+  #         expect(json['missions'].size).to eq(3)
+  #       end
+  #     end
 
-      response '422', 'invalid request' do
-        let(:Authorization) { "Token token=#{@user.api_key}" }
-        let(:user_id) { @user.sync_user }
-        let(:mission) { build_list(:mission, 3, company: @company, user: @user, name: nil) }
-        run_test!
-      end
+  #     response '422', 'invalid request' do
+  #       let(:Authorization) { "Token token=#{@user.api_key}" }
+  #       let(:user_id) { @user.sync_user }
+  #       let(:mission) { build_list(:mission, 3, company: @company, user: @user, name: nil) }
+  #       run_test!
+  #     end
 
-      response '401', 'bad token' do
-        let(:Authorization) { "Token token='bad token'" }
-        let(:user_id) { @user.sync_user }
-        let(:mission) { build_list(:mission, 3, company: @company, user: @user) }
-        run_test!
-      end
-    end
-  end
+  #     response '401', 'bad token' do
+  #       let(:Authorization) { "Token token='bad token'" }
+  #       let(:user_id) { @user.sync_user }
+  #       let(:mission) { build_list(:mission, 3, company: @company, user: @user) }
+  #       run_test!
+  #     end
+  #   end
+  # end
 
   path '/missions' do
     delete 'Deletes a list of missions for a user' do

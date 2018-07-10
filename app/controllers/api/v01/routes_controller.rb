@@ -1,0 +1,106 @@
+# Copyright © Mapotempo, 2018
+#
+# This file is part of Mapotempo.
+#
+# Mapotempo is free software. You can redistribute it and/or
+# modify since you respect the terms of the GNU Affero General
+# Public License as published by the Free Software Foundation,
+# either version 3 of the License, or (at your option) any later version.
+#
+# Mapotempo is distributed in the hope that it will be useful, but WITHOUT
+# ANY WARRANTY; without even the implied warranty of MERCHANTABILITY
+# or FITNESS FOR A PARTICULAR PURPOSE.  See the Licenses for more details.
+#
+# You should have received a copy of the GNU Affero General Public License
+# along with Mapotempo. If not, see:
+# <http://www.gnu.org/licenses/agpl.html>
+#
+
+module Api::V01
+  class RoutesController < ApiController
+    include MissionControllerHelper
+
+    after_action :verify_authorized, except: [:index]
+
+    # get_route
+    def index
+      routes = if params[:user_id]
+                   user = User.find_by(params[:user_id])
+                   authorize user, :show?
+                   user.routes.to_a
+                 else
+                   Route.by_company(key: @current_user.company.id).to_a
+                 end
+
+      if routes
+        render json: routes,
+               root: 'routes',
+               each_serializer: RouteSerializer
+      else
+        render body: nil, status: :not_found
+      end
+    end
+
+    # set_route
+    def create
+      if(!params[:user_id])
+        return render body: nil, status: :not_found
+      end
+
+      user = User.find_by(params[:user_id])
+      route = Route.new
+      route.assign_attributes(route_params)
+      route.user = user
+      route.company = user.company
+      authorize route
+
+      route.missions = process_missions_params route.user, route, params[:missions] if params[:missions]
+
+      if route.save
+        render json: route,
+               serializer: RouteSerializer
+      else
+        render json: route.errors, status: :unprocessable_entity
+      end
+    end
+
+    def update
+      route = Route.find_by(params[:id], @current_user&.company_id)
+      route.assign_attributes(route_params)
+      authorize route
+
+      route.missions = process_missions_params route.user, route, params[:missions] if params[:missions]
+
+      if route.save
+        render json: route,
+               serializer: RouteSerializer
+      else
+        render json: route.errors, status: :unprocessable_entity
+      end
+    end
+
+    # delete_mission
+    def destroy
+      route = Route.find_by(params[:id], @current_user&.company_id)
+      authorize route
+
+      if route.destroy
+        render json: route,
+               serializer: RouteSerializer,
+               destroy: true
+      else
+        render json: route.errors, status: :unprocessable_entity
+      end
+    end
+
+    private
+
+    def route_params
+      params.permit(
+        :name,
+        :external_ref,
+        :date
+      )
+    end
+  end
+end

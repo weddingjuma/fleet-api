@@ -125,6 +125,7 @@ The API supports one return format: `json`.
           type: :object,
           properties: {
             user_id: { type: :string },
+            route_id: { type: :string },
             name: { type: :string },
             date: { type: :string },
             location: { '$ref': '#/definitions/location' },
@@ -156,6 +157,39 @@ The API supports one return format: `json`.
             mission_type: {
               type: :string,
               enum: %w(mission stop start pause)
+            }
+          }
+        },
+        mission_bulk_required: {
+          type: :object,
+          properties: {
+            external_ref: { type: :string },
+            name: { type: :string },
+            date: { type: :string },
+            location: { '$ref': '#/definitions/location' },
+            comment: { type: :string },
+            phone: { type: :string },
+            reference: { type: :string },
+            duration: { type: :number },
+            address: { '$ref': '#/definitions/address' },
+            time_windows: { '$ref': '#/definitions/time_windows' },
+            mission_type: {
+              type: :string,
+              enum: %w(mission stop start pause)
+            }
+          },
+          required: %w(name date location)
+        },
+        route_required: {
+          type: 'object',
+          properties: {
+            user_id: { type: :string },
+            name: { type: :string },
+            date: { type: :string },
+            external_ref: { type: :string },
+            missions: {
+              type: :array,
+              items: {'$ref': '#/definitions/mission_bulk_required'}
             }
           }
         }
