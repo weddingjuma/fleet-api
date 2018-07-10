@@ -67,11 +67,12 @@
 class Mission < ApplicationRecord
 
   # == Attributes ===========================================================
-  # == WARNING
-  # == In missions_controller class, the create_multiples method update itself
-  # == missions document without using Mission ApplicationRecord's model.
+  # == /!\ WARNING /!\
+  # == In mission_controller_helper classes, the process_missions_create_update
+  # == method update itself missions document without using Mission
+  # == ApplicationRecord's model.
   # == When someone add some attributes in the Mission model it should also
-  # == update the create_multiples method.
+  # == update the process_missions_create_update method.
   attribute :external_ref, type: String
   attribute :mission_type, type: String
   # This value is automatically set by set_sync_user callback

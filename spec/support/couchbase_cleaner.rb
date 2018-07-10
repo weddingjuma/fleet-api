@@ -18,6 +18,13 @@ RSpec.configure do |config|
     SchemaMigration.ensure_design_document!
     MetaInfo.ensure_design_document!
 
+    # Check and create index type if necessary (iso : populate)
+    bucket_name = Mission.bucket.bucket
+    index_type = Mission.bucket.n1ql.select('*').from("system:indexes").where("name=\"#{bucket_name}_mission\"").results.first
+    if(!index_type)
+      # Query type : CREATE INDEX `fleet-dev_mission` ON `fleet-dev`(`company_id`, `sync_user`) WHERE type='mission'
+      Mission.bucket.n1ql.create_index("`#{bucket_name}_mission` ON `#{bucket_name}`(`company_id`, `sync_user`) WHERE type='mission'").results.to_a
+    end
   end
 
   config.after(:all) do

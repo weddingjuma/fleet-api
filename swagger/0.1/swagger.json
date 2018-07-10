@@ -128,6 +128,9 @@
         "user_id": {
           "type": "string"
         },
+        "route_id": {
+          "type": "string"
+        },
         "name": {
           "type": "string"
         },
@@ -209,6 +212,78 @@
             "start",
             "pause"
           ]
+        }
+      }
+    },
+    "mission_bulk_required": {
+      "type": "object",
+      "properties": {
+        "external_ref": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "location": {
+          "$ref": "#/definitions/location"
+        },
+        "comment": {
+          "type": "string"
+        },
+        "phone": {
+          "type": "string"
+        },
+        "reference": {
+          "type": "string"
+        },
+        "duration": {
+          "type": "number"
+        },
+        "address": {
+          "$ref": "#/definitions/address"
+        },
+        "time_windows": {
+          "$ref": "#/definitions/time_windows"
+        },
+        "mission_type": {
+          "type": "string",
+          "enum": [
+            "mission",
+            "stop",
+            "start",
+            "pause"
+          ]
+        }
+      },
+      "required": [
+        "name",
+        "date",
+        "location"
+      ]
+    },
+    "route_required": {
+      "type": "object",
+      "properties": {
+        "user_id": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "date": {
+          "type": "string"
+        },
+        "external_ref": {
+          "type": "string"
+        },
+        "missions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/mission_bulk_required"
+          }
         }
       }
     }
@@ -794,7 +869,7 @@
         ],
         "responses": {
           "200": {
-            "description": "all missions"
+            "description": "all missions for a user"
           },
           "401": {
             "description": "bad token"
@@ -834,54 +909,6 @@
           },
           "404": {
             "description": "without user_id"
-          },
-          "422": {
-            "description": "invalid request"
-          },
-          "401": {
-            "description": "bad token"
-          }
-        }
-      },
-      "put": {
-        "summary": "Create / Update a list of missions for a user",
-        "tags": [
-          "Missions"
-        ],
-        "operationId": "createUserMissions",
-        "description": "Creates a set of missions for the current user",
-        "security": [
-          {
-            "apiKey": [
-
-            ]
-          }
-        ],
-        "consumes": [
-          "application/json",
-          "application/xml"
-        ],
-        "parameters": [
-          {
-            "name": "user_id",
-            "in": "query",
-            "type": "string",
-            "required": true
-          },
-          {
-            "name": "mission",
-            "in": "body",
-            "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/mission_required"
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "user mission created"
           },
           "422": {
             "description": "invalid request"
@@ -1023,6 +1050,132 @@
         "responses": {
           "200": {
             "description": "user mission deleted"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/routes": {
+      "get": {
+        "summary": "Get all routes",
+        "tags": [
+          "Routes"
+        ],
+        "operationId": "getRoutes",
+        "description": "Retrieves all routes from the company of the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "query",
+            "type": "string",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "all routes for a user"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      },
+      "post": {
+        "summary": "Creates a route for a user",
+        "tags": [
+          "Routes"
+        ],
+        "operationId": "createUserRoute",
+        "description": "Creates a route for the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "route",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/route_required"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user route created with mission can't steal mission from another company"
+          },
+          "404": {
+            "description": "without user_id"
+          },
+          "422": {
+            "description": "invalid request - nil date"
+          },
+          "401": {
+            "description": "bad token"
+          }
+        }
+      }
+    },
+    "/routes/{id}": {
+      "put": {
+        "summary": "Updates a mission of a user",
+        "tags": [
+          "Routes"
+        ],
+        "operationId": "updateUserRoute",
+        "description": "Updates a route belonging to the current user",
+        "security": [
+          {
+            "apiKey": [
+
+            ]
+          }
+        ],
+        "consumes": [
+          "application/json",
+          "application/xml"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "type": "string",
+            "required": true
+          },
+          {
+            "name": "route",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/route_required"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user route update with multiple missions update or create"
+          },
+          "422": {
+            "description": "invalid request"
           },
           "401": {
             "description": "bad token"

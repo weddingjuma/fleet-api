@@ -39,6 +39,8 @@ module MapotempoFleet
     end
 
     # Json adapter for serializers
+    # config.autoload_paths += %W(#{config.root}/app/controllers/api/v01/helpers)
+    config.paths.add 'app/controllers/api/v01/helpers', eager_load: true
     config.paths.add 'app/serializers', eager_load: true
     ActiveModel::Serializer.config.adapter = :json
     ActiveModel::Serializer.config.default_includes = '**'

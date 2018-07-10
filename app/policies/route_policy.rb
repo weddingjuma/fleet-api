@@ -1,4 +1,4 @@
-# Copyright © Mapotempo, 2017
+# Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #
@@ -15,18 +15,34 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
-class RouteSerializer < ActiveModel::Serializer
-  attributes :id,
-             :external_ref,
-             :name,
-             :user_id,
-             :sync_user,
-             :date,
-             :missions
+class RoutePolicy
+  attr_reader :current_user, :route
 
-  def missions
-    object.missions.map do |mission|
-      ::MissionSerializer.new(mission).attributes
-    end
+  def initialize(current_user, route)
+    raise Pundit::NotAuthorizedError unless route
+    @current_user = current_user
+    @route = route
+  end
+
+  def show?
+    same_company?
+  end
+
+  def create?
+    same_company?
+  end
+
+  def update?
+    same_company?
+  end
+
+  def destroy?
+    same_company?
+  end
+
+  private
+
+  def same_company?
+    @current_user && @route.company == @current_user.company
   end
 end

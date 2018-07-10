@@ -5,7 +5,8 @@ describe 'Mission action types API', type: :request do
   before(:all) do
     @company = create(:company, name: 'mapo-company')
     @user = create(:user, company: @company, vehicle: false)
-    @missions = create_list(:mission, 5, company: @company, user: @user)
+    @route = create(:route, company: @company, user: @user, name: 'mapo-route')
+    @missions = create_list(:mission, 5, company: @company, user: @user, route: @route)
 
     @mission_status_type = create(:mission_status_type, company: @company)
     @related_status_type = create(:mission_status_type, company: @company)
@@ -16,7 +17,8 @@ describe 'Mission action types API', type: :request do
 
     @other_company = create(:company, name: 'other')
     @other_user = create(:user, company: @other_company)
-    @other_missions = create_list(:mission, 3, company: @other_company, user: @other_user)
+    @other_route = create(:route, company: @other_company, user: @other_user, name: 'mapo-route')
+    @other_missions = create_list(:mission, 3, company: @other_company, user: @other_user, route: @other_route)
   end
 
   path '/mission_action_types' do
