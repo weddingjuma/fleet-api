@@ -163,6 +163,7 @@ describe 'Routes API', type: :request do
       parameter name: :route, in: :body, schema: {
         '$ref': '#/definitions/route_required'
       }
+      parameter name: :delete_missions, in: :query, type: :boolean, required: false
 
       response '200', 'route mission updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
@@ -190,6 +191,19 @@ describe 'Routes API', type: :request do
         end
       end
 
+      response '200', 'user route update with multiple missions update or create' do
+        let(:Authorization) { "Token token=#{@user.api_key}" }
+        let(:id) { @route.id }
+        let(:route) { { name: 'test'} }
+        let(:delete_missions) {'true'}
+
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['route']).not_to be_empty
+          expect(json['route']['missions']).to be_empty
+        end
+      end
+
       response '422', 'invalid request' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:id) { @route.id }
@@ -206,6 +220,3 @@ describe 'Routes API', type: :request do
     end
   end
 end
-
-
-

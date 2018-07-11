@@ -75,7 +75,6 @@ class Route < ApplicationRecord
   before_validation :set_sync_user
   after_save :mission_bulk_save
 
-
   # == Class Methods ========================================================
   def self.find_by(id_or_external_ref, company_id = nil)
     Route.by_external_ref(key: [company_id, id_or_external_ref]).to_a.first || Route.find(id_or_external_ref)
@@ -93,6 +92,13 @@ class Route < ApplicationRecord
   def missions=(missions)
     self.updated_at = Time.now.to_s # Update time manualy to force route save
     @missions = missions.compact
+  end
+
+  attr_accessor :delete_missions
+
+  def delete_missions=(value)
+    self.updated_at = Time.now.to_s # Update time manualy to force route save
+    @delete_missions=value
   end
 
   private
@@ -129,6 +135,15 @@ class Route < ApplicationRecord
   def mission_bulk_save
     bucket_name = Mission.bucket.bucket
 
+    if(@delete_missions && self.exists?)
+      update_ids = @missions ? @missions.map(&:id) : []
+      existing_ids = missions.to_a.map(&:id)
+      delete_ids = existing_ids - update_ids
+      if delete_ids.count > 0
+        Mission.bucket.n1ql.delete_from("`#{bucket_name}` as mission").where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and META(mission).id in ' + delete_ids.to_s).results.to_a
+      end
+    end
+
     if @missions and @missions.is_a? Array
       dates = Set.new
 
@@ -138,7 +153,7 @@ class Route < ApplicationRecord
         dates.add(mission.date.to_date)
       end
 
-      # 2) - Prepare merge query
+      # 3) - Prepare merge query
       string_query =
       "`#{bucket_name}` as mission" +
       ' USING ' + @missions.to_json + ' as source' +
@@ -186,10 +201,10 @@ class Route < ApplicationRecord
       '      "planned_distance": source.planned_distance' +
       '    }'
 
-      # 3) - Exec merge query
+      # 5) - Exec merge query
       Mission.bucket.n1ql.merge_into(string_query).results.to_a
 
-      # 4) - Update placeholder (see after_save update_placeholder method on mission model)
+      # 6) - Update placeholder (see after_save update_placeholder method on mission model)
       # Remove this when mobiles application version fully update
       dates.each do |date|
         placeholder = MissionsPlaceholder.by_date(key: [user.company_id, user.sync_user, date.strftime('%F')]).to_a.first
@@ -197,6 +212,8 @@ class Route < ApplicationRecord
         placeholder.assign_attributes(company_id: user.company_id, sync_user: user.sync_user, date: date.strftime('%F'), revision: placeholder.revision ? placeholder.revision + 1 : 0)
         placeholder.save!
       end
+
+      self.missions.reset
     end
   end
 end

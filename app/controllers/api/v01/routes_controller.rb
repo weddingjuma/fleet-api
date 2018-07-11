@@ -71,7 +71,12 @@ module Api::V01
 
       route.missions = process_missions_params route.user, route, params[:missions] if params[:missions]
 
+      if params[:delete_missions]
+        route.delete_missions = true
+      end
+
       if route.save
+        route.missions.reset # Need for reload missions relation...
         render json: route,
                serializer: RouteSerializer
       else
