@@ -1168,6 +1168,12 @@
             "schema": {
               "$ref": "#/definitions/route_required"
             }
+          },
+          {
+            "name": "delete_missions",
+            "in": "query",
+            "type": "boolean",
+            "required": false
           }
         ],
         "responses": {
