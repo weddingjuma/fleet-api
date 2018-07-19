@@ -64,7 +64,7 @@ namespace :mapotempo_fleet do
       '      "external_ref": "no ref",'+
       '      "sync_user": max(sync_user),'+
       '      "name": "Route " || DATE_FORMAT_STR(date, \'1111-11-11\'),'+
-      '      "date": DATE_FORMAT_STR(date, \'1111-11-11\'),'+
+      '      "date": DATE_FORMAT_STR(date, \'1111-11-11\') || "T00:00:000.000Z",'+
       '      "archived": (CASE WHEN DATE_FORMAT_STR(date, \'1111-11-11\') < DATE_FORMAT_STR(NOW_UTC(), \'1111-11-11\') THEN true ELSE false END )'+
       '    } as v'+
       "  FROM `#{bucket_name}` as mission"+
