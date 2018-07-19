@@ -21,11 +21,13 @@ module Api::V01::Admin
     skip_before_action :authenticate
 
     def index
+      skip_authorization
       render json: Company.all.to_a,
              each_serializer: CompanySerializer
     end
 
     def show
+      skip_authorization
       company = nil
       if params[:user_id]
         user = User.find_by(params[:user_id])
@@ -43,6 +45,7 @@ module Api::V01::Admin
     end
 
     def create
+      skip_authorization
       company = Company.new
       company.assign_attributes(company_params)
 
