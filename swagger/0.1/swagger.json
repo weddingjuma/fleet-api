@@ -1082,6 +1082,12 @@
             "in": "query",
             "type": "string",
             "required": false
+          },
+          {
+            "name": "with_missions",
+            "in": "query",
+            "type": "boolean",
+            "required": false
           }
         ],
         "responses": {
@@ -1118,6 +1124,12 @@
             "schema": {
               "$ref": "#/definitions/route_required"
             }
+          },
+          {
+            "name": "with_missions",
+            "in": "query",
+            "type": "boolean",
+            "required": false
           }
         ],
         "responses": {
@@ -1171,6 +1183,12 @@
           },
           {
             "name": "delete_missions",
+            "in": "query",
+            "type": "boolean",
+            "required": false
+          },
+          {
+            "name": "with_missions",
             "in": "query",
             "type": "boolean",
             "required": false
