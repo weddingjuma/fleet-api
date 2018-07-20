@@ -15,18 +15,24 @@
 # along with Mapotempo. If not, see:
 # <http://www.gnu.org/licenses/agpl.html>
 #
+
 class RouteSerializer < ActiveModel::Serializer
+
   attributes :id,
              :external_ref,
              :name,
              :user_id,
              :sync_user,
-             :date,
-             :missions
+             :date
 
-  def missions
+  attribute :missions, if: :with_missions? do
     object.missions.map do |mission|
       ::MissionSerializer.new(mission).attributes
     end
   end
+
+  def with_missions?
+    @instance_options[:with_missions]
+  end
+
 end

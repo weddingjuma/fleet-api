@@ -35,7 +35,21 @@ module Api::V01
       if routes
         render json: routes,
                root: 'routes',
-               each_serializer: RouteSerializer
+               each_serializer: RouteSerializer,
+               with_missions: with_missions?
+      else
+        render body: nil, status: :not_found
+      end
+    end
+
+    def show
+      route = Route.find_by(params[:id], @current_user.company.id)
+      authorize route, :show?
+      if route
+        render json: route,
+               root: 'route',
+               serializer: RouteSerializer,
+               with_missions: with_missions?
       else
         render body: nil, status: :not_found
       end
@@ -58,7 +72,8 @@ module Api::V01
 
       if route.save
         render json: route,
-               serializer: RouteSerializer
+               serializer: RouteSerializer,
+               with_missions: with_missions?
       else
         render json: route.errors, status: :unprocessable_entity
       end
@@ -76,9 +91,10 @@ module Api::V01
       end
 
       if route.save
-        route.missions.reset # Need for reload missions relation...
+        route.missions.reset
         render json: route,
-               serializer: RouteSerializer
+               serializer: RouteSerializer,
+               with_missions: with_missions?
       else
         render json: route.errors, status: :unprocessable_entity
       end
@@ -92,7 +108,8 @@ module Api::V01
       if route.destroy
         render json: route,
                serializer: RouteSerializer,
-               destroy: true
+               destroy: true,
+               with_missions: with_missions?
       else
         render json: route.errors, status: :unprocessable_entity
       end
@@ -106,6 +123,10 @@ module Api::V01
         :external_ref,
         :date
       )
+    end
+
+    def with_missions?
+      YAML.load(params[:with_missions]) == true if params[:with_missions]
     end
   end
 end

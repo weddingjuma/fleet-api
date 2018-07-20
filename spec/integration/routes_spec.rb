@@ -27,6 +27,7 @@ describe 'Routes API', type: :request do
       security [apiKey: []]
       produces 'application/json', 'application/xml'
       parameter name: :user_id, in: :query, type: :string, required: false
+      parameter name: :with_missions, in: :query, type: :boolean, required: false
 
       response '200', 'all routes' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
@@ -62,6 +63,7 @@ describe 'Routes API', type: :request do
       parameter name: :route, in: :body, schema: {
         '$ref': '#/definitions/route_required'
       }
+      parameter name: :with_missions, in: :query, type: :boolean, required: false
 
       response '200', 'user route created' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
@@ -79,6 +81,7 @@ describe 'Routes API', type: :request do
           route[:missions] = build_list(:mission, 3, user: @user, company: @company)
           route
         }
+        let(:with_missions) {true}
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['route']).not_to be_empty
@@ -94,6 +97,7 @@ describe 'Routes API', type: :request do
           route[:missions] = @missions_2.to_a
           route
         }
+        let(:with_missions) {true}
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['route']).not_to be_empty
@@ -110,6 +114,7 @@ describe 'Routes API', type: :request do
           route[:missions] = @other_missions.to_a
           route
         }
+        let(:with_missions) {true}
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['route']).not_to be_empty
@@ -122,6 +127,7 @@ describe 'Routes API', type: :request do
       response '404', 'can\'t created route for another user company' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:route) { build(:route, external_ref: 'other_ref_2', name: 'test3', date: Date.today.to_s, user: @other_user).attributes }
+        let(:with_missions) {'true'}
         run_test!
       end
 
@@ -164,6 +170,7 @@ describe 'Routes API', type: :request do
         '$ref': '#/definitions/route_required'
       }
       parameter name: :delete_missions, in: :query, type: :boolean, required: false
+      parameter name: :with_missions, in: :query, type: :boolean, required: false
 
       response '200', 'route mission updated' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
@@ -183,6 +190,7 @@ describe 'Routes API', type: :request do
           name: 'test',
           missions: build_list(:mission, 5, user: @user, company: @company, route: @route).concat(@missions.to_a) }
         }
+        let(:with_missions) {'true'}
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['route']).not_to be_empty
@@ -196,7 +204,7 @@ describe 'Routes API', type: :request do
         let(:id) { @route.id }
         let(:route) { { name: 'test'} }
         let(:delete_missions) {'true'}
-
+        let(:with_missions) {'true'}
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['route']).not_to be_empty
