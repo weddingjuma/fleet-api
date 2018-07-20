@@ -43,7 +43,7 @@ module Api::V01
     end
 
     def show
-      route = Route.find_by(params[:id], @current_user.company.id)
+      route = Route.find_by(params[:id], @current_user&.company.id)
       authorize route, :show?
       if route
         render json: route,
@@ -86,9 +86,7 @@ module Api::V01
 
       route.missions = process_missions_params route.user, route, params[:missions] if params[:missions]
 
-      if params[:delete_missions]
-        route.delete_missions = true
-      end
+      route.delete_missions = delete_missions?
 
       if route.save
         route.missions.reset
@@ -127,6 +125,10 @@ module Api::V01
 
     def with_missions?
       YAML.load(params[:with_missions]) == true if params[:with_missions]
+    end
+
+    def delete_missions?
+      YAML.load(params[:delete_missions]) == true if params[:delete_missions]
     end
   end
 end

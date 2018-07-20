@@ -127,7 +127,7 @@ describe 'Routes API', type: :request do
       response '404', 'can\'t created route for another user company' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:route) { build(:route, external_ref: 'other_ref_2', name: 'test3', date: Date.today.to_s, user: @other_user).attributes }
-        let(:with_missions) {'true'}
+        let(:with_missions) {true}
         run_test!
       end
 
@@ -190,7 +190,7 @@ describe 'Routes API', type: :request do
           name: 'test',
           missions: build_list(:mission, 5, user: @user, company: @company, route: @route).concat(@missions.to_a) }
         }
-        let(:with_missions) {'true'}
+        let(:with_missions) {true}
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['route']).not_to be_empty
@@ -203,8 +203,8 @@ describe 'Routes API', type: :request do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:id) { @route.id }
         let(:route) { { name: 'test'} }
-        let(:delete_missions) {'true'}
-        let(:with_missions) {'true'}
+        let(:delete_missions) {true}
+        let(:with_missions) {true}
         run_test! do |response|
           json = JSON.parse(response.body)
           expect(json['route']).not_to be_empty
