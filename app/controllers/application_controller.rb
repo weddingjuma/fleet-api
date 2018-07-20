@@ -101,8 +101,6 @@ class ApplicationController < ActionController::API
     Rails.logger.fatal(exception.class.to_s + ' : ' + exception.to_s)
     Rails.logger.fatal(exception.backtrace.join("\n"))
 
-    raise if Rails.env.development?
-
     render json: { error: I18n.t('error.not_found') }, status: :not_found
   end
 
