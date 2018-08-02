@@ -45,7 +45,7 @@ namespace :mapotempo_fleet do
     #       "sync_user": max(sync_user),
     #       "name": "Route " || DATE_FORMAT_STR(date, '1111-11-11'),
     #       "date": DATE_FORMAT_STR(date, '1111-11-11'),
-    #       "archived": (CASE WHEN DATE_FORMAT_STR(date, '1111-11-11') < DATE_FORMAT_STR(NOW_UTC(), '1111-11-11') THEN true ELSE false END )
+    #       "archived_at": (CASE WHEN DATE_FORMAT_STR(date, '1111-11-11') < DATE_FORMAT_STR(NOW_UTC(), '1111-11-11') THEN DATE_FORMAT_STR(date, \'1111-11-11\') || "T00:00:000.000Z" ELSE null END )
     #     } as v
     #   FROM `bucket-name` as mission
     #   WHERE type = "mission" AND route_id IS NOT VALUED'
@@ -65,7 +65,7 @@ namespace :mapotempo_fleet do
       '      "sync_user": max(sync_user),'+
       '      "name": "Route " || DATE_FORMAT_STR(date, \'1111-11-11\'),'+
       '      "date": DATE_FORMAT_STR(date, \'1111-11-11\') || "T00:00:000.000Z",'+
-      '      "archived": (CASE WHEN DATE_FORMAT_STR(date, \'1111-11-11\') < DATE_FORMAT_STR(NOW_UTC(), \'1111-11-11\') THEN true ELSE false END )'+
+      '      "archived_at": (CASE WHEN DATE_FORMAT_STR(date, \'1111-11-11\') < DATE_FORMAT_STR(NOW_UTC(), \'1111-11-11\') THEN DATE_FORMAT_STR(date, \'1111-11-11\') || "T00:00:000.000Z" ELSE null END )'+
       '    } as v'+
       "  FROM `#{bucket_name}` as mission"+
       '  WHERE type = "mission" AND route_id IS NOT VALUED' +
@@ -75,19 +75,20 @@ namespace :mapotempo_fleet do
     # 2) Mission route_id update
     # Mission to Route link
     # UPDATE `bucket-name` as mission
-    # SET route_id = "route-migrate-" || user_id || "-" || DATE_FORMAT_STR(date, '1111-11-11'), archived = (CASE WHEN DATE_FORMAT_STR(date, '1111-11-11') < DATE_FORMAT_STR(NOW_UTC(), '1111-11-11') THEN true ELSE false END )
+    # route_id = "route-migrate-" || user_id || "-" || DATE_FORMAT_STR(date, \'1111-11-11\'),
+    # archived_at = (CASE WHEN DATE_FORMAT_STR(date, \'1111-11-11\') < DATE_FORMAT_STR(NOW_UTC(), \'1111-11-11\') THEN DATE_FORMAT_STR(date, \'1111-11-11\') || "T00:00:000.000Z" ELSE null END )
     # WHERE type = "mission"
     Mission.bucket.n1ql.update(
       "`#{bucket_name}` as mission" +
       ' SET '+
       ' route_id = "route-migrate-" || user_id || "-" || DATE_FORMAT_STR(date, \'1111-11-11\'), ' +
-      ' archived = (CASE WHEN DATE_FORMAT_STR(date, \'1111-11-11\') < DATE_FORMAT_STR(NOW_UTC(), \'1111-11-11\') THEN true ELSE false END ) ' +
+      ' archived_at = (CASE WHEN DATE_FORMAT_STR(date, \'1111-11-11\') < DATE_FORMAT_STR(NOW_UTC(), \'1111-11-11\') THEN DATE_FORMAT_STR(date, \'1111-11-11\') || "T00:00:000.000Z" ELSE null END ) ' +
       ' WHERE type = "mission"')
       .results.to_a
 
     # To revert this migration you can exec this query
     # 1) - DELETE FROM `bucket-name` WHERE type="route";
-    # 2) - UPDATE `bucket-name` as mission SET route_id = null, archived = null WHERE type = "mission";
+    # 2) - UPDATE `bucket-name` as mission SET route_id = null, archived_at = null WHERE type = "mission";
 
     #Save migration execution
     SchemaMigration.create(migration: migration_name, date: DateTime.now.to_s)

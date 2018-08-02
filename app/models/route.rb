@@ -38,7 +38,7 @@ class Route < ApplicationRecord
   attribute :sync_user, type: String
   attribute :name, type: String
   attribute :date
-  attribute :archived
+  attribute :archived_at
 
   # == Extensions ===========================================================
   include TouchableConcern

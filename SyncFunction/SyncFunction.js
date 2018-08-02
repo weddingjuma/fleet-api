@@ -270,9 +270,9 @@ function sync_func(doc, oldDoc) {
     // Check owners
     var sync_user = checkSyncUser(doc, oldDoc);
     requireUser(sync_user);
-    if(!doc.archived) {
+    if(!doc.archived_at)
       channel([makeUserChannel(sync_user)]);
-    } else
+    else
       channel();
   }
 
@@ -295,7 +295,7 @@ function sync_func(doc, oldDoc) {
       case UPDATING:
         checkName(doc, oldDoc);
         channels.push(missionChannel)
-        if(!doc.archived)
+        if(!doc.archived_at)
           channels.push(makeMissionChannel(sync_user))
         access([sync_user], channels);
         break;
