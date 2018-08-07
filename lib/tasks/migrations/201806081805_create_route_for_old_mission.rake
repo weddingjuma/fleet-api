@@ -86,9 +86,22 @@ namespace :mapotempo_fleet do
       ' WHERE type = "mission"')
       .results.to_a
 
+    # 3) User roles update
+    # Update user roles
+    # UPDATE `bucket-name` as u
+    # SET roles = ARRAY_APPEND(roles, "route.updating")
+    # WHERE type = "user" AND roles is valued
+    User.bucket.n1ql.update(
+      "`#{bucket_name}` as mission" +
+      ' SET ' +
+      ' roles = ARRAY_APPEND(roles, "route.updating") ' +
+      ' WHERE type = "user" AND roles is valued')
+      .results.to_a
+
     # To revert this migration you can exec this query
     # 1) - DELETE FROM `bucket-name` WHERE type="route";
     # 2) - UPDATE `bucket-name` as mission SET route_id = null, archived_at = null WHERE type = "mission";
+    # 3) - UPDATE `bucket-name` as u SET roles = ARRAY_REMOVE(roles, "route.updating") WHERE type = "user" AND roles is valued;
 
     #Save migration execution
     SchemaMigration.create(migration: migration_name, date: DateTime.now.to_s)
