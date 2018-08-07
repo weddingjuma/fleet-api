@@ -163,6 +163,20 @@ class Mission < ApplicationRecord
     end
   end
 
+  def self.filter_company_by_date(company_id, end_date, start_date = nil)
+    missions = Mission.by_company(key: company_id).to_a
+
+    missions.select do |mission|
+      mission_date = mission.date.send(end_date.is_a?(Time) || start_date.is_a?(Time) ? :to_time : :to_date)
+
+      if start_date
+        mission_date >= start_date && mission_date <= end_date
+      else
+        mission_date <= end_date
+      end
+    end
+  end
+
   # == Instance Methods =====================================================
 
   private

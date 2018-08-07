@@ -26,7 +26,7 @@ module Api::V01
                    authorize user, :show?
                    user.missions.to_a
                  else
-                   Mission.by_company(key: @current_user.company.id).to_a
+                   Mission.filter_company_by_date(@current_user.company.id, Time.now + (3600 * 12), Time.now - (3600 * 12))
                  end
 
       if missions
