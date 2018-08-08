@@ -286,7 +286,7 @@ function sync_func(doc, oldDoc) {
     // Check date and make channels
     var date = checkDate(doc, oldDoc);
 
-    channels = [];
+    var channels = [];
 
     // The old mission channel (remove this when unsuport)
     var missionChannel = makeMissionChannels(sync_user, date);
@@ -319,17 +319,18 @@ function sync_func(doc, oldDoc) {
     requireUser(sync_user);
     // Check date and make channels
     var date = checkDate(doc, oldDoc);
-    var syncUserChannels = makeMissionChannels(sync_user, date);
+    var channelMission = makeMissionChannel(sync_user); // Put placeholder document in the temporary channelMission too
+    var missionChannels = makeMissionChannels(sync_user, date);
     switch (params.action) {
       case CREATING:
       case UPDATING:
-        access([sync_user], [syncUserChannels]);
+        access([sync_user], [missionChannels, channelMission]);
         break;
       case DELETING:
       default:
     }
     // Add current doc in all channels
-    channel([syncUserChannels]);
+    channel([missionChannels, channelMission]);
   }
 
   // ######################
@@ -532,6 +533,7 @@ function sync_func(doc, oldDoc) {
     return sync_user_channel;
   }
 
+  // missionChannel is temporary, in version futur put mission into userChannel and supress missionChannel
   function makeMissionChannel(user) {
     return MISSION + CHANNEL_SEPARATOR + user;
   }
