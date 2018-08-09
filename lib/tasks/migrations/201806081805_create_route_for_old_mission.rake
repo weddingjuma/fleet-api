@@ -83,7 +83,7 @@ namespace :mapotempo_fleet do
       ' SET '+
       ' route_id = "route-migrate-" || user_id || "-" || DATE_FORMAT_STR(date, \'1111-11-11\'), ' +
       ' archived_at = (CASE WHEN DATE_FORMAT_STR(date, \'1111-11-11\') < DATE_FORMAT_STR(NOW_UTC(), \'1111-11-11\') THEN DATE_FORMAT_STR(date, \'1111-11-11\') || "T00:00:000.000Z" ELSE null END ) ' +
-      ' WHERE type = "mission"')
+      ' WHERE type = "mission" AND route_id IS NOT VALUED')
       .results.to_a
 
     # 3) User roles update
