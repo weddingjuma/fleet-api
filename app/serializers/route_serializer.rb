@@ -31,6 +31,10 @@ class RouteSerializer < ActiveModel::Serializer
     end
   end
 
+  attribute :user_email do
+    object.user.email
+  end
+
   def with_missions?
     @instance_options[:with_missions]
   end

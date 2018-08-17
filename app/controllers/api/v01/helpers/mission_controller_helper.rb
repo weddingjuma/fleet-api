@@ -30,7 +30,7 @@ module MissionControllerHelper
       %Q(#{mission_params['external_ref']}) # Escape " char to prevent sql injection
     end
     existing_missions = Mission.bucket.n1ql
-          .select('META(mission).id as id, company_id, user_id, sync_user, mission_status_type_id, route_id, external_ref, name, date, location, address, comment, phone, reference, duration, time_windows, eta, mission_type')
+          .select('META(mission).id as id, company_id, user_id, sync_user, mission_status_type_id, quantities, route_id, external_ref, name, date, location, address, comment, phone, reference, duration, time_windows, eta, mission_type')
           .from("`#{bucket_name}` as mission")
           .where("type = \"mission\" and company_id = \"#{user.company_id}\" and external_ref in #{external_refs.to_s}")
           .results
@@ -70,6 +70,13 @@ module MissionControllerHelper
       :duration,
       :planned_travel_time,
       :planned_distance,
+      quantities: [
+        :deliverable_unit_id,
+        :quantity,
+        :label,
+        :unit_icon,
+        :quantity_formatted
+      ],
       location: [
         :lat,
         :lon

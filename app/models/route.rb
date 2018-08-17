@@ -177,7 +177,8 @@ class Route < ApplicationRecord
       '      mission.duration=source.duration,' +
       '      mission.time_windows=source.time_windows,' +
       '      mission.eta=source.eta,' +
-      '      mission.mission_type=source.mission_type' +
+      '      mission.mission_type=source.mission_type,' +
+      '      mission.quantities=source.quantities' +
       '  WHEN NOT MATCHED THEN' +
       '    INSERT {' +
       '      "type": "mission",' +
@@ -197,6 +198,7 @@ class Route < ApplicationRecord
       '      "duration": source.duration,' +
       '      "time_windows": source.time_windows,' +
       '      "mission_type": source.mission_type,' +
+      '      "quantities": source.quantities,' +
       '      "planned_travel_time": source.planned_travel_time,' +
       '      "planned_distance": source.planned_distance' +
       '    }'

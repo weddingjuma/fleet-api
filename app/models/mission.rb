@@ -60,7 +60,11 @@
 #   ],
 #   mission_type: mission,
 #   planned_travel_time, 500,
-#   planned_distance: 510
+#   planned_distance: 510,
+#   quantities: [
+#     { "deliverable_unit_id": 5, "quantity": 6, label:"mylabel", "unit_icon": "fa-{something}", "quantity_formatted": "6 {label}", },
+#     { "deliverable_unit_id": 9, "quantity": 12, label:"mylabel","unit_icon": "fa-{something-else}", "quantity_formatted": "12 {label}" },
+#   ]
 # }
 #
 
@@ -93,6 +97,7 @@ class Mission < ApplicationRecord
   attribute :planned_distance, type: Integer
   attribute :survey_location, type: Hash
   attribute :survey_address, type: Hash
+  attribute :quantities, type: Array # Quantities array of object contains icons that are usable with Font Awesome
 
   # == Extensions ===========================================================
   include TouchableConcern

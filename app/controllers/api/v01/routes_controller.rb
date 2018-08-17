@@ -104,10 +104,7 @@ module Api::V01
       authorize route
 
       if route.destroy
-        render json: route,
-               serializer: RouteSerializer,
-               destroy: true,
-               with_missions: with_missions?
+        render body: nil, status: :no_content
       else
         render json: route.errors, status: :unprocessable_entity
       end

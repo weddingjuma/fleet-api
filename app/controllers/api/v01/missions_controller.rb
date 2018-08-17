@@ -117,6 +117,13 @@ module Api::V01
         :duration,
         :planned_travel_time,
         :planned_distance,
+        quantities: [
+          :deliverable_unit_id,
+          :quantity,
+          :label,
+          :unit_icon,
+          :quantity_formatted
+        ],
         location: [
           :lat,
           :lon
@@ -155,6 +162,11 @@ module Api::V01
         :duration,
         :planned_travel_time,
         :planned_distance,
+        quantities: [
+          :deliverable_unit_id,
+          :quantity,
+          :unit_icon
+        ],
         location: [
           :lat,
           :lon
