@@ -137,10 +137,7 @@ module Api::V01
     end
 
     def missions_params
-      params.permit(_json: [
-        mission_attributes
-      ]
-      )[:_json]
+      params.permit(_json: [mission_attributes])[:_json]
     end
 
     def mission_attributes

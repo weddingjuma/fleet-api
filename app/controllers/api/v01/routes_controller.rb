@@ -57,7 +57,7 @@ module Api::V01
 
     # set_route
     def create
-      if(!params[:user_id])
+      if !params[:user_id]
         return render body: nil, status: :not_found
       end
 
@@ -124,11 +124,11 @@ module Api::V01
     end
 
     def with_missions?
-      YAML.load(params[:with_missions]) == true if params[:with_missions]
+      YAML.safe_load(params[:with_missions]) == true if params[:with_missions]
     end
 
     def delete_missions?
-      YAML.load(params[:delete_missions]) == true if params[:delete_missions]
+      YAML.safe_load(params[:delete_missions]) == true if params[:delete_missions]
     end
   end
 end
