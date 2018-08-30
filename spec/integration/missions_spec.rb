@@ -26,6 +26,7 @@ describe 'Missions API', type: :request do
       produces 'application/json', 'application/xml'
       parameter name: :user_id, in: :query, type: :string, required: false
 
+      # This test case breaked during date filter mission fix for performance, it's not been fixed because this test is correct
       response '200', 'all missions' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         run_test! do |response|
