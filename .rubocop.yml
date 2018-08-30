@@ -1,7 +1,10 @@
+AllCops:
+  TargetRubyVersion: 2.3
+
 Metrics/LineLength:
   Enabled: false
 
-Style/SpaceBeforeBlockBraces:
+Layout/SpaceBeforeBlockBraces:
   Enabled: false
 
 Metrics/MethodLength:
@@ -19,7 +22,7 @@ Metrics/PerceivedComplexity:
 Metrics/CyclomaticComplexity:
   Enabled: false
 
-Style/AlignParameters:
+Layout/AlignParameters:
   Enabled: false
 
 Style/DoubleNegation:
@@ -34,19 +37,19 @@ Style/TrailingCommaInArguments:
 Style/MultilineBlockChain:
   Enabled: false
 
-Style/SpaceInsideHashLiteralBraces:
+Layout/SpaceInsideHashLiteralBraces:
   Enabled: false
 
 Style/NegatedIf:
   Enabled: false
 
-Style/IndentHash:
+Layout/IndentHash:
   Enabled: false
 
 Style/NumericLiterals:
   Enabled: false
 
-Style/LeadingCommentSpace:
+Layout/LeadingCommentSpace:
   Enabled: false
 
 Style/SignalException:
@@ -55,10 +58,10 @@ Style/SignalException:
 Style/IfUnlessModifier:
   Enabled: false
 
-Style/CommentIndentation:
+Layout/CommentIndentation:
   Enabled: false
 
-Style/IndentArray:
+Layout/IndentArray:
   Enabled: false
 
 Style/ClassAndModuleChildren:
@@ -67,13 +70,13 @@ Style/ClassAndModuleChildren:
 Metrics/ClassLength:
   Enabled: false
 
-Style/IndentationWidth:
+Layout/IndentationWidth:
   Enabled: false
 
 Lint/EndAlignment:
   Enabled: false
 
-Style/ElseAlignment:
+Layout/ElseAlignment:
   Enabled: false
 
 Style/BlockDelimiters:
