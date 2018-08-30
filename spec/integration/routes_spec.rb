@@ -5,10 +5,10 @@ describe 'Routes API', type: :request do
   before(:all) do
     @company = create(:company, name: 'mapo-company')
     @user = create(:user, company: @company, vehicle: false)
-    @route = create(:route, company: @company, user: @user, name: 'mapo-route')
+    @route = create(:route, company: @company, user: @user, name: 'mapo-route', date: Time.parse('2018-08-31 1:0:0 +0200'))
     @missions = create_list(:mission, 3, user: @user, company: @company, route: @route)
     @user_2 = create(:user, company: @company, vehicle: true)
-    @route_2 = create(:route, company: @company, user: @user_2, name: 'mapo-route-2')
+    @route_2 = create(:route, company: @company, user: @user_2, name: 'mapo-route-2', date: Time.parse('2018-08-30 1:0:0 +0200'))
     @missions_2 = create_list(:mission, 2, user: @user_2, company: @company, route: @route_2)
 
     @other_company = create(:company, name: 'other')
@@ -28,6 +28,8 @@ describe 'Routes API', type: :request do
       produces 'application/json', 'application/xml'
       parameter name: :user_id, in: :query, type: :string, required: false
       parameter name: :with_missions, in: :query, type: :boolean, required: false
+      parameter name: :from, in: :query, type: :string, required: false
+      parameter name: :to, in: :query, type: :string, required: false
 
       response '200', 'all routes' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
@@ -45,6 +47,28 @@ describe 'Routes API', type: :request do
           json = JSON.parse(response.body)
           expect(json['routes']).not_to be_empty
           expect(json['routes'].size).to eq(1)
+        end
+      end
+
+      response '200', 'all routes with date filter from' do
+        let(:Authorization) { "Token token=#{@user.api_key}" }
+        let(:from) {'2018-08-31 0:59:0 +0200'}
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['routes']).not_to be_empty
+          expect(json['routes'].size).to eq(1)
+          expect(json['routes'][0]['id']).to eq(@route.id)
+        end
+      end
+
+      response '200', 'all routes with date filter to' do
+        let(:Authorization) { "Token token=#{@user.api_key}" }
+        let(:to) {'2018-08-31 0:59:0 +0200'}
+        run_test! do |response|
+          json = JSON.parse(response.body)
+          expect(json['routes']).not_to be_empty
+          expect(json['routes'].size).to eq(1)
+          expect(json['routes'][0]['id']).to eq(@route_2.id)
         end
       end
 
@@ -186,10 +210,10 @@ describe 'Routes API', type: :request do
       response '200', 'user route update with multiple missions update or create' do
         let(:Authorization) { "Token token=#{@user.api_key}" }
         let(:id) { @route.id }
-        let(:route) { {
-          name: 'test',
-          missions: build_list(:mission, 5, user: @user, company: @company, route: @route).concat(@missions.to_a) }
-        }
+        let(:route) {{
+            name: 'test',
+            missions: build_list(:mission, 5, user: @user, company: @company, route: @route) + @missions.to_a
+        }}
         let(:with_missions) {true}
         run_test! do |response|
           json = JSON.parse(response.body)

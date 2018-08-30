@@ -88,6 +88,33 @@ class Route < ApplicationRecord
     Route.all.to_a.last
   end
 
+  def self.filter_by_date(routes, from_date: nil, to_date: nil)
+    return routes if !from_date && !to_date
+
+    if from_date && to_date
+      if !from_date.is_a? to_date.class
+        throw ArgumentError.new('from_date and to_date must be same type')
+      end
+    end
+
+    filter_type = from_date ? from_date.class : to_date.class
+    if ![Date, Time].include? filter_type
+      throw ArgumentError.new('from_date and to_date must be Date or Time')
+    end
+
+    routes.select do |route|
+      route_date = route.date.send(filter_type == Time ? :to_time : :to_date)
+
+      if from_date
+        route_date >= from_date
+      elsif to_date
+        route_date <= to_date
+      else
+        route_date >= from_date && route_date <= to_date
+      end
+    end
+  end
+
   # == Instance Methods =====================================================
   def missions=(missions)
     self.updated_at = Time.now.to_s # Update time manualy to force route save
@@ -139,7 +166,7 @@ class Route < ApplicationRecord
       update_ids = @missions ? @missions.map(&:id) : []
       existing_ids = missions.to_a.map(&:id)
       delete_ids = existing_ids - update_ids
-      if delete_ids.count > 0
+      if delete_ids.count.positive?
         Mission.bucket.n1ql.delete_from("`#{bucket_name}` as mission").where('type = "mission" and company_id = "' + user.company_id + '" and sync_user="' + user.sync_user + '" and META(mission).id in ' + delete_ids.to_s).results.to_a
       end
     end

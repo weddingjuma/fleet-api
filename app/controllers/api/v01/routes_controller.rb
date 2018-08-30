@@ -1,4 +1,4 @@
-# Copyright © Mapotempo, 2018
+  # Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #
@@ -24,6 +24,15 @@ module Api::V01
 
     # get_route
     def index
+      from_param = nil
+      to_param = nil
+      begin
+        from_param = Time.parse(params[:from]) unless params[:from].blank?
+        to_param = Time.parse(params[:to]) unless params[:to].blank?
+      rescue ArgumentError => error
+        return render json: error.message.to_json, status: :bad_request
+      end
+
       routes = if params[:user_id]
                    user = User.find_by(params[:user_id])
                    authorize user, :show?
@@ -31,6 +40,8 @@ module Api::V01
                  else
                    Route.by_company(key: @current_user.company.id).to_a
                  end
+
+      routes = Route.filter_by_date(routes, from_date: from_param, to_date: to_param)
 
       if routes
         render json: routes,
@@ -98,7 +109,7 @@ module Api::V01
       end
     end
 
-    # delete_mission
+    # delete_route
     def destroy
       route = Route.find_by(params[:id], @current_user&.company_id)
       authorize route
