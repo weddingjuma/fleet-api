@@ -165,7 +165,8 @@ class Route < ApplicationRecord
 #       '      mission.external_ref=source.external_ref,'+
 #       '      mission.sync_user=source.sync_user,'+
 #       '      mission.mission_status_type_id=source.mission_status_type_id,' +
-      '      mission.user_id=source.user_id,'+
+      '      mission.user_id=source.user_id,' +
+      '      mission.sync_user=source.sync_user,' +
       '      mission.route_id=source.route_id,' +
       '      mission.name=source.name,' +
       '      mission.date=source.date,' +
