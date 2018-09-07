@@ -44,6 +44,8 @@ class Company < ApplicationRecord
 
   has_many :user_tracks, dependent: :destroy
 
+  has_many :routes, dependent: :destroy
+
   has_many :missions, dependent: :destroy
 
   has_many :missions_placeholders, class_name: 'MissionsPlaceholder', dependent: :destroy
