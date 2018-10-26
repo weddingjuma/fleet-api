@@ -26,5 +26,6 @@ services:
     volumes:
       - ./sync-gateway-config.json:/etc/sync_gateway/config.json
     command: -adminInterface :4985 /etc/sync_gateway/config.json
+    restart: on-failure # Restart during couchbase warmup
     depends_on:
       - couchbase
