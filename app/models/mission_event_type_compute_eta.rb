@@ -19,49 +19,32 @@
 # == Schema Information
 #
 # {
-#   "type": "mission_event_type_send_sms_departure",
-#   "_id": "mission_event_type_send_sms_departure-XXXX"
+#   "type": "mission_event_type_send_sms_approach",
+#   "_id": "mission_event_type_send_sms_approach-XXXX"
 #   "company_id": "company-XXXXX_XXXXX_XXXX_XXXXX",
-#   "mission_action_type_id": "mission_status_action-XXXX",
-#   "template": "",
+#   "mission_action_type_id": "mission_action_type-XXXX",
 #   "group": "default"
 # }
 #
 
-class MissionEventTypeSendSmsDeparture < ApplicationRecord
+class MissionEventTypeComputeEta < ApplicationRecord
   include MissionEventTypeConcern
-  include MissionEventTypeSendSmsConcern
 
   def exec(mission)
-    if mission.mission_type == 'departure'
+    if mission.mission_type == 'mission' && mission.planned_travel_time
       next_status_ref = mission_action_type.next_mission_status_type.reference
       if mission.mission_actions.take(mission.mission_actions.to_a.size - 1).none?{ |ma| ma.mission_action_type.next_mission_status_type.reference == next_status_ref }
-        # TODO: FIXME mission.date could be a Time in couchbase orm
-        mission_date = Time.parse(mission.date)
         # TODO: FIXME time_zone should set by mobile
         mobile_timezone = 'Paris'
         Time.use_zone(mobile_timezone) do
-          missions_by_date = Mission.filter_by_date(mission.user_id, mission_date + 12.hours, mission_date)
-          time_shift = Time.zone.parse(mission.mission_actions.to_a.last.date) - mission_date
-
-          sms_count = 0
-          missions_by_date.each do |m|
-            # Shift time
-            m.eta = Time.zone.parse(m.date) + time_shift
-            m.eta_computed_at = Time.now.utc
-            m.eta_computed_mode = 'shift'
-            m.save!
-            m.date = m.eta
-
-            sms_count += send_sms(m).count{ |v| v } if m.phone && m.date > Time.zone.now
-          end
-          Rails.logger.info("SMS departure sent: #{sms_count}")
+          mission.route.compute_or_shift_eta(mission, mission.last_location_date, mobile_timezone)
+          mission.route.missions.each(&:save!)
         end
       else
-        Rails.logger.info 'Event SMS departure already performed'
+        Rails.logger.info 'Event ETA compute already performed'
       end
     else
-      Rails.logger.info 'Event SMS departure cannot be performed for this document'
+      Rails.logger.info 'Event ETA compute cannot be performed for this document'
     end
   end
 end

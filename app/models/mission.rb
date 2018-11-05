@@ -80,8 +80,8 @@ class Mission < ApplicationRecord
   attribute :name, type: String
   attribute :date
   attribute :eta
-  attribute :eta_compute_time
-  attribute :eta_compute_mode, type: String
+  attribute :eta_computed_at
+  attribute :eta_computed_mode, type: String
   attribute :location, type: Hash
   attribute :address, type: Hash
   attribute :comment, type: String
@@ -96,6 +96,7 @@ class Mission < ApplicationRecord
 
   # == Extensions ===========================================================
   include TouchableConcern
+  include MissionConcern
 
   # == Relationships ========================================================
   belongs_to :company
@@ -179,6 +180,20 @@ class Mission < ApplicationRecord
       else
         mission_date <= end_date
       end
+    end
+  end
+
+  def compute_eta(last_known_location, last_known_time, router_params, timezone = nil)
+    Time.use_zone(timezone || 'GMT') do
+      lag = Time.zone.now - last_known_time
+      route = Rails.application.config.router.compute_batch(
+          Rails.application.config.router_url,
+          router_params[:mode], router_params[:dimension],
+          [last_known_location + [self.location['lat'], self.location['lon']]],
+          router_params.except(:mode, :dimension).merge(geometry: false, traffic: true)
+        )
+      self.eta = Time.zone.now + route[0][1] - lag
+      self.eta_computed_mode = router_params.slice(:mode, :dimension).values.join('_')
     end
   end
 

@@ -26,6 +26,11 @@
 #   "email" : "chauffeur_1@mapotempo.com",
 #   "name" : "chauffeur_1",
 #   "vehicle" : true,
+#   "router_params" : {
+#     "mode" : "car"|"truck",
+#     "dimension" : "time"|"distance"
+#     etc...
+#   },
 #   "color": "#228b22"
 #   "password_hash" : "mqsfqsdjbfhvafuysdfqfaze",
 #   "api_key" : "G7mZpybb9yu4EhH744bAIgtt",
@@ -49,6 +54,7 @@ class User < ApplicationRecord
   attribute :email, type: String
   attribute :phone, type: String
   attribute :vehicle, type: Boolean
+  attribute :router_params, type: Hash
   attribute :color, type: String
   attribute :roles, type: Array
   attribute :password_hash, type: String

@@ -1,4 +1,4 @@
-  # Copyright © Mapotempo, 2018
+# Copyright © Mapotempo, 2018
 #
 # This file is part of Mapotempo.
 #

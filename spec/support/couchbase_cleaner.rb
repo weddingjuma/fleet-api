@@ -9,6 +9,7 @@ RSpec.configure do |config|
     MissionStatusType.ensure_design_document!
     MissionActionType.ensure_design_document!
     MissionEventType.ensure_design_document!
+    MissionEventTypeComputeEta.ensure_design_document!
     MissionEventTypeSendSmsApproach.ensure_design_document!
     MissionEventTypeSendSmsDeparture.ensure_design_document!
     MissionsPlaceholder.ensure_design_document!
@@ -37,6 +38,7 @@ RSpec.configure do |config|
     MissionStatusType.all.stream { |ob| ob.delete }
     MissionActionType.all.stream { |ob| ob.delete }
     MissionEventType.all.stream { |ob| ob.delete }
+    MissionEventTypeComputeEta.all.stream { |ob| ob.delete }
     MissionEventTypeSendSmsApproach.all.stream { |ob| ob.delete }
     MissionEventTypeSendSmsDeparture.all.stream { |ob| ob.delete }
     MissionsPlaceholder.all.stream { |ob| ob.delete }

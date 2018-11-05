@@ -43,6 +43,7 @@ class Route < ApplicationRecord
   # == Extensions ===========================================================
   include TouchableConcern
   include AutomaticDateConcern
+  include RouteConcern
 
   # == Relationships ========================================================
   belongs_to :company
