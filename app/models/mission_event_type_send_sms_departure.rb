@@ -41,11 +41,10 @@ class MissionEventTypeSendSmsDeparture < ApplicationRecord
         # TODO: FIXME time_zone should set by mobile
         mobile_timezone = 'Paris'
         Time.use_zone(mobile_timezone) do
-          missions_by_date = Mission.filter_by_date(mission.user_id, mission_date + 12.hours, mission_date)
           time_shift = Time.zone.parse(mission.mission_actions.to_a.last.date) - mission_date
 
           sms_count = 0
-          missions_by_date.each do |m|
+          mission.route.missions.each do |m|
             # Shift time
             m.eta = Time.zone.parse(m.date) + time_shift
             m.eta_computed_at = Time.now.utc
