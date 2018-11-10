@@ -98,8 +98,8 @@ class ApplicationController < ActionController::API
   end
 
   def not_found_error(exception)
-    Rails.logger.fatal(exception.class.to_s + ' : ' + exception.to_s)
-    Rails.logger.fatal(exception.backtrace.join("\n"))
+    # Rails.logger.fatal(exception.class.to_s + ' : ' + exception.to_s)
+    # Rails.logger.fatal(exception.backtrace.join("\n"))
 
     render json: { error: I18n.t('error.not_found') }, status: :not_found
   end
