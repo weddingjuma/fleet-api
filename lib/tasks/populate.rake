@@ -55,6 +55,15 @@ namespace :mapotempo_fleet do
       Mission.bucket.n1ql.create_index("`#{bucket_name}_mission` ON `#{bucket_name}`(`company_id`, `sync_user`) WHERE type='mission'").results.to_a
     end
 
+    # Check and create index type if necessary
+    bucket_name = Mission.bucket.bucket
+    index_type = Mission.bucket.n1ql.select('*').from("system:indexes").where("name=\"#{bucket_name}_mission_action\"").results.first
+    if(!index_type)
+      # Query type : CREATE INDEX `fleet-dev_mission` ON `fleet-dev`(`company_id`, `sync_user`) WHERE type='mission'
+      Mission.bucket.n1ql.create_index("`#{bucket_name}_mission_action` ON `#{bucket_name}`(`company_id`, `bucket_name`) WHERE type='mission_action'").results.to_a
+    end
+    
+
     if SchemaMigration.all.to_a.empty?
       puts ' - apply task: initialize schema migration'
       Rake.application.invoke_task('mapotempo_fleet:init_schema_migration')

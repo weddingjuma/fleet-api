@@ -4,7 +4,7 @@ common: &common
 
 development:
   <<: *common
-  bucket: fleet-dev
+  bucket: fleet-prod
   password: '123456'
 
 test:

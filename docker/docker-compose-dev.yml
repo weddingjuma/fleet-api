@@ -1,7 +1,7 @@
 version: '3.3'
 services:
   couchbase:
-    image: couchbase/server:5.1.0
+    image: couchbase/server:community-6.0.0 #community-5.1.1 #enterprise-6.0.0 #
     ports:
       - "127.0.0.1:8091:8091" # Admin Web & API, internal access
       - "8092:8092" # , internal access
@@ -9,6 +9,7 @@ services:
       - "11210:11210" # DB connection, internal access
     volumes:
       - ./couchbase-db:/opt/couchbase/var
+      - ./couchbase-dump:/couchbase-dump
     healthcheck:
       test: ["CMD-SHELL", "cbstats localhost:11210 -b fleet-dev -p 123456 raw warmup | grep -q complete"] # Same password in wrapper > environment > COUCHBASE_PASSWORD and in initialize-db.sh --rbac-password
       interval: 30s

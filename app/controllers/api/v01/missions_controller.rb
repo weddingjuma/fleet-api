@@ -40,6 +40,18 @@ module Api::V01
       end
     end
 
+    def show
+      mission = Mission.find_by(params[:id])
+      authorize mission
+      if mission
+        render json: mission,
+               root: 'mission',
+               serializer: MissionSerializer
+      else
+        render body: nil, status: :not_found
+      end
+    end
+
     # set_mission
     def create
       if !params[:user_id]
@@ -100,6 +112,26 @@ module Api::V01
       # FIXME we should review how manage authorization for bulk delete
       skip_authorization
       head :no_content
+    end
+
+    def attachment
+      Rails.logger.debug("Try to retrieve #{params[:type]} attachment for  mission : #{params[:id]}")
+      mission = Mission.find(params[:id])
+      authorize mission, :show?
+
+      blob_attachment_key = "blob_/#{params[:type]}"
+      return render body: '"error": "Resource not found', status: :not_found unless (mission.attributes.key?(:_attachments) and  mission.attributes[:_attachments].key?(blob_attachment_key))
+
+      digest = mission.attributes[:_attachments]["blob_/#{params[:type]}"][:digest]
+      body = Mission.bucket.get("_sync:att:#{digest}")
+      Rails.logger.debug("Attachment #{params[:type]} exist for mission : #{params[:id]} with digest : #{digest}")
+      content_type = mission.attributes[:_attachments]["blob_/#{params[:type]}"][:content_type]
+      render body: body, content_type: content_type
+
+      # Same using sync_gateway rest api
+      # response = HTTP.get("#{Rails.configuration.x.sync_gateway_url}"+params[:id]+"/blob_%2F#{params[:type]}")
+      # Rails.logger.debug("Response : #{response.code}")
+      # render body: response.body, status: response.code, content_type: response.content_type.mime_type
     end
 
     private

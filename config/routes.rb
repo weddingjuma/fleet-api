@@ -17,9 +17,10 @@ Rails.application.routes.draw do
 
       resources :routes
 
-      resources :missions, only: [:index, :create, :update, :destroy] do
+      resources :missions, only: [:index, :show, :create, :update, :destroy] do
         collection do
           delete '' => 'missions#destroy_multiples'
+          get ':id/attachment/:type' => 'missions#attachment'
         end
       end
 
@@ -28,10 +29,15 @@ Rails.application.routes.draw do
       resources :mission_action_types, only: [:index, :create, :update, :destroy]
 
       resources :user_current_locations, only: [:index]
+
+      resources :reportings, only: [:index, :show]
+
+      resources :attachments, only: [:show]
     end
   end
 
   namespace :webhook do
     post 'mission_action_changes' => 'mission_action_changes#events'
   end
+
 end

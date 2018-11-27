@@ -20,10 +20,13 @@ class ApplicationController < ActionController::API
 
   include ActionController::HttpAuthentication::Token::ControllerMethods
 
+  include ActionController::MimeResponds
+
   # Handle exceptions
   rescue_from StandardError, with: :server_error
   rescue_from ActionController::InvalidAuthenticityToken, with: :server_error
   rescue_from Libcouchbase::Error::KeyNotFound, with: :not_found_error
+  rescue_from Libcouchbase::Error::Timedout, with: :server_error
   rescue_from ActionController::RoutingError, with: :not_found_error
   rescue_from AbstractController::ActionNotFound, with: :not_found_error
   rescue_from ActionController::UnknownController, with: :not_found_error
@@ -44,7 +47,7 @@ class ApplicationController < ActionController::API
   # Authenticate the user with token based authentication
   # Check first if it's admin
   def authenticate
-    authenticate_token || render_unauthorized
+    authenticate_token || authenticate_api_key || render_unauthorized
   end
 
   def authenticate_token
@@ -54,6 +57,12 @@ class ApplicationController < ActionController::API
 
     authenticate_with_http_token do |token, _options|
       @current_user = User.by_token(key: token).to_a.first
+    end
+  end
+
+  def authenticate_api_key
+    if params['api_key']
+      @current_user = User.by_token(key: params['api_key']).to_a.first
     end
   end
 
@@ -112,4 +121,5 @@ class ApplicationController < ActionController::API
 
     render json: { error: I18n.t('error.internal_error') }, status: :internal_server_error
   end
+
 end
